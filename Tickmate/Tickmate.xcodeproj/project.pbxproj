@@ -3,11 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		59F0980225E081CC00667971 /* TracksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F0980125E081CC00667971 /* TracksView.swift */; };
+		59F0980725E0843E00667971 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 59F0980625E0843E00667971 /* SFSafeSymbols */; };
 		59FBCF2125E07BD5007B114F /* TickmateApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59FBCF2025E07BD5007B114F /* TickmateApp.swift */; };
 		59FBCF2325E07BD5007B114F /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59FBCF2225E07BD5007B114F /* ContentView.swift */; };
 		59FBCF2525E07BD8007B114F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59FBCF2425E07BD8007B114F /* Assets.xcassets */; };
@@ -33,6 +34,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				59F0980725E0843E00667971 /* SFSafeSymbols in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -118,6 +120,9 @@
 			dependencies = (
 			);
 			name = Tickmate;
+			packageProductDependencies = (
+				59F0980625E0843E00667971 /* SFSafeSymbols */,
+			);
 			productName = Tickmate;
 			productReference = 59FBCF1D25E07BD5007B114F /* Tickmate.app */;
 			productType = "com.apple.product-type.application";
@@ -145,6 +150,9 @@
 				Base,
 			);
 			mainGroup = 59FBCF1425E07BD5007B114F;
+			packageReferences = (
+				59F0980525E0843E00667971 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */,
+			);
 			productRefGroup = 59FBCF1E25E07BD5007B114F /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -364,6 +372,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		59F0980525E0843E00667971 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/piknotech/SFSafeSymbols.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.1.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		59F0980625E0843E00667971 /* SFSafeSymbols */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 59F0980525E0843E00667971 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
+			productName = SFSafeSymbols;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		59FBCF2B25E07BD8007B114F /* Tickmate.xcdatamodeld */ = {
