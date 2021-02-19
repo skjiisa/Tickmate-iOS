@@ -16,7 +16,11 @@ struct TracksView: View {
     var body: some View {
         HStack {
             ForEach(tracks) { (track: Track) in
-                Text(track.name ?? "nil")
+                if let systemImage = track.systemImage {
+                    Image(systemName: systemImage)
+                } else {
+                    Text(track.name ?? "nil")
+                }
             }
         }
     }

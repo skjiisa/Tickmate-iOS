@@ -6,6 +6,7 @@
 //
 
 import CoreData
+import SFSafeSymbols
 
 struct PersistenceController {
     static let shared = PersistenceController()
@@ -16,6 +17,7 @@ struct PersistenceController {
         for _ in 0..<3 {
             let track = Track(context: viewContext)
             track.name = UUID().uuidString
+            track.systemImage = SFSymbol.allCases.randomElement()?.rawValue
         }
         do {
             try viewContext.save()
