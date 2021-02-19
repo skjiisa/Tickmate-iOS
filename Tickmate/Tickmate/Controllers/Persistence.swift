@@ -13,7 +13,10 @@ struct PersistenceController {
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
-        // Create dummy objects
+        for _ in 0..<3 {
+            let track = Track(context: viewContext)
+            track.name = UUID().uuidString
+        }
         do {
             try viewContext.save()
         } catch {
