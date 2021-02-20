@@ -12,7 +12,9 @@ struct ContentView: View {
     @Environment(\.managedObjectContext) private var moc
 
     var body: some View {
-        Text("Hello World!")
+        NavigationView {
+            TracksView()
+        }
     }
 }
 
