@@ -11,7 +11,7 @@ import SwiftDate
 class TickController: ObservableObject {
     
     let track: Track
-    @Published var ticks: [Set<Tick>] = []
+    @Published var ticks: [[Tick]] = []
     
     init(track: Track) {
         self.track = track
@@ -34,14 +34,14 @@ class TickController: ObservableObject {
             tickDays.append((days, tick))
         }
         
-        var days: [Set<Tick>] = []
+        var days: [[Tick]] = []
         var i = 0
         
         for day in 0..<365 {
-            var dayTicks = Set<Tick>()
+            var dayTicks = [Tick]()
             while i < tickDays.count,
                   tickDays[i].day == day {
-                dayTicks.insert(tickDays[i].tick)
+                dayTicks.append(tickDays[i].tick)
                 i += 1
             }
             
@@ -54,7 +54,7 @@ class TickController: ObservableObject {
         print(self.ticks)
     }
     
-    func ticks(on day: Int) -> Set<Tick> {
+    func ticks(on day: Int) -> [Tick] {
         guard ticks.indices.contains(day) else { return [] }
         return ticks[day]
     }

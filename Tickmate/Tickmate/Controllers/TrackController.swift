@@ -19,7 +19,7 @@ class TrackController: ObservableObject {
         }
     }
     
-    func ticks(for track: Track, on day: Int) -> Set<Tick> {
+    func ticks(for track: Track, on day: Int) -> [Tick] {
         let tickController = tickControllers[track] ?? {
             let tickController = TickController(track: track)
             tickControllers[track] = tickController
