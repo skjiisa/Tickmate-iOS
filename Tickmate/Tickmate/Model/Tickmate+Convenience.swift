@@ -24,4 +24,9 @@ extension Tick {
         self.track = track
         self.timestamp = Date()
     }
+    
+    convenience init?(track: Track) {
+        guard let moc = track.managedObjectContext else { return nil }
+        self.init(track: track, context: moc)
+    }
 }

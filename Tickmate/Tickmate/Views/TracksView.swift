@@ -115,6 +115,7 @@ struct TracksView_Previews: PreviewProvider {
         NavigationView {
             TracksView()
                 .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+                .environmentObject(TrackController())
         }
     }
 }
