@@ -95,7 +95,7 @@ struct TickView: View {
     let day: Int
     
     private var color: Color {
-        trackController.ticks(for: track, on: day).isEmpty ? .secondary : .accentColor
+        trackController.ticks(on: day, for: track).isEmpty ? .secondary : .accentColor
     }
     
     var body: some View {
@@ -106,6 +106,9 @@ struct TickView: View {
             if let systemImage = track.systemImage {
                 Image(systemName: systemImage)
             }
+        }
+        .onTapGesture {
+            trackController.tick(day: day, for: track)
         }
     }
 }

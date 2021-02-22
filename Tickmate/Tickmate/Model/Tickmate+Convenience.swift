@@ -8,6 +8,7 @@
 import CoreData
 
 extension Track {
+    @discardableResult
     convenience init(name: String, color: Int16, multiple: Bool = false, reversed: Bool = false, systemImage: String, context moc: NSManagedObjectContext) {
         self.init(context: moc)
         self.name = name
@@ -19,12 +20,14 @@ extension Track {
 }
 
 extension Tick {
+    @discardableResult
     convenience init(track: Track, context moc: NSManagedObjectContext) {
         self.init(context: moc)
         self.track = track
         self.timestamp = Date()
     }
     
+    @discardableResult
     convenience init?(track: Track) {
         guard let moc = track.managedObjectContext else { return nil }
         self.init(track: track, context: moc)

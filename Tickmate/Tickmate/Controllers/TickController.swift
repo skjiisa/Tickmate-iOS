@@ -59,4 +59,19 @@ class TickController: ObservableObject {
         return ticks[day]
     }
     
+    func tick(day: Int) {
+        if ticks(on: day).isEmpty || (track.multiple && ticks.indices.contains(day)),
+           let tick = Tick(track: track) {
+            ticks[day].append(tick)
+        } else {
+            untick(day: day)
+        }
+    }
+    
+    func untick(day: Int) {
+        guard let tick = ticks(on: day).last else { return }
+        ticks[day].removeLast()
+        track.managedObjectContext?.delete(tick)
+    }
+    
 }

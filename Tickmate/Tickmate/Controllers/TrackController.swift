@@ -19,14 +19,21 @@ class TrackController: ObservableObject {
         }
     }
     
-    func ticks(for track: Track, on day: Int) -> [Tick] {
-        let tickController = tickControllers[track] ?? {
+    func tickController(for track: Track) -> TickController {
+        tickControllers[track] ?? {
             let tickController = TickController(track: track)
             tickControllers[track] = tickController
             return tickController
         }()
-        
-        return tickController.ticks(on: day)
+    }
+    
+    func ticks(on day: Int, for track: Track) -> [Tick] {
+        tickController(for: track).ticks(on: day)
+    }
+    
+    func tick(day: Int, for track: Track) {
+        objectWillChange.send()
+        tickController(for: track).tick(day: day)
     }
     
 }
