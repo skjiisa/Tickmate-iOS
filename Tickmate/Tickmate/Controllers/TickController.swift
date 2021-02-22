@@ -20,6 +20,7 @@ class TickController: ObservableObject {
     
     func loadTicks() {
         let fetchRequest: NSFetchRequest<Tick> = Tick.fetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "track == %@", track)
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Tick.timestamp, ascending: false)]
         guard let ticks = try? track.managedObjectContext?.fetch(fetchRequest),
               let today = Date().dateTruncated([.hour, .minute, .second]) else { return }
@@ -51,6 +52,11 @@ class TickController: ObservableObject {
         
         self.ticks = days
         print(self.ticks)
+    }
+    
+    func ticks(on day: Int) -> Set<Tick> {
+        guard ticks.indices.contains(day) else { return [] }
+        return ticks[day]
     }
     
 }
