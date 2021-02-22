@@ -38,9 +38,8 @@ struct TracksView: View {
             }
             .padding(.horizontal)
             .padding(.vertical, 4)
-            Rectangle()
-                .foregroundColor(.secondary)
-                .frame(height: 1)
+            
+            Divider()
             
             ScrollViewReader { proxy in
                 List {
