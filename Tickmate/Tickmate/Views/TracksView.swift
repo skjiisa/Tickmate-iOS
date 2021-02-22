@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SFSafeSymbols
+import SwiftDate
 
 struct TracksView: View {
     
@@ -15,6 +16,8 @@ struct TracksView: View {
         entity: Track.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \Track.name, ascending: true)])
     private var tracks: FetchedResults<Track>
+    
+    @EnvironmentObject private var trackController: TrackController
     
     var body: some View {
         VStack(spacing: 0) {
@@ -34,6 +37,9 @@ struct TracksView: View {
                             Text(track.name ?? "nil")
                         }
                     }
+                    .onAppear {
+                        trackController.loadTicks(for: track)
+                    }
                 }
             }
             .padding(.horizontal)
@@ -52,25 +58,21 @@ struct TracksView: View {
                             Text("\(364 - day)")
                                 .frame(width: 80)
                             ForEach(tracks) { track in
-                                // I have absolutely no idea why, but it doesn't work without this
-                                if true {
-                                    ZStack {
-                                        Rectangle()
-                                            .foregroundColor(.blue)
-                                            .cornerRadius(3)
-                                        if let systemImage = track.systemImage {
-                                            Image(systemName: systemImage)
-                                        }
-                                    }
-                                }
+                                TickView(track: track, day: 364 - day)
                             }
                         }
                     }
                     
                     Button("New") {
+                        // This button is just for testing and will be removed
                         let track = Track(context: moc)
                         track.name = UUID().uuidString
                         track.systemImage = SFSymbol.allCases.randomElement()?.rawValue
+                        
+                        let tick1 = Tick(track: track, context: moc)
+                        tick1.timestamp = Date() - 1.days
+                        let tick3 = Tick(track: track, context: moc)
+                        tick3.timestamp = Date() - 3.days
                     }
                     .id(0)
                 }
@@ -82,6 +84,29 @@ struct TracksView: View {
             }
         }
         .navigationBarTitle("Tickmate", displayMode: .inline)
+    }
+}
+
+struct TickView: View {
+    
+    @EnvironmentObject private var trackController: TrackController
+    
+    let track: Track
+    let day: Int
+    
+    private var color: Color {
+        trackController.ticks(for: track, on: day).isEmpty ? .secondary : .accentColor
+    }
+    
+    var body: some View {
+        ZStack {
+            Rectangle()
+                .foregroundColor(color)
+                .cornerRadius(3)
+            if let systemImage = track.systemImage {
+                Image(systemName: systemImage)
+            }
+        }
     }
 }
 
