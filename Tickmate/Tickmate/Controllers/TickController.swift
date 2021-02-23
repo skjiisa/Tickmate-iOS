@@ -60,8 +60,11 @@ class TickController: ObservableObject {
     }
     
     func tick(day: Int) {
-        if ticks(on: day).isEmpty || (track.multiple && ticks.indices.contains(day)),
+        if ticks(on: day).isEmpty || track.multiple,
            let tick = Tick(track: track) {
+            while ticks.count < day + 1 {
+                ticks.append([])
+            }
             ticks[day].append(tick)
         } else {
             untick(day: day)
