@@ -7,6 +7,7 @@
 
 import CoreData
 import SFSafeSymbols
+import SwiftDate
 
 struct PersistenceController {
     static let shared = PersistenceController()
@@ -18,6 +19,13 @@ struct PersistenceController {
             let track = Track(context: viewContext)
             track.name = UUID().uuidString
             track.systemImage = SFSymbol.allCases.randomElement()?.rawValue
+            
+            for day in 0..<5 {
+                if Bool.random() {
+                    let tick = Tick(track: track)
+                    tick?.timestamp = Date() - day.days
+                }
+            }
         }
         do {
             try viewContext.save()

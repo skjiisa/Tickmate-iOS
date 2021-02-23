@@ -10,11 +10,14 @@ import CoreData
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var moc
+    
+    @StateObject private var trackController = TrackController()
 
     var body: some View {
         NavigationView {
             TracksView()
         }
+        .environmentObject(trackController)
     }
 }
 
