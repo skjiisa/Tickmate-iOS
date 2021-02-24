@@ -41,6 +41,7 @@ struct TrackView: View {
                 }
                 
                 ColorPicker("Color", selection: $draftTrack.color, supportsOpacity: false)
+                    .disabled(!editMode)
             }
         }
         .navigationTitle("Track details")
@@ -84,9 +85,12 @@ struct TrackView: View {
 }
 
 struct TrackView_Previews: PreviewProvider {
+    
+    static var color = Color(hue: Double.random(in: 0...1), saturation: 1, brightness: 1)
+    
     static var previews: some View {
         NavigationView {
-            TrackView(track: Track(name: "Test Track", color: 0, context: PersistenceController.preview.container.viewContext))
+            TrackView(track: Track(name: "Test Track", color: Int32(color.rgb), context: PersistenceController.preview.container.viewContext))
         }
     }
 }

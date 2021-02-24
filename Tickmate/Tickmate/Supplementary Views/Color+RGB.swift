@@ -9,10 +9,10 @@ import SwiftUI
 
 extension Color {
     /// Returns the color (excluding alpha) as an RGB color.
-    var rgb: Int? {
+    var rgb: Int {
         guard let components = cgColor?.components,
               components.count >= 3 else {
-            return nil
+            return 0
         }
         
         let r = Int(components[0] * 255)

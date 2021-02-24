@@ -17,7 +17,7 @@ class TrackRepresentation: ObservableObject {
     
     init() {
         name = ""
-        color = Color(hue: Double.random(in: 0...1), saturation: 1, brightness: 1)
+        color = .black
         multiple = false
         reversed = false
     }
@@ -26,11 +26,14 @@ class TrackRepresentation: ObservableObject {
         name = track.name ?? ""
         multiple = track.multiple
         reversed = track.reversed
+        
         if let trackImage = track.systemImage {
             systemImage = SFSymbol(rawValue: trackImage)
         } else {
             systemImage = SFSymbol.allCases.randomElement()
         }
+        
+        color = Color(rgb: Int(track.color))
     }
     
     func save(to track: Track) {
@@ -50,5 +53,9 @@ class TrackRepresentation: ObservableObject {
             track.systemImage = systemImage?.rawValue
         }
         
+        let rgb = Int32(color.rgb)
+        if rgb != track.color {
+            track.color = rgb
+        }
     }
 }
