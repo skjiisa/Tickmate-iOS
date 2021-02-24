@@ -39,6 +39,8 @@ struct TrackView: View {
                             + " Tapping a day will untick it."
                             + " Good for tracking bad habits.")
                 }
+                
+                ColorPicker("Color", selection: $draftTrack.color, supportsOpacity: false)
             }
         }
         .navigationTitle("Track details")

@@ -5,17 +5,19 @@
 //  Created by Isaac Lyons on 2/23/21.
 //
 
-import Foundation
+import SwiftUI
 import SFSafeSymbols
 
 class TrackRepresentation: ObservableObject {
     var name: String
+    var color: Color
     var multiple: Bool
     var reversed: Bool
     var systemImage: SFSymbol?
     
     init() {
         name = ""
+        color = Color(hue: Double.random(in: 0...1), saturation: 1, brightness: 1)
         multiple = false
         reversed = false
     }
