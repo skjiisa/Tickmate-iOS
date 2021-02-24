@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		59EF632925E5CD4B003E7259 /* TrackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59EF632825E5CD4B003E7259 /* TrackView.swift */; };
+		59EF632D25E5CF24003E7259 /* TrackRepresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59EF632C25E5CF24003E7259 /* TrackRepresentation.swift */; };
 		59F0980225E081CC00667971 /* TracksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F0980125E081CC00667971 /* TracksView.swift */; };
 		59F0980725E0843E00667971 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 59F0980625E0843E00667971 /* SFSafeSymbols */; };
 		59F6EA9D25E369830069DF40 /* Tickmate+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F6EA9C25E369830069DF40 /* Tickmate+Convenience.swift */; };
@@ -22,6 +24,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		59EF632825E5CD4B003E7259 /* TrackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackView.swift; sourceTree = "<group>"; };
+		59EF632C25E5CF24003E7259 /* TrackRepresentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackRepresentation.swift; sourceTree = "<group>"; };
 		59F0980125E081CC00667971 /* TracksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TracksView.swift; sourceTree = "<group>"; };
 		59F6EA9C25E369830069DF40 /* Tickmate+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Tickmate+Convenience.swift"; sourceTree = "<group>"; };
 		59F6EAA325E36D510069DF40 /* TickController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TickController.swift; sourceTree = "<group>"; };
@@ -92,6 +96,7 @@
 			children = (
 				59FBCF2B25E07BD8007B114F /* Tickmate.xcdatamodeld */,
 				59F6EA9C25E369830069DF40 /* Tickmate+Convenience.swift */,
+				59EF632C25E5CF24003E7259 /* TrackRepresentation.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -101,6 +106,7 @@
 			children = (
 				59FBCF2225E07BD5007B114F /* ContentView.swift */,
 				59F0980125E081CC00667971 /* TracksView.swift */,
+				59EF632825E5CD4B003E7259 /* TrackView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -196,6 +202,8 @@
 				59F6EAA725E36D680069DF40 /* TrackController.swift in Sources */,
 				59F0980225E081CC00667971 /* TracksView.swift in Sources */,
 				59F6EAA425E36D510069DF40 /* TickController.swift in Sources */,
+				59EF632D25E5CF24003E7259 /* TrackRepresentation.swift in Sources */,
+				59EF632925E5CD4B003E7259 /* TrackView.swift in Sources */,
 				59FBCF2325E07BD5007B114F /* ContentView.swift in Sources */,
 				59FBCF2125E07BD5007B114F /* TickmateApp.swift in Sources */,
 				59FBCF2D25E07BD8007B114F /* Tickmate.xcdatamodeld in Sources */,
