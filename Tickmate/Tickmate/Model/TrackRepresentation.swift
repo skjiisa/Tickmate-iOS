@@ -13,7 +13,7 @@ class TrackRepresentation: ObservableObject {
     var color: Color
     var multiple: Bool
     var reversed: Bool
-    var systemImage: SFSymbol?
+    var systemImage: String?
     
     init() {
         name = ""
@@ -28,9 +28,9 @@ class TrackRepresentation: ObservableObject {
         reversed = track.reversed
         
         if let trackImage = track.systemImage {
-            systemImage = SFSymbol(rawValue: trackImage)
+            systemImage = trackImage
         } else {
-            systemImage = SFSymbol.allCases.randomElement()
+            systemImage = SFSymbol.allCases.randomElement()?.rawValue
         }
         
         color = Color(rgb: Int(track.color))
@@ -49,8 +49,8 @@ class TrackRepresentation: ObservableObject {
         if track.reversed != reversed {
             track.reversed = reversed
         }
-        if track.systemImage != systemImage?.rawValue {
-            track.systemImage = systemImage?.rawValue
+        if track.systemImage != systemImage {
+            track.systemImage = systemImage
         }
         
         let rgb = Int32(color.rgb)
