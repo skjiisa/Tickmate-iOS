@@ -19,24 +19,30 @@ struct TracksView: View {
     
     @EnvironmentObject private var trackController: TrackController
     
+    @State private var showingTrack: Track?
+    
     var body: some View {
         VStack(spacing: 0) {
             HStack {
                 Rectangle()
                     .opacity(0)
                     .frame(width: 80, height: 32)
-                ForEach(tracks) { (track: Track) in
-                    ZStack {
-                        Rectangle()
-                            .foregroundColor(.blue)
-                            .cornerRadius(3)
-                            .frame(height: 32)
-                        if let systemImage = track.systemImage {
-                            Image(systemName: systemImage)
-                        } else {
-                            Text(track.name ?? "nil")
+                ForEach(tracks) { track in
+                    Button {
+                        showingTrack = track
+                        UISelectionFeedbackGenerator().selectionChanged()
+                    } label: {
+                        ZStack {
+                            Rectangle()
+                                .foregroundColor(.secondary)
+                                .cornerRadius(3)
+                                .frame(height: 32)
+                            if let systemImage = track.systemImage {
+                                Image(systemName: systemImage)
+                            }
                         }
                     }
+                    .foregroundColor(.primary)
                     .onAppear {
                         trackController.loadTicks(for: track)
                     }
@@ -44,6 +50,11 @@ struct TracksView: View {
             }
             .padding(.horizontal)
             .padding(.vertical, 4)
+            .sheet(item: $showingTrack) { track in
+                NavigationView {
+                    TrackView(track: track)
+                }
+            }
             
             Divider()
             

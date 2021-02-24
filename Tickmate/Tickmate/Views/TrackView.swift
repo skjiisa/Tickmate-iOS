@@ -9,10 +9,6 @@ import SwiftUI
 
 struct TrackView: View {
     
-    @Environment(\.managedObjectContext) private var moc
-    
-    @EnvironmentObject private var trackController: TrackController
-    
     @ObservedObject var track: Track
     
     @StateObject private var draftTrack = TrackRepresentation()
@@ -24,6 +20,7 @@ struct TrackView: View {
             Section {
                 TextField("Name", text: $draftTrack.name)
             }
+            .disabled(!editMode)
             
             Section(header: Text("Settings")) {
                 Toggle(isOn: $draftTrack.multiple) {
