@@ -20,9 +20,26 @@ struct TrackView: View {
     @State private var editMode = false
     
     var body: some View {
-        List {
-            TextField("Name", text: $draftTrack.name)
-                .disabled(!editMode)
+        Form {
+            Section(header: Text("Settings")) {
+                TextField("Name", text: $draftTrack.name)
+                    .disabled(!editMode)
+                
+                Toggle(isOn: $draftTrack.multiple) {
+                    TextWithCaption(
+                        text: "Allow multiple",
+                        caption: "Multiple ticks on a day will be counted."
+                            + " Long press to decrease counter.")
+                }
+                
+                Toggle(isOn: $draftTrack.reversed) {
+                    TextWithCaption(
+                        text: "Reversed",
+                        caption: "Days will be ticked by default."
+                            + " Tapping a day will untick it."
+                            + " Good for tracking bad habits.")
+                }
+            }
         }
         .navigationTitle("Track details")
         .toolbar {
