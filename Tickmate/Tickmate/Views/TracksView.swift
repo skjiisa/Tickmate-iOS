@@ -114,12 +114,10 @@ struct TickView: View {
             Rectangle()
                 .foregroundColor(color)
                 .cornerRadius(3)
-            if let systemImage = track.systemImage {
-                Image(systemName: systemImage)
-            }
         }
         .onTapGesture {
             trackController.tick(day: day, for: track)
+            UISelectionFeedbackGenerator().selectionChanged()
         }
     }
 }
