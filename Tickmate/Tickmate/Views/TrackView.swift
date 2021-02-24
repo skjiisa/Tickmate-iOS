@@ -21,10 +21,11 @@ struct TrackView: View {
     
     var body: some View {
         Form {
-            Section(header: Text("Settings")) {
+            Section {
                 TextField("Name", text: $draftTrack.name)
-                    .disabled(!editMode)
-                
+            }
+            
+            Section(header: Text("Settings")) {
                 Toggle(isOn: $draftTrack.multiple) {
                     TextWithCaption(
                         text: "Allow multiple",
@@ -41,8 +42,8 @@ struct TrackView: View {
                 }
                 
                 ColorPicker("Color", selection: $draftTrack.color, supportsOpacity: false)
-                    .disabled(!editMode)
             }
+            .disabled(!editMode)
         }
         .navigationTitle("Track details")
         .toolbar {
