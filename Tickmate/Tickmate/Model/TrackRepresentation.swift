@@ -8,7 +8,7 @@
 import SwiftUI
 import SFSafeSymbols
 
-struct TrackRepresentation {
+struct TrackRepresentation: Equatable {
     var name: String
     var color: Color
     var multiple: Bool
@@ -40,22 +40,32 @@ struct TrackRepresentation {
         // Avoid writing duplicate information as doing
         // so will mark the context as modified even
         // though it wouldn't be.
-        if track.name != name {
-            track.name = name
-        }
-        if track.multiple != multiple {
-            track.multiple = multiple
-        }
-        if track.reversed != reversed {
-            track.reversed = reversed
-        }
-        if track.systemImage != systemImage {
-            track.systemImage = systemImage
-        }
-        
-        let rgb = Int32(color.rgb)
-        if rgb != track.color {
-            track.color = rgb
-        }
+        guard self != track else { return }
+        track.name = name
+        track.multiple = multiple
+        track.reversed = reversed
+        track.systemImage = systemImage
+        track.color = Int32(color.rgb)
+    }
+    
+    static func == (rep: TrackRepresentation, track: Track) -> Bool {
+        return
+            rep.name == track.name &&
+            rep.multiple == track.multiple &&
+            rep.reversed == track.reversed &&
+            rep.systemImage == track.systemImage &&
+            Int32(rep.color.rgb) == track.color
+    }
+    
+    static func == (track: Track, rep: TrackRepresentation) -> Bool {
+        return rep == track
+    }
+    
+    static func != (rep: TrackRepresentation, track: Track) -> Bool {
+        return !(rep == track)
+    }
+    
+    static func != (track: Track, rep: TrackRepresentation) -> Bool {
+        return !(rep == track)
     }
 }
