@@ -21,7 +21,6 @@ struct TrackView: View {
             Section {
                 TextField("Name", text: $draftTrack.name)
             }
-            .disabled(!editMode)
             
             Section(header: Text("Settings")) {
                 Toggle(isOn: $draftTrack.multiple) {
@@ -57,12 +56,11 @@ struct TrackView: View {
                     showingSymbolPicker = false
                 }
             }
-            .disabled(!editMode)
         }
         .navigationTitle("Track details")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                Button(editMode ? "Done" : "Edit") {
+                Button(editMode ? "Save" : "Edit") {
                     if editMode {
                         save()
                     }
@@ -73,14 +71,12 @@ struct TrackView: View {
             }
             ToolbarItem(placement: .cancellationAction) {
                 if editMode {
-                    Button("Cancel") {
-                        cancel()
-                        withAnimation {
-                            editMode = false
-                        }
-                    }
+                    Button("Cancel", action: cancel)
                 }
             }
+        }
+        .onChange(of: draftTrack) { value in
+            editMode = value != track
         }
         .onAppear {
             if !initialized {
@@ -95,7 +91,9 @@ struct TrackView: View {
     }
     
     private func cancel() {
-        draftTrack.load(track: track)
+        withAnimation {
+            draftTrack.load(track: track)
+        }
     }
 }
 
