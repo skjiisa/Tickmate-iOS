@@ -22,23 +22,24 @@ struct SymbolPicker: View {
                             selection = symbol
                         } label: {
                             ZStack {
-                                Rectangle()
+                                RoundedRectangle(cornerRadius: 8)
                                     .foregroundColor(selection == symbol ? .accentColor : Color(.systemGroupedBackground))
-                                    .clipped()
-                                    .cornerRadius(8.0)
                                     .aspectRatio(1, contentMode: .fill)
                                 Image(systemName: symbol)
                                     .imageScale(.large)
                                     .foregroundColor(.primary)
-                                    .padding()
                             }
                         }
+                        .id(symbol)
                     }
                 }
-                .padding(.horizontal)
+                .padding()
+            }
+            .onAppear {
+                proxy.scrollTo(selection, anchor: .center)
             }
         }
-        .navigationTitle("Symbols")
+        .navigationBarTitle("Symbols", displayMode: .inline)
     }
 }
 

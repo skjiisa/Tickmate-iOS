@@ -78,12 +78,7 @@ struct TracksView: View {
                         // This button is just for testing and will be removed
                         let track = Track(context: moc)
                         track.name = UUID().uuidString
-                        track.systemImage = SFSymbol.allCases.randomElement()?.rawValue
-                        
-                        let tick1 = Tick(track: track, context: moc)
-                        tick1.timestamp = Date() - 1.days
-                        let tick3 = Tick(track: track, context: moc)
-                        tick3.timestamp = Date() - 3.days
+                        track.systemImage = SymbolsList.randomElement()
                     }
                     .id(0)
                 }
