@@ -77,7 +77,7 @@ struct TracksView: View {
                     Button("New") {
                         // This button is just for testing and will be removed
                         let track = Track(context: moc)
-                        track.name = UUID().uuidString
+                        track.name = String(UUID().uuidString.dropLast(28))
                         track.systemImage = SymbolsList.randomElement()
                     }
                     .id(0)

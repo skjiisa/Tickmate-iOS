@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct TrackView: View {
+    @Environment(\.managedObjectContext) private var moc
     
     @ObservedObject var track: Track
     
@@ -88,6 +89,7 @@ struct TrackView: View {
     
     private func save() {
         draftTrack.save(to: track)
+        PersistenceController.save(context: moc)
     }
     
     private func cancel() {
