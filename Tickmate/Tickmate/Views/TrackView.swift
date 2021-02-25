@@ -11,11 +11,13 @@ struct TrackView: View {
     @Environment(\.managedObjectContext) private var moc
     
     @ObservedObject var track: Track
+    @Binding var selection: Track?
     
     @State private var draftTrack = TrackRepresentation()
     @State private var initialized = false
     @State private var editMode = false
     @State private var showingSymbolPicker = false
+    @State private var showDelete = false
     
     var body: some View {
         Form {
@@ -57,6 +59,27 @@ struct TrackView: View {
                     showingSymbolPicker = false
                 }
             }
+            
+            Section {
+                Button {
+                    showDelete = true
+                } label: {
+                    HStack {
+                        Spacer()
+                        Text("Delete")
+                        Spacer()
+                    }
+                }
+                .accentColor(.red)
+            }
+            .actionSheet(isPresented: $showDelete) {
+                ActionSheet(
+                    title: Text("Are you sure you want to delete \(draftTrack.name.isEmpty ? "this track" : draftTrack.name)?"),
+                    buttons: [
+                        .destructive(Text("Delete"), action: delete),
+                        .cancel()
+                    ])
+            }
         }
         .navigationTitle("Track details")
         .toolbar {
@@ -97,6 +120,12 @@ struct TrackView: View {
             draftTrack.load(track: track)
         }
     }
+    
+    private func delete() {
+        selection = nil
+        moc.delete(track)
+        PersistenceController.save(context: moc)
+    }
 }
 
 struct TrackView_Previews: PreviewProvider {
@@ -105,7 +134,8 @@ struct TrackView_Previews: PreviewProvider {
     
     static var previews: some View {
         NavigationView {
-            TrackView(track: Track(name: "Test Track", color: Int32(color.rgb), context: PersistenceController.preview.container.viewContext))
+            TrackView(track: Track(name: "Test Track", color: Int32(color.rgb), context: PersistenceController.preview.container.viewContext),
+                      selection: .constant(nil))
         }
     }
 }
