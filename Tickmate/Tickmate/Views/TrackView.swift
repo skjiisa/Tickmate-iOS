@@ -14,6 +14,7 @@ struct TrackView: View {
     @StateObject private var draftTrack = TrackRepresentation()
     @State private var initialized = false
     @State private var editMode = false
+    @State private var showingSymbolPicker = false
     
     var body: some View {
         Form {
@@ -39,6 +40,22 @@ struct TrackView: View {
                 }
                 
                 ColorPicker("Color", selection: $draftTrack.color, supportsOpacity: false)
+                
+                NavigationLink(
+                    destination: SymbolPicker(selection: $draftTrack.systemImage),
+                    isActive: $showingSymbolPicker) {
+                    HStack {
+                        Text("Symbol")
+                        Spacer()
+                        if let symbol = draftTrack.systemImage {
+                            Image(systemName: symbol)
+                                .imageScale(.large)
+                        }
+                    }
+                }
+                .onChange(of: draftTrack.systemImage) { value in
+                    showingSymbolPicker = false
+                }
             }
             .disabled(!editMode)
         }
