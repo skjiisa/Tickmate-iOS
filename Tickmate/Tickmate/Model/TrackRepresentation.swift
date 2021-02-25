@@ -8,7 +8,7 @@
 import SwiftUI
 import SFSafeSymbols
 
-class TrackRepresentation: ObservableObject {
+struct TrackRepresentation {
     var name: String
     var color: Color
     var multiple: Bool
@@ -22,7 +22,7 @@ class TrackRepresentation: ObservableObject {
         reversed = false
     }
     
-    func load(track: Track) {
+    mutating func load(track: Track) {
         name = track.name ?? ""
         multiple = track.multiple
         reversed = track.reversed

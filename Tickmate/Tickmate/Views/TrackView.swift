@@ -11,7 +11,7 @@ struct TrackView: View {
     
     @ObservedObject var track: Track
     
-    @StateObject private var draftTrack = TrackRepresentation()
+    @State private var draftTrack = TrackRepresentation()
     @State private var initialized = false
     @State private var editMode = false
     @State private var showingSymbolPicker = false
