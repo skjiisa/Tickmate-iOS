@@ -69,7 +69,7 @@ struct TracksView: View {
                             trackController.dayLabel(day: day)
                                 .frame(width: 80, alignment: .leading)
                             ForEach(tracks) { track in
-                                TickView(track: track, day: day, tickController: trackController.tickController(for: track))
+                                TickView(day: day, track: track, tickController: trackController.tickController(for: track))
                             }
                         }
                     }
@@ -96,9 +96,9 @@ struct TracksView: View {
 
 struct TickView: View {
     
-    let track: Track
     let day: Int
     
+    @ObservedObject var track: Track
     @ObservedObject var tickController: TickController
     
     private var color: Color {
@@ -110,6 +110,11 @@ struct TickView: View {
             Rectangle()
                 .foregroundColor(color)
                 .cornerRadius(3)
+            let count = tickController.ticks(on: day).count
+            if count > 1 {
+                Text("\(count)")
+                    .foregroundColor(track.lightText ? .white : .black)
+            }
         }
         .onTapGesture {
             tickController.tick(day: day)
