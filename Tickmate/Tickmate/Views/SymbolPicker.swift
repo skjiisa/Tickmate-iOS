@@ -23,7 +23,7 @@ struct SymbolPicker: View {
                         } label: {
                             ZStack {
                                 RoundedRectangle(cornerRadius: 8)
-                                    .foregroundColor(selection == symbol ? .accentColor : Color(.systemGroupedBackground))
+                                    .foregroundColor(selection == symbol ? .accentColor : Color(.secondarySystemGroupedBackground))
                                     .aspectRatio(1, contentMode: .fill)
                                 Image(systemName: symbol)
                                     .imageScale(.large)
@@ -35,6 +35,8 @@ struct SymbolPicker: View {
                 }
                 .padding()
             }
+            .background(Color(.systemGroupedBackground)
+                            .edgesIgnoringSafeArea(.bottom))
             .onAppear {
                 proxy.scrollTo(selection, anchor: .center)
             }
