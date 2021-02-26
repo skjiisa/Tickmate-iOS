@@ -120,6 +120,15 @@ struct TickView: View {
             tickController.tick(day: day)
             UISelectionFeedbackGenerator().selectionChanged()
         }
+        // This long press feels too long, and setting
+        // minimumDuration below 0.5 doesn't have an effect.
+        //TODO: write custom gesture.
+        .onLongPressGesture {
+            guard track.multiple else { return }
+            if tickController.untick(day: day) {
+                UIImpactFeedbackGenerator(style: .soft).impactOccurred()
+            }
+        }
     }
 }
 

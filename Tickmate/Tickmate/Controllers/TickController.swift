@@ -94,16 +94,19 @@ class TickController: NSObject, ObservableObject {
         }
     }
     
-    func untick(day: Int) {
-        guard let tick = ticks(on: day).last else { return }
+    @discardableResult
+    func untick(day: Int) -> Bool {
+        guard let tick = ticks(on: day).last else { return false }
         track.managedObjectContext?.delete(tick)
         save()
+        return true
     }
     
     //MARK: Private
     
     private func save() {
-        if let moc = track.managedObjectContext {
+        if let moc = track.managedObjectContext,
+           moc.hasChanges {
             PersistenceController.save(context: moc)
         }
     }
