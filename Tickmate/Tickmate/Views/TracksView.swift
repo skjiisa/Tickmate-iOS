@@ -102,7 +102,9 @@ struct TickView: View {
     @ObservedObject var tickController: TickController
     
     private var color: Color {
-        tickController.ticks(on: day).isEmpty ? Color(.systemFill) : Color(rgb: Int(track.color))
+        // If the day is ticked, use the track color. Otherwise, use
+        // system fill. If the track is reversed, reverse the check.
+        tickController.ticks(on: day).isEmpty != track.reversed ? Color(.systemFill) : Color(rgb: Int(track.color))
     }
     
     var body: some View {
