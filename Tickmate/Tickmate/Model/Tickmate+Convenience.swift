@@ -21,15 +21,16 @@ extension Track {
 
 extension Tick {
     @discardableResult
-    convenience init(track: Track, context moc: NSManagedObjectContext) {
+    convenience init(track: Track, dayOffset: Int16, context moc: NSManagedObjectContext) {
         self.init(context: moc)
         self.track = track
         self.timestamp = Date()
+        self.dayOffset = dayOffset
     }
     
     @discardableResult
-    convenience init?(track: Track) {
+    convenience init?(track: Track, dayOffset: Int16) {
         guard let moc = track.managedObjectContext else { return nil }
-        self.init(track: track, context: moc)
+        self.init(track: track, dayOffset: dayOffset, context: moc)
     }
 }

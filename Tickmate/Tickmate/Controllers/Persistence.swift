@@ -23,8 +23,13 @@ struct PersistenceController {
             
             for day in 0..<5 {
                 if Bool.random() {
-                    let tick = Tick(track: track)
-                    tick?.timestamp = Date() - day.days
+                    let tick = Tick(track: track, dayOffset: 0)
+                    if day == 4 {
+                        tick?.timestamp = Date()
+                        tick?.dayOffset = Int16(day)
+                    } else {
+                        tick?.timestamp = Date() - day.days
+                    }
                 }
             }
         }
@@ -36,6 +41,7 @@ struct PersistenceController {
 
     init(inMemory: Bool = false) {
         container = NSPersistentCloudKitContainer(name: "Tickmate")
+        container.viewContext.automaticallyMergesChangesFromParent = true
         if inMemory {
             container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
         }
