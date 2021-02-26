@@ -10,6 +10,8 @@ import SwiftDate
 
 class TickController: NSObject, ObservableObject {
     
+    //MARK: Properties
+    
     let track: Track
     @Published var ticks: [[Tick]] = []
     private var fetchedResultsController: NSFetchedResultsController<Tick>
@@ -76,6 +78,8 @@ class TickController: NSObject, ObservableObject {
         print(self.ticks)
     }
     
+    //MARK: Ticking
+    
     func ticks(on day: Int) -> [Tick] {
         guard ticks.indices.contains(day) else { return [] }
         return ticks[day]
@@ -84,9 +88,7 @@ class TickController: NSObject, ObservableObject {
     func tick(day: Int) {
         if ticks(on: day).isEmpty || track.multiple {
             Tick(track: track, dayOffset: Int16(day))
-            if let moc = track.managedObjectContext {
-                PersistenceController.save(context: moc)
-            }
+            save()
         } else {
             untick(day: day)
         }
@@ -94,26 +96,46 @@ class TickController: NSObject, ObservableObject {
     
     func untick(day: Int) {
         guard let tick = ticks(on: day).last else { return }
-        ticks[day].removeLast()
         track.managedObjectContext?.delete(tick)
+        save()
+    }
+    
+    //MARK: Private
+    
+    private func save() {
+        if let moc = track.managedObjectContext {
+            PersistenceController.save(context: moc)
+        }
+    }
+    
+    private func day(for tick: Tick) -> Int? {
+        guard let timestamp = tick.timestamp?.dateTruncated([.hour, .minute, .second]),
+              let today = Date().dateTruncated([.hour, .minute, .second]),
+              let timestampDays = (today - timestamp).day else { return nil }
+        return timestampDays + Int(tick.dayOffset)
     }
     
     private func insert(at indexPath: IndexPath) {
         let tick = fetchedResultsController.object(at: indexPath)
         
-        guard let timestamp = tick.timestamp?.dateTruncated([.hour, .minute, .second]),
-              let today = Date().dateTruncated([.hour, .minute, .second]),
-              let timestampDays = (today - timestamp).day else { return }
-        let day = timestampDays + Int(tick.dayOffset)
-        
-        guard day < 365 else { return }
+        guard let day = day(for: tick),
+              day < 365 else { return }
         while ticks.count < day + 1 {
             ticks.append([])
         }
         ticks[day].append(tick)
     }
     
+    private func delete(_ object: Any, at indexPath: IndexPath) {
+        guard let tick = object as? Tick,
+              let day = day(for: tick),
+              ticks.indices.contains(day) else { return }
+        ticks[day].removeAll(where: { $0 == tick })
+    }
+    
 }
+
+//MARK: Fetched Results Controller Delegate
 
 extension TickController: NSFetchedResultsControllerDelegate {
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
@@ -125,9 +147,9 @@ extension TickController: NSFetchedResultsControllerDelegate {
         case .insert:
             guard let newIndexPath = newIndexPath else { return }
             insert(at: newIndexPath)
-        case .delete: break
-        case .move: break
-        case .update: break
+        case .delete:
+            guard let indexPath = indexPath else { return }
+            delete(anObject, at: indexPath)
         default:
             break
         }
