@@ -5,6 +5,7 @@
 //  Created by Isaac Lyons on 2/19/21.
 //
 
+import SwiftUI
 import CoreData
 import SwiftDate
 
@@ -17,6 +18,7 @@ struct PersistenceController {
         for _ in 0..<3 {
             let track = Track(context: viewContext)
             track.name = UUID().uuidString
+            track.color = Int32(Color(hue: Double.random(in: 0...1), saturation: 1, brightness: 1).rgb)
             track.systemImage = SymbolsList.randomElement()
             
             for day in 0..<5 {

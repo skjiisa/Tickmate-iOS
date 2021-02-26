@@ -33,7 +33,7 @@ struct TracksView: View {
                     } label: {
                         ZStack {
                             Rectangle()
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color(.systemFill))
                                 .cornerRadius(3)
                                 .frame(height: 32)
                             if let systemImage = track.systemImage {
@@ -77,6 +77,7 @@ struct TracksView: View {
                         // This button is just for testing and will be removed
                         let track = Track(context: moc)
                         track.name = String(UUID().uuidString.dropLast(28))
+                        track.color = Int32(Color(hue: Double.random(in: 0...1), saturation: 1, brightness: 1).rgb)
                         track.systemImage = SymbolsList.randomElement()
                     }
                     .id(0)
@@ -100,7 +101,7 @@ struct TickView: View {
     let day: Int
     
     private var color: Color {
-        trackController.ticks(on: day, for: track).isEmpty ? .secondary : .accentColor
+        trackController.ticks(on: day, for: track).isEmpty ? Color(.systemFill) : Color(rgb: Int(track.color))
     }
     
     var body: some View {
