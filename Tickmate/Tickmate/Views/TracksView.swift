@@ -69,7 +69,7 @@ struct TracksView: View {
                             trackController.dayLabel(day: day)
                                 .frame(width: 80, alignment: .leading)
                             ForEach(tracks) { track in
-                                TickView(track: track, day: day)
+                                TickView(track: track, day: day, tickController: trackController.tickController(for: track))
                             }
                         }
                     }
@@ -96,13 +96,13 @@ struct TracksView: View {
 
 struct TickView: View {
     
-    @EnvironmentObject private var trackController: TrackController
-    
     let track: Track
     let day: Int
     
+    @ObservedObject var tickController: TickController
+    
     private var color: Color {
-        trackController.ticks(on: day, for: track).isEmpty ? Color(.systemFill) : Color(rgb: Int(track.color))
+        tickController.ticks(on: day).isEmpty ? Color(.systemFill) : Color(rgb: Int(track.color))
     }
     
     var body: some View {
@@ -112,7 +112,7 @@ struct TickView: View {
                 .cornerRadius(3)
         }
         .onTapGesture {
-            trackController.tick(day: day, for: track)
+            tickController.tick(day: day)
             UISelectionFeedbackGenerator().selectionChanged()
         }
     }

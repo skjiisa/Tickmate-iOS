@@ -41,6 +41,7 @@ class TrackController: ObservableObject {
         }()
     }
     
+    /*
     func ticks(on day: Int, for track: Track) -> [Tick] {
         tickController(for: track).ticks(on: day)
     }
@@ -49,6 +50,7 @@ class TrackController: ObservableObject {
         objectWillChange.send()
         tickController(for: track).tick(day: day)
     }
+     */
     
     func dayLabel(day: Int) -> TextWithCaption {
         let date = Date() - day.days

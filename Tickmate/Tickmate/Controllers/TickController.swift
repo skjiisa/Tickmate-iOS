@@ -12,7 +12,7 @@ class TickController: NSObject, ObservableObject {
     
     let track: Track
     @Published var ticks: [[Tick]] = []
-    var fetchedResultsController: NSFetchedResultsController<Tick>
+    private var fetchedResultsController: NSFetchedResultsController<Tick>
     
     init(track: Track) {
         self.track = track
@@ -53,6 +53,8 @@ class TickController: NSObject, ObservableObject {
             guard days < 365 else { break }
             tickDays.append((days, tick))
         }
+        
+        tickDays.sort { $0.day <= $1.day }
         
         var days: [[Tick]] = []
         var i = 0
@@ -129,12 +131,5 @@ extension TickController: NSFetchedResultsControllerDelegate {
         default:
             break
         }
-    }
-    
-    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
-                    didChange sectionInfo: NSFetchedResultsSectionInfo,
-                    atSectionIndex sectionIndex: Int,
-                    for type: NSFetchedResultsChangeType) {
-        return
     }
 }
