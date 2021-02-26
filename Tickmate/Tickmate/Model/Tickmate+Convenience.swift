@@ -9,7 +9,7 @@ import CoreData
 
 extension Track {
     @discardableResult
-    convenience init(name: String, color: Int16, multiple: Bool = false, reversed: Bool = false, systemImage: String, context moc: NSManagedObjectContext) {
+    convenience init(name: String, color: Int32, multiple: Bool = false, reversed: Bool = false, systemImage: String? = nil, context moc: NSManagedObjectContext) {
         self.init(context: moc)
         self.name = name
         self.color = color

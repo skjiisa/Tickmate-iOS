@@ -6,7 +6,6 @@
 //
 
 import CoreData
-import SFSafeSymbols
 import SwiftDate
 
 struct PersistenceController {
@@ -18,7 +17,7 @@ struct PersistenceController {
         for _ in 0..<3 {
             let track = Track(context: viewContext)
             track.name = UUID().uuidString
-            track.systemImage = SFSymbol.allCases.randomElement()?.rawValue
+            track.systemImage = SymbolsList.randomElement()
             
             for day in 0..<5 {
                 if Bool.random() {
@@ -27,14 +26,7 @@ struct PersistenceController {
                 }
             }
         }
-        do {
-            try viewContext.save()
-        } catch {
-            // Replace this implementation with code to handle the error appropriately.
-            // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-            let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-        }
+        result.save()
         return result
     }()
 
@@ -61,5 +53,24 @@ struct PersistenceController {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
         })
+    }
+    
+    //MARK: Saving
+    
+    /// Saves the container's viewContext if there are changes.
+    func save() {
+        PersistenceController.save(context: container.viewContext)
+    }
+    
+    /// Saves the given context if there are changes.
+    /// - Parameter context: The Core Data context to save.
+    static func save(context moc: NSManagedObjectContext) {
+        guard moc.hasChanges else { return }
+        do {
+            try moc.save()
+        } catch {
+            let nsError = error as NSError
+            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        }
     }
 }

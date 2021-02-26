@@ -5,7 +5,7 @@
         <relationship name="track" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Track" inverseName="ticks" inverseEntity="Track"/>
     </entity>
     <entity name="Track" representedClassName="Track" syncable="YES" codeGenerationType="class">
-        <attribute name="color" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="color" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="multiple" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="reversed" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
@@ -13,7 +13,7 @@
         <relationship name="ticks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Tick" inverseName="track" inverseEntity="Tick"/>
     </entity>
     <elements>
-        <element name="Track" positionX="-54" positionY="-9" width="128" height="119"/>
         <element name="Tick" positionX="-45" positionY="36" width="128" height="59"/>
+        <element name="Track" positionX="-54" positionY="-9" width="128" height="119"/>
     </elements>
 </model>
