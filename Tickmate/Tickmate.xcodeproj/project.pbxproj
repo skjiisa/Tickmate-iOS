@@ -14,7 +14,6 @@
 		59EF632D25E5CF24003E7259 /* TrackRepresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59EF632C25E5CF24003E7259 /* TrackRepresentation.swift */; };
 		59EF633725E5DC93003E7259 /* TextWithCaption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59EF633625E5DC93003E7259 /* TextWithCaption.swift */; };
 		59F0980225E081CC00667971 /* TracksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F0980125E081CC00667971 /* TracksView.swift */; };
-		59F0980725E0843E00667971 /* SFSafeSymbols in Frameworks */ = {isa = PBXBuildFile; productRef = 59F0980625E0843E00667971 /* SFSafeSymbols */; };
 		59F6EA9D25E369830069DF40 /* Tickmate+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F6EA9C25E369830069DF40 /* Tickmate+Convenience.swift */; };
 		59F6EAA425E36D510069DF40 /* TickController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F6EAA325E36D510069DF40 /* TickController.swift */; };
 		59F6EAA725E36D680069DF40 /* TrackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F6EAA625E36D680069DF40 /* TrackController.swift */; };
@@ -54,7 +53,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				59F6EAAE25E377E40069DF40 /* SwiftDate in Frameworks */,
-				59F0980725E0843E00667971 /* SFSafeSymbols in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -166,7 +164,6 @@
 			);
 			name = Tickmate;
 			packageProductDependencies = (
-				59F0980625E0843E00667971 /* SFSafeSymbols */,
 				59F6EAAD25E377E40069DF40 /* SwiftDate */,
 			);
 			productName = Tickmate;
@@ -197,7 +194,6 @@
 			);
 			mainGroup = 59FBCF1425E07BD5007B114F;
 			packageReferences = (
-				59F0980525E0843E00667971 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */,
 				59F6EAAC25E377E40069DF40 /* XCRemoteSwiftPackageReference "SwiftDate" */,
 			);
 			productRefGroup = 59FBCF1E25E07BD5007B114F /* Products */;
@@ -430,14 +426,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		59F0980525E0843E00667971 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/piknotech/SFSafeSymbols.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.1.2;
-			};
-		};
 		59F6EAAC25E377E40069DF40 /* XCRemoteSwiftPackageReference "SwiftDate" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/malcommac/SwiftDate.git";
@@ -449,11 +437,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		59F0980625E0843E00667971 /* SFSafeSymbols */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 59F0980525E0843E00667971 /* XCRemoteSwiftPackageReference "SFSafeSymbols" */;
-			productName = SFSafeSymbols;
-		};
 		59F6EAAD25E377E40069DF40 /* SwiftDate */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 59F6EAAC25E377E40069DF40 /* XCRemoteSwiftPackageReference "SwiftDate" */;

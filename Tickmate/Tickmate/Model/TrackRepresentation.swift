@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import SFSafeSymbols
 
 struct TrackRepresentation: Equatable {
     var name: String
@@ -30,7 +29,7 @@ struct TrackRepresentation: Equatable {
         if let trackImage = track.systemImage {
             systemImage = trackImage
         } else {
-            systemImage = SFSymbol.allCases.randomElement()?.rawValue
+            systemImage = SymbolsList.randomElement()
         }
         
         color = Color(rgb: Int(track.color))

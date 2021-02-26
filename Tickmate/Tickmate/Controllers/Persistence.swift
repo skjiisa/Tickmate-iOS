@@ -6,7 +6,6 @@
 //
 
 import CoreData
-import SFSafeSymbols
 import SwiftDate
 
 struct PersistenceController {
@@ -18,7 +17,7 @@ struct PersistenceController {
         for _ in 0..<3 {
             let track = Track(context: viewContext)
             track.name = UUID().uuidString
-            track.systemImage = SFSymbol.allCases.randomElement()?.rawValue
+            track.systemImage = SymbolsList.randomElement()
             
             for day in 0..<5 {
                 if Bool.random() {
