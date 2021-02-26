@@ -63,12 +63,13 @@ struct TracksView: View {
                         proxy.scrollTo(0)
                     }
                     
-                    ForEach(0..<365) { day in
+                    ForEach(0..<365) { dayComplement in
                         HStack {
-                            Text("\(364 - day)")
-                                .frame(width: 80)
+                            let day = 364 - dayComplement
+                            trackController.dayLabel(day: day)
+                                .frame(width: 80, alignment: .leading)
                             ForEach(tracks) { track in
-                                TickView(track: track, day: 364 - day)
+                                TickView(track: track, day: day)
                             }
                         }
                     }
