@@ -33,7 +33,7 @@ struct TracksView: View {
                     } label: {
                         ZStack {
                             Rectangle()
-                                .foregroundColor(.secondary)
+                                .foregroundColor(Color(.systemFill))
                                 .cornerRadius(3)
                                 .frame(height: 32)
                             if let systemImage = track.systemImage {
@@ -63,12 +63,13 @@ struct TracksView: View {
                         proxy.scrollTo(0)
                     }
                     
-                    ForEach(0..<365) { day in
+                    ForEach(0..<365) { dayComplement in
                         HStack {
-                            Text("\(364 - day)")
-                                .frame(width: 80)
+                            let day = 364 - dayComplement
+                            trackController.dayLabel(day: day)
+                                .frame(width: 80, alignment: .leading)
                             ForEach(tracks) { track in
-                                TickView(track: track, day: 364 - day)
+                                TickView(day: day, track: track, tickController: trackController.tickController(for: track))
                             }
                         }
                     }
@@ -77,6 +78,7 @@ struct TracksView: View {
                         // This button is just for testing and will be removed
                         let track = Track(context: moc)
                         track.name = String(UUID().uuidString.dropLast(28))
+                        track.color = Int32(Color(hue: Double.random(in: 0...1), saturation: 1, brightness: 1).rgb)
                         track.systemImage = SymbolsList.randomElement()
                     }
                     .id(0)
@@ -94,13 +96,15 @@ struct TracksView: View {
 
 struct TickView: View {
     
-    @EnvironmentObject private var trackController: TrackController
-    
-    let track: Track
     let day: Int
     
+    @ObservedObject var track: Track
+    @ObservedObject var tickController: TickController
+    
     private var color: Color {
-        trackController.ticks(on: day, for: track).isEmpty ? .secondary : .accentColor
+        // If the day is ticked, use the track color. Otherwise, use
+        // system fill. If the track is reversed, reverse the check.
+        tickController.ticks(on: day).isEmpty != track.reversed ? Color(.systemFill) : Color(rgb: Int(track.color))
     }
     
     var body: some View {
@@ -108,10 +112,24 @@ struct TickView: View {
             Rectangle()
                 .foregroundColor(color)
                 .cornerRadius(3)
+            let count = tickController.ticks(on: day).count
+            if count > 1 {
+                Text("\(count)")
+                    .foregroundColor(track.lightText ? .white : .black)
+            }
         }
         .onTapGesture {
-            trackController.tick(day: day, for: track)
+            tickController.tick(day: day)
             UISelectionFeedbackGenerator().selectionChanged()
+        }
+        // This long press feels too long, and setting
+        // minimumDuration below 0.5 doesn't have an effect.
+        //TODO: write custom gesture.
+        .onLongPressGesture {
+            guard track.multiple else { return }
+            if tickController.untick(day: day) {
+                UIImpactFeedbackGenerator(style: .soft).impactOccurred()
+            }
         }
     }
 }

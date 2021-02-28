@@ -5,6 +5,7 @@
 //  Created by Isaac Lyons on 2/19/21.
 //
 
+import SwiftUI
 import CoreData
 import SwiftDate
 
@@ -17,12 +18,18 @@ struct PersistenceController {
         for _ in 0..<3 {
             let track = Track(context: viewContext)
             track.name = UUID().uuidString
+            track.color = Int32(Color(hue: Double.random(in: 0...1), saturation: 1, brightness: 1).rgb)
             track.systemImage = SymbolsList.randomElement()
             
             for day in 0..<5 {
                 if Bool.random() {
-                    let tick = Tick(track: track)
-                    tick?.timestamp = Date() - day.days
+                    let tick = Tick(track: track, dayOffset: 0)
+                    if day == 4 {
+                        tick?.timestamp = Date()
+                        tick?.dayOffset = Int16(day)
+                    } else {
+                        tick?.timestamp = Date() - day.days
+                    }
                 }
             }
         }
@@ -34,6 +41,7 @@ struct PersistenceController {
 
     init(inMemory: Bool = false) {
         container = NSPersistentCloudKitContainer(name: "Tickmate")
+        container.viewContext.automaticallyMergesChangesFromParent = true
         if inMemory {
             container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
         }
