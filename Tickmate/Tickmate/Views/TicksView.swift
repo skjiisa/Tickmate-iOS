@@ -1,5 +1,5 @@
 //
-//  TracksView.swift
+//  TicksView.swift
 //  Tickmate
 //
 //  Created by Isaac Lyons on 2/19/21.
@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftDate
 
-struct TracksView: View {
+struct TicksView: View {
     
     @Environment(\.managedObjectContext) private var moc
     @FetchRequest(
@@ -137,7 +137,7 @@ struct TickView: View {
 struct TracksView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            TracksView()
+            TicksView()
                 .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
                 .environmentObject(TrackController())
         }
