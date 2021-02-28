@@ -101,6 +101,36 @@ class PersistenceController {
     
     @objc
     private func processUpdate(notification: Notification) {
+        operationQueue.cancelAllOperations()
         
+        // Update indices
+        operationQueue.addOperation {
+            guard let container = notification.object as? NSPersistentCloudKitContainer else { return }
+            let context = container.newBackgroundContext()
+            
+            context.performAndWait {
+                do {
+                    let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
+                    let tracks = try context.fetch(fetchRequest)
+                    
+                    // Update the indices
+                    tracks.enumerated().forEach { index, item in
+                        let index = Int16(index)
+                        if item.index != index {
+                            item.index = index
+                        }
+                    }
+                    
+                    // Only save if there are changes so we don't get in an
+                    // infinite loop of saving and responding to that save.
+                    if context.hasChanges {
+                        try context.save()
+                    }
+                } catch {
+                    let nsError = error as NSError
+                    NSLog("Error processing update error \(nsError), \(nsError.userInfo)")
+                }
+            }
+        }
     }
 }
