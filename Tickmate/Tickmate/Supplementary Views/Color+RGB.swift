@@ -15,9 +15,9 @@ extension Color {
             return 0
         }
         
-        let r = Int(components[0] * 255)
-        let g = Int(components[1] * 255)
-        let b = Int(components[2] * 255)
+        let r = Int(round(components[0] * 255))
+        let g = Int(round(components[1] * 255))
+        let b = Int(round(components[2] * 255))
         return r << 16 + g << 8 + b
     }
     

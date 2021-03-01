@@ -118,6 +118,7 @@ struct TrackView: View {
     private func cancel() {
         withAnimation {
             draftTrack.load(track: track)
+            editMode = draftTrack != track
         }
     }
     
