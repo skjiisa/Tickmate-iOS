@@ -22,7 +22,7 @@ struct TrackRepresentation: Equatable {
     }
     
     mutating func load(track: Track) {
-        name = track.name ?? ""
+        name = track.name == "New Track" ? "" : track.name ?? ""
         multiple = track.multiple
         reversed = track.reversed
         
