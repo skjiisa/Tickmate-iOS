@@ -24,8 +24,28 @@ struct TracksView: View {
             ForEach(tracks) { track in
                 TrackCell(track: track, selection: $selection)
             }
+            .onDelete(perform: delete)
+            .onMove(perform: move)
         }
         .navigationTitle("Tracks")
+        .toolbar {
+            EditButton()
+        }
+    }
+    
+    private func delete(_ indexSet: IndexSet) {
+        indexSet.map { tracks[$0] }.forEach(moc.delete)
+        PersistenceController.save(context: moc)
+    }
+    
+    private func move(_ indices: IndexSet, newOffset: Int) {
+        var trackIndices = tracks.enumerated().map { $0.offset }
+        trackIndices.move(fromOffsets: indices, toOffset: newOffset)
+        trackIndices.enumerated().compactMap { offset, element in
+            element != offset ? (track: tracks[element], newIndex: Int16(offset)) : nil
+        }.forEach { $0.track.index = $0.newIndex }
+        
+        PersistenceController.save(context: moc)
     }
 }
 
@@ -58,6 +78,7 @@ struct TrackCell: View {
                         .background(background)
                         .foregroundColor(track.lightText ? .white : .black)
                 }
+                Text("\(track.index)")
                 TextWithCaption(text: track.name ?? "", caption: caption)
             }
         }
