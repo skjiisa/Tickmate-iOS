@@ -12,7 +12,8 @@ struct TracksView: View {
     @Environment(\.managedObjectContext) private var moc
     @FetchRequest(
         entity: Track.entity(),
-        sortDescriptors: [NSSortDescriptor(keyPath: \Track.index, ascending: true)])
+        sortDescriptors: [NSSortDescriptor(keyPath: \Track.index, ascending: true)],
+        animation: .default)
     private var tracks: FetchedResults<Track>
     
     @EnvironmentObject private var trackController: TrackController
@@ -26,6 +27,20 @@ struct TracksView: View {
             }
             .onDelete(perform: delete)
             .onMove(perform: move)
+            
+            Button {
+                let newTrack = Track(name: "New Track", index: (tracks.last?.index ?? -1) + 1, context: moc)
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                    selection = newTrack
+                }
+            } label: {
+                HStack {
+                    Spacer()
+                    Text("New Track")
+                    Spacer()
+                }
+            }
+            .foregroundColor(.accentColor)
         }
         .navigationTitle("Tracks")
         .toolbar {

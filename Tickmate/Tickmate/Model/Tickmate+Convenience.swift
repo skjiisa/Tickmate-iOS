@@ -6,16 +6,18 @@
 //
 
 import CoreData
+import SwiftUI
 
 extension Track {
     @discardableResult
-    convenience init(name: String, color: Int32, multiple: Bool = false, reversed: Bool = false, systemImage: String? = nil, context moc: NSManagedObjectContext) {
+    convenience init(name: String, color: Int32? = nil, multiple: Bool = false, reversed: Bool = false, systemImage: String? = nil, index: Int16, context moc: NSManagedObjectContext) {
         self.init(context: moc)
         self.name = name
-        self.color = color
+        self.color = color ?? Int32(Color(hue: Double.random(in: 0...1), saturation: 1, brightness: 1).rgb)
         self.multiple = multiple
         self.reversed = reversed
-        self.systemImage = systemImage
+        self.systemImage = systemImage ?? SymbolsList.randomElement()
+        self.index = index
     }
     
     var lightText: Bool {
