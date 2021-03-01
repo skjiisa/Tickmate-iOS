@@ -15,11 +15,23 @@ class PersistenceController {
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
-        for _ in 0..<3 {
+        for i in 0..<3 {
             let track = Track(context: viewContext)
-            track.name = UUID().uuidString
+            track.name = String(UUID().uuidString.dropLast(28))
             track.color = Int32(Color(hue: Double.random(in: 0...1), saturation: 1, brightness: 1).rgb)
             track.systemImage = SymbolsList.randomElement()
+            track.index = Int16(i)
+            
+            switch i {
+            case 1:
+                track.multiple = true
+                let tick = Tick(track: track, dayOffset: 0)
+            case 2:
+                track.reversed = true
+                track.multiple = true
+            default:
+                break
+            }
             
             for day in 0..<5 {
                 if Bool.random() {

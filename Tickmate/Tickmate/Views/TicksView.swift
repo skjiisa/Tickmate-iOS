@@ -134,7 +134,7 @@ struct TickView: View {
     }
 }
 
-struct TracksView_Previews: PreviewProvider {
+struct TicksView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             TicksView()
