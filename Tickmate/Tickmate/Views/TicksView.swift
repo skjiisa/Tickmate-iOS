@@ -51,7 +51,7 @@ struct TicksView: View {
             .padding(.vertical, 4)
             .sheet(item: $showingTrack) { track in
                 NavigationView {
-                    TrackView(track: track, selection: $showingTrack)
+                    TrackView(track: track, selection: $showingTrack, sheet: true)
                 }
             }
             

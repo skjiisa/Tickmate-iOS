@@ -12,6 +12,7 @@ struct TrackView: View {
     
     @ObservedObject var track: Track
     @Binding var selection: Track?
+    let sheet: Bool
     
     @State private var draftTrack = TrackRepresentation()
     @State private var initialized = false
@@ -94,8 +95,10 @@ struct TrackView: View {
                 }
             }
             ToolbarItem(placement: .cancellationAction) {
-                if editMode {
-                    Button("Cancel", action: cancel)
+                if sheet {
+                    Button(editMode ? "Cancel" : "Done") {
+                        editMode ? cancel() : (selection = nil)
+                    }
                 }
             }
         }
@@ -133,10 +136,14 @@ struct TrackView_Previews: PreviewProvider {
     
     static var color = Color(hue: Double.random(in: 0...1), saturation: 1, brightness: 1)
     
+    static var track: Track = {
+        try! PersistenceController.preview.container.viewContext.fetch(Track.fetchRequest()).first as! Track
+    }()
+    
     static var previews: some View {
         NavigationView {
-            TrackView(track: Track(name: "Test Track", color: Int32(color.rgb), context: PersistenceController.preview.container.viewContext),
-                      selection: .constant(nil))
+            TrackView(track: track, selection: .constant(nil), sheet: true)
+                .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
         }
     }
 }

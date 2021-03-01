@@ -12,7 +12,7 @@ struct TracksView: View {
     @Environment(\.managedObjectContext) private var moc
     @FetchRequest(
         entity: Track.entity(),
-        sortDescriptors: [NSSortDescriptor(keyPath: \Track.name, ascending: true)])
+        sortDescriptors: [NSSortDescriptor(keyPath: \Track.index, ascending: true)])
     private var tracks: FetchedResults<Track>
     
     @EnvironmentObject private var trackController: TrackController
@@ -45,7 +45,7 @@ struct TrackCell: View {
     
     var body: some View {
         NavigationLink(
-            destination: TrackView(track: track, selection: $selection),
+            destination: TrackView(track: track, selection: $selection, sheet: false),
             tag: track,
             selection: $selection) {
             HStack {
