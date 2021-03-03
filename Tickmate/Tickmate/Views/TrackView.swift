@@ -133,9 +133,7 @@ struct TrackView: View {
 }
 
 struct TrackView_Previews: PreviewProvider {
-    
-    static var color = Color(hue: Double.random(in: 0...1), saturation: 1, brightness: 1)
-    
+        
     static var track: Track = {
         try! PersistenceController.preview.container.viewContext.fetch(Track.fetchRequest()).first as! Track
     }()

@@ -16,8 +16,6 @@ struct TracksView: View {
         animation: .default)
     private var tracks: FetchedResults<Track>
     
-    @EnvironmentObject private var trackController: TrackController
-    
     @State private var selection: Track?
     
     var body: some View {
