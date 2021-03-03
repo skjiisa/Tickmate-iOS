@@ -15,26 +15,16 @@ class PersistenceController {
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
-        for i in 0..<3 {
-            let track = Track(context: viewContext)
-            track.name = String(UUID().uuidString.dropLast(28))
-            track.color = Int32(Color(hue: Double.random(in: 0...1), saturation: 1, brightness: 1).rgb)
-            track.systemImage = SymbolsList.randomElement()
-            track.index = Int16(i)
-            
-            switch i {
-            case 1:
-                track.multiple = true
-                let tick = Tick(track: track, dayOffset: 0)
-            case 2:
-                track.reversed = true
-                track.multiple = true
-            default:
-                break
-            }
+        for i: Int16 in 0..<3 {
+            let track = Track(
+                name: String(UUID().uuidString.dropLast(28)),
+                multiple: i > 0,
+                reversed: i == 2,
+                index: i,
+                context: viewContext)
             
             for day in 0..<5 {
-                if Bool.random() {
+                if (i == 1 && day == 0) || Bool.random() {
                     let tick = Tick(track: track, dayOffset: 0)
                     if day == 4 {
                         tick?.timestamp = Date()
@@ -43,6 +33,10 @@ class PersistenceController {
                         tick?.timestamp = Date() - day.days
                     }
                 }
+            }
+            
+            if i == 1 {
+                let tick = Tick(track: track, dayOffset: 0)
             }
         }
         result.save()

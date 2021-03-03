@@ -13,12 +13,13 @@ struct TicksView: View {
     @Environment(\.managedObjectContext) private var moc
     @FetchRequest(
         entity: Track.entity(),
-        sortDescriptors: [NSSortDescriptor(keyPath: \Track.name, ascending: true)])
+        sortDescriptors: [NSSortDescriptor(keyPath: \Track.index, ascending: true)])
     private var tracks: FetchedResults<Track>
     
     @EnvironmentObject private var trackController: TrackController
     
     @State private var showingTrack: Track?
+    @State private var showingTracks = false
     
     var body: some View {
         VStack(spacing: 0) {
@@ -64,24 +65,16 @@ struct TicksView: View {
                     }
                     
                     ForEach(0..<365) { dayComplement in
+                        let day = 364 - dayComplement
                         HStack {
-                            let day = 364 - dayComplement
                             trackController.dayLabel(day: day)
                                 .frame(width: 80, alignment: .leading)
                             ForEach(tracks) { track in
                                 TickView(day: day, track: track, tickController: trackController.tickController(for: track))
                             }
                         }
+                        .id(day)
                     }
-                    
-                    Button("New") {
-                        // This button is just for testing and will be removed
-                        let track = Track(context: moc)
-                        track.name = String(UUID().uuidString.dropLast(28))
-                        track.color = Int32(Color(hue: Double.random(in: 0...1), saturation: 1, brightness: 1).rgb)
-                        track.systemImage = SymbolsList.randomElement()
-                    }
-                    .id(0)
                 }
                 .listStyle(PlainListStyle())
                 .padding(0)
@@ -91,6 +84,20 @@ struct TicksView: View {
             }
         }
         .navigationBarTitle("Tickmate", displayMode: .inline)
+        .toolbar {
+            Button {
+                showingTracks = true
+            } label: {
+                Image(systemName: "text.justify")
+                    .imageScale(.large)
+            }
+        }
+        .sheet(isPresented: $showingTracks) {
+            NavigationView {
+                TracksView()
+            }
+            .environment(\.managedObjectContext, moc)
+        }
     }
 }
 
