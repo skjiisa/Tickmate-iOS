@@ -9,12 +9,13 @@
 /* Begin PBXBuildFile section */
 		5964545225E987C9004FE184 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5964545125E987C9004FE184 /* CloudKit.framework */; };
 		597DF5B025E5E90800DC8D28 /* Color+RGB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 597DF5AF25E5E90800DC8D28 /* Color+RGB.swift */; };
+		599D9F5225EC5A4900DF3795 /* TracksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599D9F5125EC5A4900DF3795 /* TracksView.swift */; };
 		59C23A6725E70D7000AFBC4B /* SymbolsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C23A6625E70D7000AFBC4B /* SymbolsList.swift */; };
 		59C23A6C25E70E1A00AFBC4B /* SymbolPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C23A6B25E70E1A00AFBC4B /* SymbolPicker.swift */; };
 		59EF632925E5CD4B003E7259 /* TrackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59EF632825E5CD4B003E7259 /* TrackView.swift */; };
 		59EF632D25E5CF24003E7259 /* TrackRepresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59EF632C25E5CF24003E7259 /* TrackRepresentation.swift */; };
 		59EF633725E5DC93003E7259 /* TextWithCaption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59EF633625E5DC93003E7259 /* TextWithCaption.swift */; };
-		59F0980225E081CC00667971 /* TracksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F0980125E081CC00667971 /* TracksView.swift */; };
+		59F0980225E081CC00667971 /* TicksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F0980125E081CC00667971 /* TicksView.swift */; };
 		59F6EA9D25E369830069DF40 /* Tickmate+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F6EA9C25E369830069DF40 /* Tickmate+Convenience.swift */; };
 		59F6EAA425E36D510069DF40 /* TickController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F6EAA325E36D510069DF40 /* TickController.swift */; };
 		59F6EAA725E36D680069DF40 /* TrackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F6EAA625E36D680069DF40 /* TrackController.swift */; };
@@ -31,12 +32,13 @@
 		5964544E25E987C6004FE184 /* Tickmate.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Tickmate.entitlements; sourceTree = "<group>"; };
 		5964545125E987C9004FE184 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		597DF5AF25E5E90800DC8D28 /* Color+RGB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+RGB.swift"; sourceTree = "<group>"; };
+		599D9F5125EC5A4900DF3795 /* TracksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TracksView.swift; sourceTree = "<group>"; };
 		59C23A6625E70D7000AFBC4B /* SymbolsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolsList.swift; sourceTree = "<group>"; };
 		59C23A6B25E70E1A00AFBC4B /* SymbolPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolPicker.swift; sourceTree = "<group>"; };
 		59EF632825E5CD4B003E7259 /* TrackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackView.swift; sourceTree = "<group>"; };
 		59EF632C25E5CF24003E7259 /* TrackRepresentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackRepresentation.swift; sourceTree = "<group>"; };
 		59EF633625E5DC93003E7259 /* TextWithCaption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextWithCaption.swift; sourceTree = "<group>"; };
-		59F0980125E081CC00667971 /* TracksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TracksView.swift; sourceTree = "<group>"; };
+		59F0980125E081CC00667971 /* TicksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicksView.swift; sourceTree = "<group>"; };
 		59F6EA9C25E369830069DF40 /* Tickmate+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Tickmate+Convenience.swift"; sourceTree = "<group>"; };
 		59F6EAA325E36D510069DF40 /* TickController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TickController.swift; sourceTree = "<group>"; };
 		59F6EAA625E36D680069DF40 /* TrackController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackController.swift; sourceTree = "<group>"; };
@@ -144,9 +146,10 @@
 			isa = PBXGroup;
 			children = (
 				59FBCF2225E07BD5007B114F /* ContentView.swift */,
-				59F0980125E081CC00667971 /* TracksView.swift */,
+				59F0980125E081CC00667971 /* TicksView.swift */,
 				59EF632825E5CD4B003E7259 /* TrackView.swift */,
 				59C23A6B25E70E1A00AFBC4B /* SymbolPicker.swift */,
+				599D9F5125EC5A4900DF3795 /* TracksView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -239,7 +242,7 @@
 				59FBCF2A25E07BD8007B114F /* Persistence.swift in Sources */,
 				59C23A6C25E70E1A00AFBC4B /* SymbolPicker.swift in Sources */,
 				59F6EAA725E36D680069DF40 /* TrackController.swift in Sources */,
-				59F0980225E081CC00667971 /* TracksView.swift in Sources */,
+				59F0980225E081CC00667971 /* TicksView.swift in Sources */,
 				59F6EAA425E36D510069DF40 /* TickController.swift in Sources */,
 				59EF632D25E5CF24003E7259 /* TrackRepresentation.swift in Sources */,
 				59EF632925E5CD4B003E7259 /* TrackView.swift in Sources */,
@@ -247,6 +250,7 @@
 				59FBCF2325E07BD5007B114F /* ContentView.swift in Sources */,
 				59FBCF2125E07BD5007B114F /* TickmateApp.swift in Sources */,
 				59FBCF2D25E07BD8007B114F /* Tickmate.xcdatamodeld in Sources */,
+				599D9F5225EC5A4900DF3795 /* TracksView.swift in Sources */,
 				59F6EA9D25E369830069DF40 /* Tickmate+Convenience.swift in Sources */,
 				59EF633725E5DC93003E7259 /* TextWithCaption.swift in Sources */,
 				597DF5B025E5E90800DC8D28 /* Color+RGB.swift in Sources */,

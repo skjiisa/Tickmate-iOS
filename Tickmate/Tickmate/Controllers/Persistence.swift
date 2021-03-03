@@ -9,20 +9,22 @@ import SwiftUI
 import CoreData
 import SwiftDate
 
-struct PersistenceController {
+class PersistenceController {
     static let shared = PersistenceController()
 
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
-        for _ in 0..<3 {
-            let track = Track(context: viewContext)
-            track.name = UUID().uuidString
-            track.color = Int32(Color(hue: Double.random(in: 0...1), saturation: 1, brightness: 1).rgb)
-            track.systemImage = SymbolsList.randomElement()
+        for i: Int16 in 0..<3 {
+            let track = Track(
+                name: String(UUID().uuidString.dropLast(28)),
+                multiple: i > 0,
+                reversed: i == 2,
+                index: i,
+                context: viewContext)
             
             for day in 0..<5 {
-                if Bool.random() {
+                if (i == 1 && day == 0) || Bool.random() {
                     let tick = Tick(track: track, dayOffset: 0)
                     if day == 4 {
                         tick?.timestamp = Date()
@@ -31,6 +33,10 @@ struct PersistenceController {
                         tick?.timestamp = Date() - day.days
                     }
                 }
+            }
+            
+            if i == 1 {
+                let tick = Tick(track: track, dayOffset: 0)
             }
         }
         result.save()
@@ -44,6 +50,9 @@ struct PersistenceController {
         container.viewContext.automaticallyMergesChangesFromParent = true
         if inMemory {
             container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
+        } else if let description = container.persistentStoreDescriptions.first {
+            description.setOption(true as NSObject, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
+            container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         }
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
@@ -61,6 +70,8 @@ struct PersistenceController {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
         })
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(processUpdate), name: .NSPersistentStoreRemoteChange, object: self.container)
     }
     
     //MARK: Saving
@@ -79,6 +90,53 @@ struct PersistenceController {
         } catch {
             let nsError = error as NSError
             fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
+        }
+    }
+    
+    //MARK: Merging changes
+    
+    // Based on SchwiftUI's demo
+    // https://schwiftyui.com/swiftui/using-cloudkit-in-swiftui/
+    // https://github.com/SchwiftyUI/OrderedList/blob/master/OrderedList/AppDelegate.swift
+    
+    lazy var operationQueue: OperationQueue = {
+        let queue = OperationQueue()
+        queue.maxConcurrentOperationCount = 1
+        return queue
+    }()
+    
+    @objc
+    private func processUpdate(notification: Notification) {
+        operationQueue.cancelAllOperations()
+        
+        // Update indices
+        operationQueue.addOperation {
+            guard let container = notification.object as? NSPersistentCloudKitContainer else { return }
+            let context = container.newBackgroundContext()
+            
+            context.performAndWait {
+                do {
+                    let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
+                    let tracks = try context.fetch(fetchRequest)
+                    
+                    // Update the indices
+                    tracks.enumerated().forEach { index, item in
+                        let index = Int16(index)
+                        if item.index != index {
+                            item.index = index
+                        }
+                    }
+                    
+                    // Only save if there are changes so we don't get in an
+                    // infinite loop of saving and responding to that save.
+                    if context.hasChanges {
+                        try context.save()
+                    }
+                } catch {
+                    let nsError = error as NSError
+                    NSLog("Error processing update error \(nsError), \(nsError.userInfo)")
+                }
+            }
         }
     }
 }
