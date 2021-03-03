@@ -111,7 +111,7 @@ struct TickView: View {
     private var color: Color {
         // If the day is ticked, use the track color. Otherwise, use
         // system fill. If the track is reversed, reverse the check.
-        tickController.ticks(on: day).isEmpty != track.reversed ? Color(.systemFill) : Color(rgb: Int(track.color))
+        (tickController.getTick(for: day)?.count ?? 0 > 0) != track.reversed ? Color(rgb: Int(track.color)) : Color(.systemFill)
     }
     
     var body: some View {
@@ -119,7 +119,7 @@ struct TickView: View {
             Rectangle()
                 .foregroundColor(color)
                 .cornerRadius(3)
-            let count = tickController.ticks(on: day).count
+            let count = tickController.getTick(for: day)?.count ?? 0
             if count > 1 {
                 Text("\(count)")
                     .foregroundColor(track.lightText ? .white : .black)

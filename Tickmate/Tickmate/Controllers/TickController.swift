@@ -13,16 +13,18 @@ class TickController: NSObject, ObservableObject {
     //MARK: Properties
     
     let track: Track
-    @Published var ticks: [[Tick]] = []
+    @Published var ticks: [Tick?] = []
     private var fetchedResultsController: NSFetchedResultsController<Tick>
+    weak var trackController: TrackController?
     
-    init(track: Track) {
+    init(track: Track, trackController: TrackController) {
         self.track = track
+        self.trackController = trackController
         
         let moc = track.managedObjectContext ?? PersistenceController.preview.container.viewContext
         let fetchRequest: NSFetchRequest<Tick> = Tick.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "track == %@", track)
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Tick.timestamp, ascending: false)]
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Tick.dayOffset, ascending: false)]
         
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
                                                               managedObjectContext: moc,
@@ -43,61 +45,77 @@ class TickController: NSObject, ObservableObject {
     }
     
     func loadTicks() {
-        guard let ticks = fetchedResultsController.fetchedObjects,
-              let today = Date().dateTruncated([.hour, .minute, .second]) else { return }
+        guard let allTicks = fetchedResultsController.fetchedObjects,
+              let today = trackController?.date.dateTruncated([.hour, .minute, .second]),
+              let startDate = track.startDate?.dateTruncated([.hour, .minute, .second]),
+              let todayOffset = (today - startDate).day else { return }
         
-        var tickDays: [(day: Int, tick: Tick)] = []
-        
-        for tick in ticks {
-            guard let timestamp = tick.timestamp?.dateTruncated([.hour, .minute, .second]),
-                  let timestampDays = (today - timestamp).day else { continue }
-            let days = timestampDays + Int(tick.dayOffset)
-            guard days < 365 else { break }
-            tickDays.append((days, tick))
+        do {
+            let a = ""
+            print(a)
         }
         
-        tickDays.sort { $0.day <= $1.day }
-        
-        var days: [[Tick]] = []
+        var ticks = [Tick?]()
         var i = 0
-        
         for day in 0..<365 {
-            var dayTicks = [Tick]()
-            while i < tickDays.count,
-                  tickDays[i].day == day {
-                dayTicks.append(tickDays[i].tick)
+            let offsetDay = todayOffset - day
+            while i < allTicks.count,
+                  allTicks[i].dayOffset > offsetDay {
                 i += 1
             }
             
-            days.append(dayTicks)
+            if i >= allTicks.count {
+                break
+            }
             
-            guard i < tickDays.count else { break }
+            if allTicks[i].dayOffset == offsetDay {
+                ticks.append(allTicks[i])
+            } else {
+                ticks.append(nil)
+            }
         }
         
-        self.ticks = days
+        self.ticks = ticks
+        
+        print(fetchedResultsController.fetchedObjects)
         print(self.ticks)
     }
     
     //MARK: Ticking
     
-    func ticks(on day: Int) -> [Tick] {
-        guard ticks.indices.contains(day) else { return [] }
+    func getTick(for day: Int) -> Tick? {
+        guard ticks.indices.contains(day) else { return nil }
         return ticks[day]
     }
     
+    func ticks(on day: Int) -> Int {
+        guard let tick = getTick(for: day) else { return 0 }
+        return Int(tick.count)
+    }
+    
     func tick(day: Int) {
-        if ticks(on: day).isEmpty || track.multiple {
-            Tick(track: track, dayOffset: Int16(day))
-            save()
-        } else {
-            untick(day: day)
+        if let tick = getTick(for: day) {
+            if track.multiple {
+                tick.count += 1
+                save()
+            } else {
+                untick(day: day)
+            }
+        } else if let today = trackController?.date.dateTruncated([.hour, .minute, .second]),
+                  let startDate = track.startDate?.dateTruncated([.hour, .minute, .second]),
+                  let todayOffset = (today - startDate).day {
+            Tick(track: track, dayOffset: Int16(todayOffset + day))
         }
     }
     
     @discardableResult
     func untick(day: Int) -> Bool {
-        guard let tick = ticks(on: day).last else { return false }
-        track.managedObjectContext?.delete(tick)
+        guard let tick = getTick(for: day) else { return false }
+        if tick.count < 2 {
+            track.managedObjectContext?.delete(tick)
+        } else {
+            tick.count -= 1
+        }
         save()
         return true
     }
@@ -112,10 +130,10 @@ class TickController: NSObject, ObservableObject {
     }
     
     private func day(for tick: Tick) -> Int? {
-        guard let timestamp = tick.timestamp?.dateTruncated([.hour, .minute, .second]),
-              let today = Date().dateTruncated([.hour, .minute, .second]),
-              let timestampDays = (today - timestamp).day else { return nil }
-        return timestampDays + Int(tick.dayOffset)
+        guard let today = trackController?.date.dateTruncated([.hour, .minute, .second]),
+              let startDate = track.startDate?.dateTruncated([.hour, .minute, .second]),
+              let todayOffset = (today - startDate).day else { return nil }
+        return Int(tick.dayOffset) - todayOffset
     }
     
     private func insert(at indexPath: IndexPath) {
@@ -124,16 +142,16 @@ class TickController: NSObject, ObservableObject {
         guard let day = day(for: tick),
               day < 365 else { return }
         while ticks.count < day + 1 {
-            ticks.append([])
+            ticks.append(nil)
         }
-        ticks[day].append(tick)
+        ticks[day] = tick
     }
     
     private func delete(_ object: Any, at indexPath: IndexPath) {
         guard let tick = object as? Tick,
               let day = day(for: tick),
               ticks.indices.contains(day) else { return }
-        ticks[day].removeAll(where: { $0 == tick })
+        ticks[day] = nil
     }
     
 }
@@ -141,6 +159,10 @@ class TickController: NSObject, ObservableObject {
 //MARK: Fetched Results Controller Delegate
 
 extension TickController: NSFetchedResultsControllerDelegate {
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        objectWillChange.send()
+    }
+    
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
                     didChange anObject: Any,
                     at indexPath: IndexPath?,

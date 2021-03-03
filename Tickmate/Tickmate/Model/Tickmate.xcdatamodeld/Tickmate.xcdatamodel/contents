@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17709" systemVersion="20D74" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
     <entity name="Tick" representedClassName="Tick" syncable="YES" codeGenerationType="class">
+        <attribute name="count" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="dayOffset" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="timestamp" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <relationship name="track" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Track" inverseName="ticks" inverseEntity="Track"/>
     </entity>
     <entity name="Track" representedClassName="Track" syncable="YES" codeGenerationType="class">
@@ -11,11 +11,12 @@
         <attribute name="multiple" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="reversed" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="systemImage" optional="YES" attributeType="String"/>
         <relationship name="ticks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Tick" inverseName="track" inverseEntity="Tick"/>
     </entity>
     <elements>
         <element name="Tick" positionX="-45" positionY="36" width="128" height="74"/>
-        <element name="Track" positionX="-54" positionY="-9" width="128" height="134"/>
+        <element name="Track" positionX="-54" positionY="-9" width="128" height="149"/>
     </elements>
 </model>

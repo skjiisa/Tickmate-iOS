@@ -11,6 +11,7 @@ import SwiftDate
 class TrackController: ObservableObject {
     
     @Published var tickControllers: [Track: TickController] = [:]
+    var date = Date()
     
     private var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -29,13 +30,13 @@ class TrackController: ObservableObject {
         if let tickController = tickControllers[track] {
             tickController.loadTicks()
         } else {
-            tickControllers[track] = TickController(track: track)
+            tickControllers[track] = TickController(track: track, trackController: self)
         }
     }
     
     func tickController(for track: Track) -> TickController {
         tickControllers[track] ?? {
-            let tickController = TickController(track: track)
+            let tickController = TickController(track: track, trackController: self)
             tickControllers[track] = tickController
             return tickController
         }()
@@ -53,7 +54,7 @@ class TrackController: ObservableObject {
      */
     
     func dayLabel(day: Int) -> TextWithCaption {
-        let date = Date() - day.days
+        let date = self.date - day.days
         
         let weekday: String
         switch day {

@@ -18,6 +18,7 @@ extension Track {
         self.reversed = reversed
         self.systemImage = systemImage ?? SymbolsList.randomElement()
         self.index = index
+        self.startDate = Date()
     }
     
     var lightText: Bool {
@@ -34,8 +35,8 @@ extension Tick {
     convenience init(track: Track, dayOffset: Int16, context moc: NSManagedObjectContext) {
         self.init(context: moc)
         self.track = track
-        self.timestamp = Date()
         self.dayOffset = dayOffset
+        self.count = 1
     }
     
     @discardableResult
