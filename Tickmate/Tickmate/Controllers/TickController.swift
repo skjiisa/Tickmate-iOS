@@ -16,10 +16,16 @@ class TickController: NSObject, ObservableObject {
     @Published var ticks: [Tick?] = []
     private var fetchedResultsController: NSFetchedResultsController<Tick>
     weak var trackController: TrackController?
+    var todayOffset: Int?
     
     init(track: Track, trackController: TrackController) {
         self.track = track
         self.trackController = trackController
+        
+        if let today = trackController.date.dateTruncated([.hour, .minute, .second]),
+           let startDate = track.startDate?.dateTruncated([.hour, .minute, .second]) {
+            todayOffset = (today - startDate).day
+        }
         
         let moc = track.managedObjectContext ?? PersistenceController.preview.container.viewContext
         let fetchRequest: NSFetchRequest<Tick> = Tick.fetchRequest()
@@ -46,14 +52,7 @@ class TickController: NSObject, ObservableObject {
     
     func loadTicks() {
         guard let allTicks = fetchedResultsController.fetchedObjects,
-              let today = trackController?.date.dateTruncated([.hour, .minute, .second]),
-              let startDate = track.startDate?.dateTruncated([.hour, .minute, .second]),
-              let todayOffset = (today - startDate).day else { return }
-        
-        do {
-            let a = ""
-            print(a)
-        }
+              let todayOffset = todayOffset else { return }
         
         var ticks = [Tick?]()
         var i = 0
@@ -101,10 +100,9 @@ class TickController: NSObject, ObservableObject {
             } else {
                 untick(day: day)
             }
-        } else if let today = trackController?.date.dateTruncated([.hour, .minute, .second]),
-                  let startDate = track.startDate?.dateTruncated([.hour, .minute, .second]),
-                  let todayOffset = (today - startDate).day {
-            Tick(track: track, dayOffset: Int16(todayOffset + day))
+        } else if let todayOffset = todayOffset {
+            Tick(track: track, dayOffset: Int16(todayOffset - day))
+            save()
         }
     }
     
@@ -130,10 +128,8 @@ class TickController: NSObject, ObservableObject {
     }
     
     private func day(for tick: Tick) -> Int? {
-        guard let today = trackController?.date.dateTruncated([.hour, .minute, .second]),
-              let startDate = track.startDate?.dateTruncated([.hour, .minute, .second]),
-              let todayOffset = (today - startDate).day else { return nil }
-        return Int(tick.dayOffset) - todayOffset
+        guard let todayOffset = todayOffset else { return nil }
+        return todayOffset - Int(tick.dayOffset)
     }
     
     private func insert(at indexPath: IndexPath) {

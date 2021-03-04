@@ -11,7 +11,7 @@ import SwiftDate
 class TrackController: ObservableObject {
     
     @Published var tickControllers: [Track: TickController] = [:]
-    var date = Date()
+    let date = Date()
     
     private var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
