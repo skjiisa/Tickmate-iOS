@@ -23,14 +23,18 @@ class PersistenceController {
                 index: i,
                 context: viewContext)
             
-            for day in 0..<5 {
-                if (i == 1 && day == 0) || Bool.random() {
-                    let tick = Tick(track: track, dayOffset: Int16(day))
-                }
-            }
-            
             if i == 1 {
-                let tick = Tick(track: track, dayOffset: 0)
+                for day in 0..<5 {
+                    let count = Int16.random(in: 0..<4)
+                    if count > 0 {
+                        let tick = Tick(track: track, dayOffset: Int16(day) * -1, context: viewContext)
+                        tick.count = count
+                    }
+                }
+            } else {
+                for day in 0..<5 where Bool.random() {
+                    Tick(track: track, dayOffset: Int16(day) * -1)
+                }
             }
         }
         result.save()
