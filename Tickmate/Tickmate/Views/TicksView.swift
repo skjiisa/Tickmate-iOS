@@ -82,6 +82,12 @@ struct TicksView: View {
                     proxy.scrollTo(0)
                 }
             }
+            .sheet(isPresented: $showingTracks) {
+                NavigationView {
+                    TracksView()
+                }
+                .environment(\.managedObjectContext, moc)
+            }
         }
         .navigationBarTitle("Tickmate", displayMode: .inline)
         .toolbar {
@@ -91,12 +97,6 @@ struct TicksView: View {
                 Image(systemName: "text.justify")
                     .imageScale(.large)
             }
-        }
-        .sheet(isPresented: $showingTracks) {
-            NavigationView {
-                TracksView()
-            }
-            .environment(\.managedObjectContext, moc)
         }
     }
 }
