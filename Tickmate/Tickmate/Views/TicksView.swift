@@ -87,6 +87,7 @@ struct TicksView: View {
                     TracksView()
                 }
                 .environment(\.managedObjectContext, moc)
+                .environmentObject(trackController)
             }
         }
         .navigationBarTitle("Tickmate", displayMode: .inline)

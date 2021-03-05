@@ -11,7 +11,7 @@
         <attribute name="multiple" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="reversed" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
-        <attribute name="startDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="startDate" optional="YES" attributeType="String"/>
         <attribute name="systemImage" optional="YES" attributeType="String"/>
         <relationship name="ticks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Tick" inverseName="track" inverseEntity="Tick"/>
     </entity>

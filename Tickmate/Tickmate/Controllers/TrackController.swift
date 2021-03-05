@@ -5,12 +5,12 @@
 //  Created by Isaac Lyons on 2/21/21.
 //
 
-import Foundation
+import CoreData
 import SwiftDate
 
 class TrackController: ObservableObject {
     
-    @Published var tickControllers: [Track: TickController] = [:]
+    var tickControllers: [Track: TickController] = [:]
     let date = Date()
     
     private var dateFormatter: DateFormatter = {
@@ -20,9 +20,16 @@ class TrackController: ObservableObject {
         return formatter
     }()
     
-    private var weekdayFormatter: DateFormatter = {
+    static let weekdayFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "E"
+        return formatter
+    }()
+    
+    static let iso8601: ISO8601DateFormatter = {
+        let formatter = ISO8601DateFormatter()
+        formatter.timeZone = .current
+        formatter.formatOptions = .withFullDate
         return formatter
     }()
     
@@ -63,10 +70,14 @@ class TrackController: ObservableObject {
         case 1:
             weekday = "Yesterday"
         default:
-            weekday = weekdayFormatter.string(from: date)
+            weekday = TrackController.weekdayFormatter.string(from: date)
         }
         
         return TextWithCaption(text: weekday, caption: dateFormatter.string(from: date))
+    }
+    
+    func newTrack(index: Int16, context moc: NSManagedObjectContext) -> Track {
+        Track(name: "New Track", startDate: TrackController.iso8601.string(from: date.in(region: .current).date), index: index, context: moc)
     }
     
 }

@@ -22,9 +22,10 @@ class TickController: NSObject, ObservableObject {
         self.track = track
         self.trackController = trackController
         
-        if let today = trackController.date.dateTruncated([.hour, .minute, .second]),
-           let startDate = track.startDate?.dateTruncated([.hour, .minute, .second]) {
-            todayOffset = (today - startDate).day
+        if let startDateString = track.startDate,
+           let startDate = DateInRegion(startDateString, region: .current)?.dateTruncated(at: [.hour, .minute, .second]),
+           let today = trackController.date.in(region: .current).dateTruncated(at: [.hour, .minute, .second]) {
+            todayOffset = (today - startDate).toUnit(.day)
         }
         
         let moc = track.managedObjectContext ?? PersistenceController.preview.container.viewContext

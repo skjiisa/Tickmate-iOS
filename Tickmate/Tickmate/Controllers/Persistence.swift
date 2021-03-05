@@ -15,11 +15,13 @@ class PersistenceController {
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
+        let dateString = TrackController.iso8601.string(from: Date())
         for i: Int16 in 0..<3 {
             let track = Track(
                 name: String(UUID().uuidString.dropLast(28)),
                 multiple: i > 0,
                 reversed: i == 2,
+                startDate: dateString,
                 index: i,
                 context: viewContext)
             

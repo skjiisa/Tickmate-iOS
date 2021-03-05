@@ -16,6 +16,8 @@ struct TracksView: View {
         animation: .default)
     private var tracks: FetchedResults<Track>
     
+    @EnvironmentObject private var trackController: TrackController
+    
     @State private var selection: Track?
     
     var body: some View {
@@ -27,7 +29,7 @@ struct TracksView: View {
             .onMove(perform: move)
             
             Button {
-                let newTrack = Track(name: "New Track", index: (tracks.last?.index ?? -1) + 1, context: moc)
+                let newTrack = trackController.newTrack(index: (tracks.last?.index ?? -1) + 1, context: moc)
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
                     selection = newTrack
                 }
