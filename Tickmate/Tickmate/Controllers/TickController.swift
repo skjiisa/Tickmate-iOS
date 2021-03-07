@@ -22,16 +22,13 @@ class TickController: NSObject, ObservableObject {
         self.track = track
         self.trackController = trackController
         
-        if let startDateString = track.startDate,
-           let startDate = DateInRegion(startDateString, region: .current)?.dateTruncated(at: [.hour, .minute, .second]),
-           let today = trackController.date.in(region: .current).dateTruncated(at: [.hour, .minute, .second]) {
-            todayOffset = (today - startDate).toUnit(.day)
-        }
-        
         let moc = track.managedObjectContext ?? PersistenceController.preview.container.viewContext
         let fetchRequest: NSFetchRequest<Tick> = Tick.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "track == %@", track)
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Tick.dayOffset, ascending: false)]
+        fetchRequest.sortDescriptors = [
+            NSSortDescriptor(keyPath: \Tick.dayOffset, ascending: false),
+            NSSortDescriptor(keyPath: \Tick.modified, ascending: false)
+        ]
         
         fetchedResultsController = NSFetchedResultsController(fetchRequest: fetchRequest,
                                                               managedObjectContext: moc,
@@ -53,10 +50,17 @@ class TickController: NSObject, ObservableObject {
     
     func loadTicks() {
         guard let allTicks = fetchedResultsController.fetchedObjects,
-              let todayOffset = todayOffset else { return }
+              // Calculate today's offset
+              let startDateString = track.startDate,
+              let startDate = DateInRegion(startDateString, region: .current)?.dateTruncated(at: [.hour, .minute, .second]),
+              let today = trackController?.date.in(region: .current).dateTruncated(at: [.hour, .minute, .second]),
+              let todayOffset = (today - startDate).toUnit(.day) else { return }
+        self.todayOffset = todayOffset
         
         var ticks = [Tick?]()
         var i = 0
+        var changesToSave = false
+        
         for day in 0..<365 {
             let offsetDay = todayOffset - day
             while i < allTicks.count,
@@ -64,15 +68,38 @@ class TickController: NSObject, ObservableObject {
                 i += 1
             }
             
-            if i >= allTicks.count {
-                break
-            }
+            guard i < allTicks.count else { break }
             
             if allTicks[i].dayOffset == offsetDay {
                 ticks.append(allTicks[i])
+                i += 1
+                // Check for duplicates
+                // Duplicates could come from multiple devices
+                // ticking the same day before the CloudKit sync.
+                while i < allTicks.count,
+                      allTicks[i].dayOffset == offsetDay {
+                    let tick = allTicks[i]
+                    // Delete tick with same dayOffset. Because the FRC is sorted
+                    // by dayOffset then descending modified date, the newest
+                    // Tick should be first and we can delete any after it.
+                    print("Duplicate found:", tick)
+                    // Tag it as a duplicate so the FRC doesn't
+                    // remove its day from the ticks array.
+                    tick.duplicate = true
+                    track.managedObjectContext!.delete(tick)
+                    changesToSave = true
+                    i += 1
+                }
             } else {
                 ticks.append(nil)
             }
+        }
+        
+        // Since the save function already checks the context's hasChanges
+        // property, this check probably doesn't need to be here, but I don't
+        // want to be saving more than necissary, and this can't hurt.
+        if changesToSave {
+            save()
         }
         
         self.ticks = ticks
@@ -97,6 +124,7 @@ class TickController: NSObject, ObservableObject {
         if let tick = getTick(for: day) {
             if track.multiple {
                 tick.count += 1
+                tick.modified = Date()
                 save()
             } else {
                 untick(day: day)
@@ -114,6 +142,7 @@ class TickController: NSObject, ObservableObject {
             track.managedObjectContext?.delete(tick)
         } else {
             tick.count -= 1
+            tick.modified = Date()
         }
         save()
         return true
@@ -146,9 +175,17 @@ class TickController: NSObject, ObservableObject {
     
     private func delete(_ object: Any, at indexPath: IndexPath) {
         guard let tick = object as? Tick,
+              // Don't remove the day from the list if this
+              // was just a duplicate that's being deleted.
+              !tick.duplicate,
               let day = day(for: tick),
               ticks.indices.contains(day) else { return }
         ticks[day] = nil
+        
+        //TODO: Check for duplicates
+        // Don't forget to tag them as duplicates
+        // before deleting so that this function
+        // doesn't run recursively on them.
     }
     
 }

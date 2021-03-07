@@ -37,6 +37,7 @@ extension Tick {
         self.track = track
         self.dayOffset = dayOffset
         self.count = 1
+        self.modified = Date()
     }
     
     @discardableResult
