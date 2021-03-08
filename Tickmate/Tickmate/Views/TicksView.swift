@@ -115,6 +115,10 @@ struct TickView: View {
         (tickController.getTick(for: day)?.count ?? 0 > 0) != track.reversed ? Color(rgb: Int(track.color)) : Color(.systemFill)
     }
     
+    private var validDate: Bool {
+        !track.reversed || day <= tickController.todayOffset ?? 0
+    }
+    
     var body: some View {
         ZStack {
             Rectangle()
@@ -139,6 +143,8 @@ struct TickView: View {
                 UIImpactFeedbackGenerator(style: .soft).impactOccurred()
             }
         }
+        .opacity(validDate ? 1 : 0)
+        .disabled(!validDate)
     }
 }
 

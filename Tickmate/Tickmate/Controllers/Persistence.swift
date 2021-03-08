@@ -15,7 +15,7 @@ class PersistenceController {
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
-        let dateString = TrackController.iso8601.string(from: Date())
+        let dateString = TrackController.iso8601.string(from: Date() - 5.days)
         for i: Int16 in 0..<3 {
             let track = Track(
                 name: String(UUID().uuidString.dropLast(28)),
@@ -29,13 +29,13 @@ class PersistenceController {
                 for day in 0..<5 {
                     let count = Int16.random(in: 0..<4)
                     if count > 0 {
-                        let tick = Tick(track: track, dayOffset: Int16(day) * -1, context: viewContext)
+                        let tick = Tick(track: track, dayOffset: Int16(day), context: viewContext)
                         tick.count = count
                     }
                 }
             } else {
                 for day in 0..<5 where Bool.random() {
-                    Tick(track: track, dayOffset: Int16(day) * -1)
+                    Tick(track: track, dayOffset: Int16(day))
                 }
             }
         }
