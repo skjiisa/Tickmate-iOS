@@ -10,15 +10,14 @@ import SwiftUI
 struct TracksView: View {
     
     @Environment(\.managedObjectContext) private var moc
-    @FetchRequest(
-        entity: Track.entity(),
-        sortDescriptors: [NSSortDescriptor(keyPath: \Track.index, ascending: true)],
-        animation: .default)
-    private var tracks: FetchedResults<Track>
     
     @EnvironmentObject private var trackController: TrackController
     
     @State private var selection: Track?
+    
+    private var tracks: [Track] {
+        trackController.fetchedResultsController.fetchedObjects ?? []
+    }
     
     var body: some View {
         List {
@@ -105,7 +104,7 @@ struct TracksView_Previews: PreviewProvider {
         NavigationView {
             TracksView()
                 .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-                .environmentObject(TrackController())
+                .environmentObject(TrackController(preview: true))
         }
     }
 }
