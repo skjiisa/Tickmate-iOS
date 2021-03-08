@@ -101,4 +101,25 @@ extension TrackController: NSFetchedResultsControllerDelegate {
             objectWillChange.send()
         }
     }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        guard [.delete, .insert].contains(type) else { return }
+        
+        // Update Track indices
+        var changed = false
+        fetchedResultsController.fetchedObjects?.enumerated().forEach { index, item in
+            let index = Int16(index)
+            // Only write the index if it's different. Writing the same value in
+            // will still count as a change and run this delegate function again.
+            if item.index != index {
+                item.index = index
+                changed = true
+                print("Index updated to \(index)")
+            }
+        }
+        
+        if changed {
+            PersistenceController.save(context: fetchedResultsController.managedObjectContext)
+        }
+    }
 }
