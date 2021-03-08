@@ -15,28 +15,28 @@ class PersistenceController {
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
+        let dateString = TrackController.iso8601.string(from: Date() - 5.days)
         for i: Int16 in 0..<3 {
             let track = Track(
                 name: String(UUID().uuidString.dropLast(28)),
                 multiple: i > 0,
                 reversed: i == 2,
+                startDate: dateString,
                 index: i,
                 context: viewContext)
             
-            for day in 0..<5 {
-                if (i == 1 && day == 0) || Bool.random() {
-                    let tick = Tick(track: track, dayOffset: 0)
-                    if day == 4 {
-                        tick?.timestamp = Date()
-                        tick?.dayOffset = Int16(day)
-                    } else {
-                        tick?.timestamp = Date() - day.days
+            if i == 1 {
+                for day in 0..<5 {
+                    let count = Int16.random(in: 0..<4)
+                    if count > 0 {
+                        let tick = Tick(track: track, dayOffset: Int16(day), context: viewContext)
+                        tick.count = count
                     }
                 }
-            }
-            
-            if i == 1 {
-                let tick = Tick(track: track, dayOffset: 0)
+            } else {
+                for day in 0..<5 where Bool.random() {
+                    Tick(track: track, dayOffset: Int16(day))
+                }
             }
         }
         result.save()

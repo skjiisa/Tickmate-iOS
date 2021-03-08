@@ -10,12 +10,13 @@ import SwiftUI
 
 extension Track {
     @discardableResult
-    convenience init(name: String, color: Int32? = nil, multiple: Bool = false, reversed: Bool = false, systemImage: String? = nil, index: Int16, context moc: NSManagedObjectContext) {
+    convenience init(name: String, color: Int32? = nil, multiple: Bool = false, reversed: Bool = false, startDate: String, systemImage: String? = nil, index: Int16, context moc: NSManagedObjectContext) {
         self.init(context: moc)
         self.name = name
         self.color = color ?? Int32(Color(hue: Double.random(in: 0...1), saturation: 1, brightness: 1).rgb)
         self.multiple = multiple
         self.reversed = reversed
+        self.startDate = startDate
         self.systemImage = systemImage ?? SymbolsList.randomElement()
         self.index = index
     }
@@ -34,8 +35,9 @@ extension Tick {
     convenience init(track: Track, dayOffset: Int16, context moc: NSManagedObjectContext) {
         self.init(context: moc)
         self.track = track
-        self.timestamp = Date()
         self.dayOffset = dayOffset
+        self.count = 1
+        self.modified = Date()
     }
     
     @discardableResult
