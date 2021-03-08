@@ -10,6 +10,8 @@ import SwiftUI
 struct TracksView: View {
     
     @Environment(\.managedObjectContext) private var moc
+    // The environment EditMode is buggy, so using a custom @State property instead
+    @State private var editMode = EditMode.inactive
     
     @EnvironmentObject private var trackController: TrackController
     
@@ -26,6 +28,7 @@ struct TracksView: View {
             }
             .onDelete(perform: delete)
             .onMove(perform: move)
+            .animation(.default)
             
             Button {
                 let newTrack = trackController.newTrack(index: (tracks.last?.index ?? -1) + 1, context: moc)
@@ -41,15 +44,16 @@ struct TracksView: View {
             }
             .foregroundColor(.accentColor)
         }
+        .environment(\.editMode, $editMode)
         .navigationTitle("Tracks")
         .toolbar {
-            EditButton()
+            StateEditButton(editMode: $editMode)
         }
     }
     
     private func delete(_ indexSet: IndexSet) {
         indexSet.map { tracks[$0] }.forEach(moc.delete)
-        PersistenceController.save(context: moc)
+        // TrackController's FRC will update the indices and save for us
     }
     
     private func move(_ indices: IndexSet, newOffset: Int) {
@@ -92,7 +96,6 @@ struct TrackCell: View {
                         .background(background)
                         .foregroundColor(track.lightText ? .white : .black)
                 }
-                Text("\(track.index)")
                 TextWithCaption(text: track.name ?? "", caption: caption)
             }
         }

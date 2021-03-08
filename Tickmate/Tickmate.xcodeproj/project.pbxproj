@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5964545225E987C9004FE184 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5964545125E987C9004FE184 /* CloudKit.framework */; };
+		597A7FDD25F6E1C900256268 /* StateEditButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 597A7FDC25F6E1C900256268 /* StateEditButton.swift */; };
 		597DF5B025E5E90800DC8D28 /* Color+RGB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 597DF5AF25E5E90800DC8D28 /* Color+RGB.swift */; };
 		599D9F5225EC5A4900DF3795 /* TracksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599D9F5125EC5A4900DF3795 /* TracksView.swift */; };
 		59C23A6725E70D7000AFBC4B /* SymbolsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C23A6625E70D7000AFBC4B /* SymbolsList.swift */; };
@@ -31,6 +32,7 @@
 /* Begin PBXFileReference section */
 		5964544E25E987C6004FE184 /* Tickmate.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Tickmate.entitlements; sourceTree = "<group>"; };
 		5964545125E987C9004FE184 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
+		597A7FDC25F6E1C900256268 /* StateEditButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateEditButton.swift; sourceTree = "<group>"; };
 		597DF5AF25E5E90800DC8D28 /* Color+RGB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+RGB.swift"; sourceTree = "<group>"; };
 		599D9F5125EC5A4900DF3795 /* TracksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TracksView.swift; sourceTree = "<group>"; };
 		59C23A6625E70D7000AFBC4B /* SymbolsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolsList.swift; sourceTree = "<group>"; };
@@ -87,6 +89,7 @@
 			children = (
 				59EF633625E5DC93003E7259 /* TextWithCaption.swift */,
 				597DF5AF25E5E90800DC8D28 /* Color+RGB.swift */,
+				597A7FDC25F6E1C900256268 /* StateEditButton.swift */,
 			);
 			path = "Supplementary Views";
 			sourceTree = "<group>";
@@ -254,6 +257,7 @@
 				59F6EA9D25E369830069DF40 /* Tickmate+Convenience.swift in Sources */,
 				59EF633725E5DC93003E7259 /* TextWithCaption.swift in Sources */,
 				597DF5B025E5E90800DC8D28 /* Color+RGB.swift in Sources */,
+				597A7FDD25F6E1C900256268 /* StateEditButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
