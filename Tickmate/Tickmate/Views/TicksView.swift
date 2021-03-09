@@ -84,7 +84,7 @@ struct TicksView: View {
             }
             .sheet(isPresented: $showingTracks) {
                 NavigationView {
-                    TracksView()
+                    TracksView(showing: $showingTracks)
                 }
                 .environment(\.managedObjectContext, moc)
                 .environmentObject(trackController)

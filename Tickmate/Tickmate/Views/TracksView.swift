@@ -15,6 +15,8 @@ struct TracksView: View {
     
     @EnvironmentObject private var trackController: TrackController
     
+    @Binding var showing: Bool
+    
     @State private var selection: Track?
     
     private var tracks: [Track] {
@@ -47,7 +49,16 @@ struct TracksView: View {
         .environment(\.editMode, $editMode)
         .navigationTitle("Tracks")
         .toolbar {
-            StateEditButton(editMode: $editMode)
+            ToolbarItem(placement: .primaryAction) {
+                StateEditButton(editMode: $editMode)
+            }
+            ToolbarItem(placement: .cancellationAction) {
+                if !editMode.isEditing {
+                    Button("Done") {
+                        showing = false
+                    }
+                }
+            }
         }
     }
     
@@ -115,7 +126,7 @@ struct TrackCell: View {
 struct TracksView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            TracksView()
+            TracksView(showing: .constant(true))
                 .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
                 .environmentObject(TrackController(preview: true))
         }
