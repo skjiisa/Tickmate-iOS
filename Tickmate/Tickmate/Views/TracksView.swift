@@ -18,6 +18,7 @@ struct TracksView: View {
     @Binding var showing: Bool
     
     @State private var selection: Track?
+    @State private var showingPresets = false
     
     private var tracks: [Track] {
         trackController.fetchedResultsController.fetchedObjects ?? []
@@ -40,7 +41,18 @@ struct TracksView: View {
             } label: {
                 HStack {
                     Spacer()
-                    Text("New Track")
+                    Text("Create new track")
+                    Spacer()
+                }
+            }
+            .foregroundColor(.accentColor)
+            
+            Button {
+                showingPresets = true
+            } label: {
+                HStack {
+                    Spacer()
+                    Text("Add preset track")
                     Spacer()
                 }
             }
@@ -58,6 +70,11 @@ struct TracksView: View {
                         showing = false
                     }
                 }
+            }
+        }
+        .sheet(isPresented: $showingPresets) {
+            NavigationView {
+                PresetTracksView()
             }
         }
     }
