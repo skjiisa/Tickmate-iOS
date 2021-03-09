@@ -30,7 +30,7 @@ struct TrackRepresentation: Equatable, Hashable {
         let g = components[1]
         let b = components[2]
         let luma = (0.299 * r + 0.587 * g + 0.114 * b)
-        return luma < 0.5
+        return luma < 2/3
     }
     
     mutating func load(track: Track) {
