@@ -15,6 +15,7 @@ struct TrackView: View {
     let sheet: Bool
     
     @State private var draftTrack = TrackRepresentation()
+    @State private var enabled = true
     @State private var initialized = false
     @State private var editMode = false
     @State private var showingSymbolPicker = false
@@ -23,6 +24,10 @@ struct TrackView: View {
     var body: some View {
         Form {
             Section {
+                Toggle("Enabled", isOn: $enabled)
+            }
+            
+            Section(header: Text("Name")) {
                 TextField("Name", text: $draftTrack.name)
             }
             
@@ -108,7 +113,14 @@ struct TrackView: View {
         .onAppear {
             if !initialized {
                 draftTrack.load(track: track)
+                enabled = track.enabled
                 initialized = true
+            }
+        }
+        .onDisappear {
+            if enabled != track.enabled {
+                track.enabled = enabled
+                PersistenceController.save(context: moc)
             }
         }
     }

@@ -13,7 +13,8 @@ struct TicksView: View {
     @Environment(\.managedObjectContext) private var moc
     @FetchRequest(
         entity: Track.entity(),
-        sortDescriptors: [NSSortDescriptor(keyPath: \Track.index, ascending: true)])
+        sortDescriptors: [NSSortDescriptor(keyPath: \Track.index, ascending: true)],
+        predicate: NSPredicate(format: "enabled == YES"))
     private var tracks: FetchedResults<Track>
     
     @EnvironmentObject private var trackController: TrackController
@@ -33,9 +34,8 @@ struct TicksView: View {
                         UISelectionFeedbackGenerator().selectionChanged()
                     } label: {
                         ZStack {
-                            Rectangle()
+                            RoundedRectangle(cornerRadius: 3)
                                 .foregroundColor(Color(.systemFill))
-                                .cornerRadius(3)
                                 .frame(height: 32)
                             if let systemImage = track.systemImage {
                                 Image(systemName: systemImage)
@@ -84,7 +84,7 @@ struct TicksView: View {
             }
             .sheet(isPresented: $showingTracks) {
                 NavigationView {
-                    TracksView()
+                    TracksView(showing: $showingTracks)
                 }
                 .environment(\.managedObjectContext, moc)
                 .environmentObject(trackController)
@@ -121,9 +121,8 @@ struct TickView: View {
     
     var body: some View {
         ZStack {
-            Rectangle()
+            RoundedRectangle(cornerRadius: 3)
                 .foregroundColor(color)
-                .cornerRadius(3)
             let count = tickController.getTick(for: day)?.count ?? 0
             if count > 1 {
                 Text("\(count)")

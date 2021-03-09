@@ -42,7 +42,7 @@ class TickController: NSObject, ObservableObject {
         do {
             try fetchedResultsController.performFetch()
         } catch {
-            fatalError("Error performing ticks fetch for \(track.name ?? "track"): \(error)")
+            NSLog("Error performing Ticks fetch for \(track.name ?? "track"): \(error)")
         }
         
         loadTicks()
@@ -103,9 +103,6 @@ class TickController: NSObject, ObservableObject {
         }
         
         self.ticks = ticks
-        
-        print(fetchedResultsController.fetchedObjects)
-        print(self.ticks)
     }
     
     //MARK: Ticking

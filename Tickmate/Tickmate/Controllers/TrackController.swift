@@ -6,12 +6,36 @@
 //
 
 import CoreData
+import SwiftUI
 import SwiftDate
 
-class TrackController: ObservableObject {
+class TrackController: NSObject, ObservableObject {
     
     var tickControllers: [Track: TickController] = [:]
     let date = Date()
+    var fetchedResultsController: NSFetchedResultsController<Track>
+    
+    init(preview: Bool = false) {
+        let context = preview ? PersistenceController.preview.container.viewContext : PersistenceController.shared.container.viewContext
+        
+        let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Track.index, ascending: true)]
+        
+        fetchedResultsController = NSFetchedResultsController<Track>(fetchRequest: fetchRequest,
+                                                                     managedObjectContext: context,
+                                                                     sectionNameKeyPath: nil,
+                                                                     cacheName: nil)
+        
+        super.init()
+        
+        fetchedResultsController.delegate = self
+        
+        do {
+            try fetchedResultsController.performFetch()
+        } catch {
+            NSLog("Error performing Tracks fetch: \(error)")
+        }
+    }
     
     private var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -49,17 +73,6 @@ class TrackController: ObservableObject {
         }()
     }
     
-    /*
-    func ticks(on day: Int, for track: Track) -> [Tick] {
-        tickController(for: track).ticks(on: day)
-    }
-    
-    func tick(day: Int, for track: Track) {
-        objectWillChange.send()
-        tickController(for: track).tick(day: day)
-    }
-     */
-    
     func dayLabel(day: Int) -> TextWithCaption {
         let date = self.date - day.days
         
@@ -80,4 +93,33 @@ class TrackController: ObservableObject {
         Track(name: "New Track", startDate: TrackController.iso8601.string(from: date.in(region: .current).date), index: index, context: moc)
     }
     
+}
+
+extension TrackController: NSFetchedResultsControllerDelegate {
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        withAnimation {
+            objectWillChange.send()
+        }
+    }
+    
+    func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        guard [.delete, .insert].contains(type) else { return }
+        
+        // Update Track indices
+        var changed = false
+        fetchedResultsController.fetchedObjects?.enumerated().forEach { index, item in
+            let index = Int16(index)
+            // Only write the index if it's different. Writing the same value in
+            // will still count as a change and run this delegate function again.
+            if item.index != index {
+                item.index = index
+                changed = true
+                print("Index updated to \(index)")
+            }
+        }
+        
+        if changed {
+            PersistenceController.save(context: fetchedResultsController.managedObjectContext)
+        }
+    }
 }

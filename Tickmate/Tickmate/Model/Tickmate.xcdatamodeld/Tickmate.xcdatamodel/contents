@@ -9,6 +9,7 @@
     </entity>
     <entity name="Track" representedClassName="Track" syncable="YES" codeGenerationType="class">
         <attribute name="color" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="enabled" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
         <attribute name="index" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="multiple" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
@@ -19,6 +20,6 @@
     </entity>
     <elements>
         <element name="Tick" positionX="-45" positionY="36" width="128" height="104"/>
-        <element name="Track" positionX="-54" positionY="-9" width="128" height="149"/>
+        <element name="Track" positionX="-54" positionY="-9" width="128" height="164"/>
     </elements>
 </model>

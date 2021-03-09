@@ -10,15 +10,18 @@ import SwiftUI
 struct TracksView: View {
     
     @Environment(\.managedObjectContext) private var moc
-    @FetchRequest(
-        entity: Track.entity(),
-        sortDescriptors: [NSSortDescriptor(keyPath: \Track.index, ascending: true)],
-        animation: .default)
-    private var tracks: FetchedResults<Track>
+    // The environment EditMode is buggy, so using a custom @State property instead
+    @State private var editMode = EditMode.inactive
     
     @EnvironmentObject private var trackController: TrackController
     
+    @Binding var showing: Bool
+    
     @State private var selection: Track?
+    
+    private var tracks: [Track] {
+        trackController.fetchedResultsController.fetchedObjects ?? []
+    }
     
     var body: some View {
         List {
@@ -27,6 +30,7 @@ struct TracksView: View {
             }
             .onDelete(perform: delete)
             .onMove(perform: move)
+            .animation(.easeInOut(duration: 0.25))
             
             Button {
                 let newTrack = trackController.newTrack(index: (tracks.last?.index ?? -1) + 1, context: moc)
@@ -42,15 +46,25 @@ struct TracksView: View {
             }
             .foregroundColor(.accentColor)
         }
+        .environment(\.editMode, $editMode)
         .navigationTitle("Tracks")
         .toolbar {
-            EditButton()
+            ToolbarItem(placement: .primaryAction) {
+                StateEditButton(editMode: $editMode)
+            }
+            ToolbarItem(placement: .cancellationAction) {
+                if !editMode.isEditing {
+                    Button("Done") {
+                        showing = false
+                    }
+                }
+            }
         }
     }
     
     private func delete(_ indexSet: IndexSet) {
         indexSet.map { tracks[$0] }.forEach(moc.delete)
-        PersistenceController.save(context: moc)
+        // TrackController's FRC will update the indices and save for us
     }
     
     private func move(_ indices: IndexSet, newOffset: Int) {
@@ -65,6 +79,8 @@ struct TracksView: View {
 }
 
 struct TrackCell: View {
+    
+    @Environment(\.managedObjectContext) private var moc
     
     @ObservedObject var track: Track
     @Binding var selection: Track?
@@ -93,19 +109,26 @@ struct TrackCell: View {
                         .background(background)
                         .foregroundColor(track.lightText ? .white : .black)
                 }
-                Text("\(track.index)")
                 TextWithCaption(text: track.name ?? "", caption: caption)
+                Spacer()
+                Toggle(isOn: $track.enabled) {
+                    EmptyView()
+                }
+                .onChange(of: track.enabled) { _ in
+                    PersistenceController.save(context: moc)
+                }
             }
         }
+        .foregroundColor(track.enabled ? .primary : .secondary)
     }
 }
 
 struct TracksView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            TracksView()
+            TracksView(showing: .constant(true))
                 .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-                .environmentObject(TrackController())
+                .environmentObject(TrackController(preview: true))
         }
     }
 }

@@ -50,8 +50,7 @@ class PersistenceController {
         container.viewContext.automaticallyMergesChangesFromParent = true
         if inMemory {
             container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
-        } else if let description = container.persistentStoreDescriptions.first {
-            description.setOption(true as NSObject, forKey: NSPersistentStoreRemoteChangeNotificationPostOptionKey)
+        } else {
             container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
         }
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
@@ -70,8 +69,6 @@ class PersistenceController {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
         })
-        
-        NotificationCenter.default.addObserver(self, selector: #selector(processUpdate), name: .NSPersistentStoreRemoteChange, object: self.container)
     }
     
     //MARK: Saving
@@ -89,54 +86,7 @@ class PersistenceController {
             try moc.save()
         } catch {
             let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-        }
-    }
-    
-    //MARK: Merging changes
-    
-    // Based on SchwiftUI's demo
-    // https://schwiftyui.com/swiftui/using-cloudkit-in-swiftui/
-    // https://github.com/SchwiftyUI/OrderedList/blob/master/OrderedList/AppDelegate.swift
-    
-    lazy var operationQueue: OperationQueue = {
-        let queue = OperationQueue()
-        queue.maxConcurrentOperationCount = 1
-        return queue
-    }()
-    
-    @objc
-    private func processUpdate(notification: Notification) {
-        operationQueue.cancelAllOperations()
-        
-        // Update indices
-        operationQueue.addOperation {
-            guard let container = notification.object as? NSPersistentCloudKitContainer else { return }
-            let context = container.newBackgroundContext()
-            
-            context.performAndWait {
-                do {
-                    let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
-                    let tracks = try context.fetch(fetchRequest)
-                    
-                    // Update the indices
-                    tracks.enumerated().forEach { index, item in
-                        let index = Int16(index)
-                        if item.index != index {
-                            item.index = index
-                        }
-                    }
-                    
-                    // Only save if there are changes so we don't get in an
-                    // infinite loop of saving and responding to that save.
-                    if context.hasChanges {
-                        try context.save()
-                    }
-                } catch {
-                    let nsError = error as NSError
-                    NSLog("Error processing update error \(nsError), \(nsError.userInfo)")
-                }
-            }
+            NSLog("Error saving context: \(nsError), \(nsError.userInfo)")
         }
     }
 }
