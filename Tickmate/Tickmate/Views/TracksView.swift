@@ -28,7 +28,7 @@ struct TracksView: View {
             }
             .onDelete(perform: delete)
             .onMove(perform: move)
-            .animation(.default)
+            .animation(.easeInOut(duration: 0.25))
             
             Button {
                 let newTrack = trackController.newTrack(index: (tracks.last?.index ?? -1) + 1, context: moc)

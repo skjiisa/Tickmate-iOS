@@ -33,9 +33,8 @@ struct TicksView: View {
                         UISelectionFeedbackGenerator().selectionChanged()
                     } label: {
                         ZStack {
-                            Rectangle()
+                            RoundedRectangle(cornerRadius: 3)
                                 .foregroundColor(Color(.systemFill))
-                                .cornerRadius(3)
                                 .frame(height: 32)
                             if let systemImage = track.systemImage {
                                 Image(systemName: systemImage)
@@ -121,9 +120,8 @@ struct TickView: View {
     
     var body: some View {
         ZStack {
-            Rectangle()
+            RoundedRectangle(cornerRadius: 3)
                 .foregroundColor(color)
-                .cornerRadius(3)
             let count = tickController.getTick(for: day)?.count ?? 0
             if count > 1 {
                 Text("\(count)")
