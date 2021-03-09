@@ -9,7 +9,7 @@ import SwiftUI
 
 struct PresetTracksView: View {
     
-    var tracks: [TrackRepresentation] = []
+    var tracks: [TrackRepresentation] = PresetTracks
     
     var body: some View {
         List {
@@ -51,11 +51,9 @@ struct TrackRepresentationCell: View {
 
 struct PresetTracksView_Previews: PreviewProvider {
     
-    static private let exampleTrack = TrackRepresentation(name: "Read", color: .orange, systemImage: "book.closed")
-    
     static var previews: some View {
         NavigationView {
-            PresetTracksView(tracks: [exampleTrack])
+            PresetTracksView()
         }
     }
 }

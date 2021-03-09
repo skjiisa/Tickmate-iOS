@@ -44,7 +44,7 @@ struct TrackView: View {
                         text: "Reversed",
                         caption: "Days will be ticked by default."
                             + " Tapping a day will untick it."
-                            + " Good for tracking bad habits.")
+                            + " Good for tracking abstaining from bad habits.")
                 }
                 
                 ColorPicker("Color", selection: $draftTrack.color, supportsOpacity: false)
