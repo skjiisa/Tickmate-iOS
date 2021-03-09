@@ -9,13 +9,19 @@ import SwiftUI
 
 struct PresetTracksView: View {
     
-    var tracks: [TrackRepresentation] = PresetTracks
+    var tracks: [TrackRepresentation]
+    var select: (TrackRepresentation) -> Void
+    
+    init(tracks: [TrackRepresentation]? = nil, onSelect: @escaping (TrackRepresentation) -> Void) {
+        self.tracks = tracks ?? PresetTracks
+        self.select = onSelect
+    }
     
     var body: some View {
         List {
             ForEach(tracks, id: \.self) { track in
                 Button {
-                    
+                    select(track)
                 } label: {
                     TrackRepresentationCell(trackRepresentation: track)
                 }
@@ -53,7 +59,7 @@ struct PresetTracksView_Previews: PreviewProvider {
     
     static var previews: some View {
         NavigationView {
-            PresetTracksView()
+            PresetTracksView(onSelect: {_ in})
         }
     }
 }

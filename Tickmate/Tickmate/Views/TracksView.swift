@@ -35,9 +35,7 @@ struct TracksView: View {
             
             Button {
                 let newTrack = trackController.newTrack(index: (tracks.last?.index ?? -1) + 1, context: moc)
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-                    selection = newTrack
-                }
+                select(track: newTrack, delay: 0.25)
             } label: {
                 HStack {
                     Spacer()
@@ -74,7 +72,11 @@ struct TracksView: View {
         }
         .sheet(isPresented: $showingPresets) {
             NavigationView {
-                PresetTracksView()
+                PresetTracksView { trackRepresentation in
+                    showingPresets = false
+                    let newTrack = trackController.newTrack(from: trackRepresentation, index: (tracks.last?.index ?? -1) + 1, context: moc)
+                    select(track: newTrack, delay: 0.5)
+                }
             }
         }
     }
@@ -92,6 +94,12 @@ struct TracksView: View {
         }.forEach { $0.track.index = $0.newIndex }
         
         PersistenceController.save(context: moc)
+    }
+    
+    private func select(track: Track, delay: Double) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            selection = track
+        }
     }
 }
 
