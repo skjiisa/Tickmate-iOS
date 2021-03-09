@@ -10,6 +10,7 @@
 		5964545225E987C9004FE184 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5964545125E987C9004FE184 /* CloudKit.framework */; };
 		597A7FDD25F6E1C900256268 /* StateEditButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 597A7FDC25F6E1C900256268 /* StateEditButton.swift */; };
 		597DF5B025E5E90800DC8D28 /* Color+RGB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 597DF5AF25E5E90800DC8D28 /* Color+RGB.swift */; };
+		5991968F25F813ED003215CC /* PresetTracksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5991968E25F813ED003215CC /* PresetTracksView.swift */; };
 		599D9F5225EC5A4900DF3795 /* TracksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599D9F5125EC5A4900DF3795 /* TracksView.swift */; };
 		59C23A6725E70D7000AFBC4B /* SymbolsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C23A6625E70D7000AFBC4B /* SymbolsList.swift */; };
 		59C23A6C25E70E1A00AFBC4B /* SymbolPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C23A6B25E70E1A00AFBC4B /* SymbolPicker.swift */; };
@@ -34,6 +35,7 @@
 		5964545125E987C9004FE184 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		597A7FDC25F6E1C900256268 /* StateEditButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateEditButton.swift; sourceTree = "<group>"; };
 		597DF5AF25E5E90800DC8D28 /* Color+RGB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+RGB.swift"; sourceTree = "<group>"; };
+		5991968E25F813ED003215CC /* PresetTracksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetTracksView.swift; sourceTree = "<group>"; };
 		599D9F5125EC5A4900DF3795 /* TracksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TracksView.swift; sourceTree = "<group>"; };
 		59C23A6625E70D7000AFBC4B /* SymbolsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolsList.swift; sourceTree = "<group>"; };
 		59C23A6B25E70E1A00AFBC4B /* SymbolPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolPicker.swift; sourceTree = "<group>"; };
@@ -153,6 +155,7 @@
 				59EF632825E5CD4B003E7259 /* TrackView.swift */,
 				59C23A6B25E70E1A00AFBC4B /* SymbolPicker.swift */,
 				599D9F5125EC5A4900DF3795 /* TracksView.swift */,
+				5991968E25F813ED003215CC /* PresetTracksView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -250,6 +253,7 @@
 				59EF632D25E5CF24003E7259 /* TrackRepresentation.swift in Sources */,
 				59EF632925E5CD4B003E7259 /* TrackView.swift in Sources */,
 				59C23A6725E70D7000AFBC4B /* SymbolsList.swift in Sources */,
+				5991968F25F813ED003215CC /* PresetTracksView.swift in Sources */,
 				59FBCF2325E07BD5007B114F /* ContentView.swift in Sources */,
 				59FBCF2125E07BD5007B114F /* TickmateApp.swift in Sources */,
 				59FBCF2D25E07BD8007B114F /* Tickmate.xcdatamodeld in Sources */,
