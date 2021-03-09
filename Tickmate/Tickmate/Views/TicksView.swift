@@ -13,7 +13,8 @@ struct TicksView: View {
     @Environment(\.managedObjectContext) private var moc
     @FetchRequest(
         entity: Track.entity(),
-        sortDescriptors: [NSSortDescriptor(keyPath: \Track.index, ascending: true)])
+        sortDescriptors: [NSSortDescriptor(keyPath: \Track.index, ascending: true)],
+        predicate: NSPredicate(format: "enabled == YES"))
     private var tracks: FetchedResults<Track>
     
     @EnvironmentObject private var trackController: TrackController

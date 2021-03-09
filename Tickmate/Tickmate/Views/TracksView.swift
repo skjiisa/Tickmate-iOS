@@ -69,6 +69,8 @@ struct TracksView: View {
 
 struct TrackCell: View {
     
+    @Environment(\.managedObjectContext) private var moc
+    
     @ObservedObject var track: Track
     @Binding var selection: Track?
     
@@ -97,8 +99,16 @@ struct TrackCell: View {
                         .foregroundColor(track.lightText ? .white : .black)
                 }
                 TextWithCaption(text: track.name ?? "", caption: caption)
+                Spacer()
+                Toggle(isOn: $track.enabled) {
+                    EmptyView()
+                }
+                .onChange(of: track.enabled) { _ in
+                    PersistenceController.save(context: moc)
+                }
             }
         }
+        .foregroundColor(track.enabled ? .primary : .secondary)
     }
 }
 
