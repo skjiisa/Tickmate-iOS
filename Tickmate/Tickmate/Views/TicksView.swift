@@ -112,7 +112,7 @@ struct TicksView: View {
         }
         .sheet(isPresented: $showingSettings) {
             NavigationView {
-                SettingsView()
+                SettingsView(showing: $showingSettings)
             }
         }
     }

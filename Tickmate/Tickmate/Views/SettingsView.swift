@@ -13,7 +13,9 @@ struct SettingsView: View {
     @AppStorage(Defaults.customDayStart.rawValue) private var customDayStart: Bool = false
     @AppStorage(Defaults.customDayStartMinutes.rawValue) private var minutes: Int = 60
     
-    @State private var dayOffset: Date = Date()
+    @Binding var showing: Bool
+    
+    @State private var timeOffset: Date = Date()
     
     var body: some View {
         Form {
@@ -25,7 +27,7 @@ struct SettingsView: View {
                 }
                 
                 if customDayStart {
-                    DatePicker(selection: $dayOffset, displayedComponents: [.hourAndMinute]) {
+                    DatePicker(selection: $timeOffset, displayedComponents: [.hourAndMinute]) {
                         TextWithCaption(
                             text: "New day start time",
                             caption: "")
@@ -34,13 +36,24 @@ struct SettingsView: View {
             }
         }
         .navigationTitle("Settings")
+        .toolbar {
+            ToolbarItem(placement: .navigation) {
+                Button("Done") {
+                    showing = false
+                }
+            }
+        }
         .onAppear {
             if let date = DateInRegion(components: { dateComponents in
                 dateComponents.minute = minutes
             }, region: .current) {
-                print(date, date.date)
-                dayOffset = date.date
+                timeOffset = date.date
             }
+        }
+        .onChange(of: timeOffset) { value in
+            let components = value.in(region: .current).dateComponents
+            minutes = (components.hour ?? 0) * 60 + (components.minute ?? 0)
+            print(minutes)
         }
     }
     
@@ -56,7 +69,7 @@ struct SettingsView: View {
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            SettingsView()
+            SettingsView(showing: .constant(true))
         }
     }
 }
