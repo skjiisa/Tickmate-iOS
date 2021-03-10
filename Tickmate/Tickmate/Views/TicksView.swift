@@ -8,6 +8,8 @@
 import SwiftUI
 import SwiftDate
 
+//MARK: Ticks View
+
 struct TicksView: View {
     
     @Environment(\.managedObjectContext) private var moc
@@ -16,6 +18,9 @@ struct TicksView: View {
         sortDescriptors: [NSSortDescriptor(keyPath: \Track.index, ascending: true)],
         predicate: NSPredicate(format: "enabled == YES"))
     private var tracks: FetchedResults<Track>
+    
+    @AppStorage(Defaults.weekSeparatorLines.rawValue) private var weekSeparatorLines: Bool = true
+    @AppStorage(Defaults.weekSeparatorSpaces.rawValue) private var weekSeparatorSpaces: Bool = true
     
     @EnvironmentObject private var trackController: TrackController
     
@@ -66,7 +71,7 @@ struct TicksView: View {
                     }
                     
                     ForEach(0..<365) { dayComplement in
-                        DayRow(364 - dayComplement, tracks: tracks)
+                        DayRow(364 - dayComplement, tracks: tracks, spaces: weekSeparatorSpaces, lines: weekSeparatorLines)
                     }
                 }
                 .listStyle(PlainListStyle())
@@ -111,6 +116,8 @@ struct TicksView: View {
     }
 }
 
+//MARK: Day Row
+
 struct DayRow: View {
     
     @Environment(\.colorScheme) private var colorScheme
@@ -118,15 +125,19 @@ struct DayRow: View {
     
     let day: Int
     var tracks: FetchedResults<Track>
+    var spaces: Bool
+    var lines: Bool
     
-    init(_ day: Int, tracks: FetchedResults<Track>) {
+    init(_ day: Int, tracks: FetchedResults<Track>, spaces: Bool, lines: Bool) {
         self.day = day
         self.tracks = tracks
+        self.spaces = spaces
+        self.lines = lines
     }
     
     private var backgroud: some View {
         Group {
-            if trackController.weekend(day: day) {
+            if lines && trackController.weekend(day: day) {
                 VStack {
                     Spacer()
                     Capsule()
@@ -139,8 +150,8 @@ struct DayRow: View {
     }
     
     var body: some View {
-        VStack {
-            if trackController.insets(day: day) == .top {
+        VStack(spacing: nil) {
+            if spaces && trackController.insets(day: day) == .top {
                 Rectangle()
                     .frame(height: 0)
                     .opacity(0)
@@ -152,10 +163,10 @@ struct DayRow: View {
                     TickView(day: day, track: track, tickController: trackController.tickController(for: track))
                 }
             }
-            if day > 0 && trackController.insets(day: day) == .bottom {
+            if spaces && day > 0 && trackController.insets(day: day) == .bottom {
                 Rectangle()
-                    // To make up for the height of the separator line
-                    .frame(height: 4)
+                    // Make up for the height of the separator line if present
+                    .frame(height: lines ? 4 : 0)
                     .opacity(0)
             }
         }
@@ -163,6 +174,8 @@ struct DayRow: View {
         .id(day)
     }
 }
+
+//MARK: Tick View
 
 struct TickView: View {
     
@@ -208,6 +221,8 @@ struct TickView: View {
         .disabled(!validDate)
     }
 }
+
+//MARK: Preview
 
 struct TicksView_Previews: PreviewProvider {
     static var previews: some View {
