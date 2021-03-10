@@ -67,6 +67,13 @@ struct SettingsView: View {
                         .tag(1)
                 }
             }
+            
+            Section(header: Text("App Information")) {
+                Link("Support Website", destination: URL(string: "https://github.com/Isvvc/Tickmate-iOS/issues")!)
+                Link("Email Support", destination: URL(string: "mailto:lyons@tuta.io")!)
+                Link("Privacy Policy", destination: URL(string: "https://github.com/Isvvc/Tickmate-iOS/blob/main/Privacy%20Policy.txt")!)
+                Link("Source Code", destination: URL(string: "https://github.com/Isvvc/Tickmate-iOS/")!)
+            }
         }
         .navigationTitle("Settings")
         .toolbar {
