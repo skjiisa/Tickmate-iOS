@@ -108,13 +108,13 @@ struct TicksView: View {
                     Image(systemName: "gear")
                         .imageScale(.large)
                 }
+                .sheet(isPresented: $showingSettings) {
+                    NavigationView {
+                        SettingsView(showing: $showingSettings)
+                    }
+                    .environmentObject(trackController)
+                }
             }
-        }
-        .sheet(isPresented: $showingSettings) {
-            NavigationView {
-                SettingsView(showing: $showingSettings)
-            }
-            .environmentObject(trackController)
         }
     }
 }
