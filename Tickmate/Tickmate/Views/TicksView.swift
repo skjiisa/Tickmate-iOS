@@ -114,6 +114,7 @@ struct TicksView: View {
             NavigationView {
                 SettingsView(showing: $showingSettings)
             }
+            .environmentObject(trackController)
         }
     }
 }

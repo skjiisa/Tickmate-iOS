@@ -12,10 +12,18 @@ import SwiftDate
 class TrackController: NSObject, ObservableObject {
     
     var tickControllers: [Track: TickController] = [:]
-    let date = Date()
+    var date: Date
     var fetchedResultsController: NSFetchedResultsController<Track>
     
     init(preview: Bool = false) {
+        UserDefaults.standard.register(defaults: [Defaults.customDayStartMinutes.rawValue: 0])
+        if UserDefaults.standard.bool(forKey: Defaults.customDayStart.rawValue) {
+            date = Date() - UserDefaults.standard.integer(forKey: Defaults.customDayStartMinutes.rawValue).minutes
+        } else {
+            date = Date()
+        }
+        
+        // FRC
         let context = preview ? PersistenceController.preview.container.viewContext : PersistenceController.shared.container.viewContext
         
         let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
@@ -98,6 +106,20 @@ class TrackController: NSObject, ObservableObject {
         representation.save(to: track)
         PersistenceController.save(context: moc)
         return track
+    }
+    
+    func setCustomDayStart(minutes: Int) {
+        guard UserDefaults.standard.bool(forKey: Defaults.customDayStart.rawValue) else { return }
+        let oldDate = date
+        date = Date() - minutes.minutes
+        
+        if oldDate.in(region: .current).dateComponents.day != date.in(region: .current).dateComponents.day {
+            // The custom start date changed and the day needs to be updated
+            objectWillChange.send()
+            // This could be done more intelligently by adding or removing a day at
+            // the start or the end, but this is simple and should be a fine solution.
+            tickControllers.values.forEach { $0.loadTicks() }
+        }
     }
     
 }

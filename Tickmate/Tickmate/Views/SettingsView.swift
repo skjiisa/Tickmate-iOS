@@ -13,6 +13,8 @@ struct SettingsView: View {
     @AppStorage(Defaults.customDayStart.rawValue) private var customDayStart: Bool = false
     @AppStorage(Defaults.customDayStartMinutes.rawValue) private var minutes: Int = 60
     
+    @EnvironmentObject private var trackController: TrackController
+    
     @Binding var showing: Bool
     
     @State private var timeOffset: Date = Date()
@@ -53,7 +55,7 @@ struct SettingsView: View {
         .onChange(of: timeOffset) { value in
             let components = value.in(region: .current).dateComponents
             minutes = (components.hour ?? 0) * 60 + (components.minute ?? 0)
-            print(minutes)
+            trackController.setCustomDayStart(minutes: minutes)
         }
     }
     
