@@ -12,4 +12,5 @@ enum Defaults: String {
     case customDayStartMinutes      // Int
     case weekSeparatorSpaces        // Bool
     case weekSeparatorLines         // Bool
+    case weekStartDay               // Int
 }

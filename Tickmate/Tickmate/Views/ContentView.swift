@@ -50,12 +50,12 @@ struct ContentView: View {
                                 .imageScale(.large)
                         }
                         .sheet(isPresented: $showingSettings) {
-                            print("ContenView onDismiss")
                             scrollToBottomToggle.toggle()
                             if customDayStartChanged {
                                 updateCustomDayStart()
                                 customDayStartChanged = false
                             }
+                            trackController.updateWeekStartDay()
                         } content: {
                             NavigationView {
                                 SettingsView(showing: $showingSettings, timeOffset: $timeOffset, customDayStartChanged: $customDayStartChanged)

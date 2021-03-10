@@ -14,16 +14,24 @@ class TrackController: NSObject, ObservableObject {
     var tickControllers: [Track: TickController] = [:]
     var date: Date
     var weekday: Int
+    var weekStartDay: Int
+    
     var fetchedResultsController: NSFetchedResultsController<Track>
     
     init(preview: Bool = false) {
-        UserDefaults.standard.register(defaults: [Defaults.customDayStartMinutes.rawValue: 0])
+        UserDefaults.standard.register(defaults: [
+            Defaults.customDayStartMinutes.rawValue: 0,
+            Defaults.weekStartDay.rawValue: 2
+        ])
+        
         if UserDefaults.standard.bool(forKey: Defaults.customDayStart.rawValue) {
             date = Date() - UserDefaults.standard.integer(forKey: Defaults.customDayStartMinutes.rawValue).minutes
         } else {
             date = Date()
         }
         weekday = date.in(region: .current).weekday
+        
+        weekStartDay = UserDefaults.standard.integer(forKey: Defaults.weekStartDay.rawValue)
         
         // FRC
         let context = preview ? PersistenceController.preview.container.viewContext : PersistenceController.shared.container.viewContext
@@ -100,14 +108,14 @@ class TrackController: NSObject, ObservableObject {
     }
     
     func weekend(day: Int) -> Bool {
-        weekday - day % 7 == 1
+        weekday - day % 7 + 1 == weekStartDay
     }
     
     func insets(day: Int) -> Edge.Set? {
-        switch weekday - day % 7 {
-        case 1:
+        switch weekday - day % 7 + 1 {
+        case weekStartDay:
             return .bottom
-        case 2:
+        case (weekStartDay + 1) % 7:
             return .top
         default:
             return nil
@@ -149,6 +157,13 @@ class TrackController: NSObject, ObservableObject {
             // their date relative to today, regardless of the content of the TickControllers.
             tickControllers.values.forEach { $0.loadTicks() }
         }
+    }
+    
+    func updateWeekStartDay() {
+        let day = UserDefaults.standard.integer(forKey: Defaults.weekStartDay.rawValue)
+        guard weekStartDay != day else { return }
+        objectWillChange.send()
+        weekStartDay = day
     }
     
 }
