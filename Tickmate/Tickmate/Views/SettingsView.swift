@@ -1,0 +1,62 @@
+//
+//  SettingsView.swift
+//  Tickmate
+//
+//  Created by Isaac Lyons on 3/9/21.
+//
+
+import SwiftUI
+import SwiftDate
+
+struct SettingsView: View {
+    
+    @AppStorage(Defaults.customDayStart.rawValue) private var customDayStart: Bool = false
+    @AppStorage(Defaults.customDayStartMinutes.rawValue) private var minutes: Int = 60
+    
+    @State private var dayOffset: Date = Date()
+    
+    var body: some View {
+        Form {
+            Section {
+                Toggle(isOn: $customDayStart.animation()) {
+                    TextWithCaption(
+                        text: "Custom day rollover time",
+                        caption: "For staying up past midnight")
+                }
+                
+                if customDayStart {
+                    DatePicker(selection: $dayOffset, displayedComponents: [.hourAndMinute]) {
+                        TextWithCaption(
+                            text: "New day start time",
+                            caption: "")
+                    }
+                }
+            }
+        }
+        .navigationTitle("Settings")
+        .onAppear {
+            if let date = DateInRegion(components: { dateComponents in
+                dateComponents.minute = minutes
+            }, region: .current) {
+                print(date, date.date)
+                dayOffset = date.date
+            }
+        }
+    }
+    
+    private let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .none
+        formatter.timeStyle = .short
+        return formatter
+    }()
+    
+}
+
+struct SettingsView_Previews: PreviewProvider {
+    static var previews: some View {
+        NavigationView {
+            SettingsView()
+        }
+    }
+}

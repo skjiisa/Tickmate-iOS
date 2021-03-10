@@ -15,6 +15,8 @@
 		599D9F5225EC5A4900DF3795 /* TracksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599D9F5125EC5A4900DF3795 /* TracksView.swift */; };
 		59C23A6725E70D7000AFBC4B /* SymbolsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C23A6625E70D7000AFBC4B /* SymbolsList.swift */; };
 		59C23A6C25E70E1A00AFBC4B /* SymbolPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C23A6B25E70E1A00AFBC4B /* SymbolPicker.swift */; };
+		59E6E14E25F88177008A74A9 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E6E14D25F88177008A74A9 /* SettingsView.swift */; };
+		59E6E15125F8837E008A74A9 /* Defaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E6E15025F8837E008A74A9 /* Defaults.swift */; };
 		59EF632925E5CD4B003E7259 /* TrackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59EF632825E5CD4B003E7259 /* TrackView.swift */; };
 		59EF632D25E5CF24003E7259 /* TrackRepresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59EF632C25E5CF24003E7259 /* TrackRepresentation.swift */; };
 		59EF633725E5DC93003E7259 /* TextWithCaption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59EF633625E5DC93003E7259 /* TextWithCaption.swift */; };
@@ -41,6 +43,8 @@
 		599D9F5125EC5A4900DF3795 /* TracksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TracksView.swift; sourceTree = "<group>"; };
 		59C23A6625E70D7000AFBC4B /* SymbolsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolsList.swift; sourceTree = "<group>"; };
 		59C23A6B25E70E1A00AFBC4B /* SymbolPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolPicker.swift; sourceTree = "<group>"; };
+		59E6E14D25F88177008A74A9 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		59E6E15025F8837E008A74A9 /* Defaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Defaults.swift; sourceTree = "<group>"; };
 		59EF632825E5CD4B003E7259 /* TrackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackView.swift; sourceTree = "<group>"; };
 		59EF632C25E5CF24003E7259 /* TrackRepresentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackRepresentation.swift; sourceTree = "<group>"; };
 		59EF633625E5DC93003E7259 /* TextWithCaption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextWithCaption.swift; sourceTree = "<group>"; };
@@ -146,6 +150,7 @@
 				59FBCF2B25E07BD8007B114F /* Tickmate.xcdatamodeld */,
 				59F6EA9C25E369830069DF40 /* Tickmate+Convenience.swift */,
 				59EF632C25E5CF24003E7259 /* TrackRepresentation.swift */,
+				59E6E15025F8837E008A74A9 /* Defaults.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -159,6 +164,7 @@
 				59C23A6B25E70E1A00AFBC4B /* SymbolPicker.swift */,
 				599D9F5125EC5A4900DF3795 /* TracksView.swift */,
 				5991968E25F813ED003215CC /* PresetTracksView.swift */,
+				59E6E14D25F88177008A74A9 /* SettingsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -265,7 +271,9 @@
 				59F6EA9D25E369830069DF40 /* Tickmate+Convenience.swift in Sources */,
 				59EF633725E5DC93003E7259 /* TextWithCaption.swift in Sources */,
 				597DF5B025E5E90800DC8D28 /* Color+RGB.swift in Sources */,
+				59E6E15125F8837E008A74A9 /* Defaults.swift in Sources */,
 				597A7FDD25F6E1C900256268 /* StateEditButton.swift in Sources */,
+				59E6E14E25F88177008A74A9 /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

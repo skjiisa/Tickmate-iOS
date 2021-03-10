@@ -21,6 +21,7 @@ struct TicksView: View {
     
     @State private var showingTrack: Track?
     @State private var showingTracks = false
+    @State private var showingSettings = false
     
     var body: some View {
         VStack(spacing: 0) {
@@ -92,11 +93,26 @@ struct TicksView: View {
         }
         .navigationBarTitle("Tickmate", displayMode: .inline)
         .toolbar {
-            Button {
-                showingTracks = true
-            } label: {
-                Image(systemName: "text.justify")
-                    .imageScale(.large)
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    showingTracks = true
+                } label: {
+                    Image(systemName: "text.justify")
+                        .imageScale(.large)
+                }
+            }
+            ToolbarItem(placement: .navigation) {
+                Button {
+                    showingSettings = true
+                } label: {
+                    Image(systemName: "gear")
+                        .imageScale(.large)
+                }
+            }
+        }
+        .sheet(isPresented: $showingSettings) {
+            NavigationView {
+                SettingsView()
             }
         }
     }
