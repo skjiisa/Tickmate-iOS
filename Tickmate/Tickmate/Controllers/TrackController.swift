@@ -125,9 +125,15 @@ class TrackController: NSObject, ObservableObject {
         return track
     }
     
-    func setCustomDayStart(minutes: Int) {
-        // Clear the offset if customDayStart is off
-        let minutes = UserDefaults.standard.bool(forKey: Defaults.customDayStart.rawValue) ? minutes : 0
+    func setCustomDayStart(minutes givenMinutes: Int) {
+        let minutes: Int
+        if UserDefaults.standard.bool(forKey: Defaults.customDayStart.rawValue) {
+            minutes = givenMinutes
+            UserDefaults.standard.setValue(minutes, forKey: Defaults.customDayStartMinutes.rawValue)
+        } else {
+            // Clear the offset if customDayStart is off
+            minutes = 0
+        }
         
         let oldDate = date
         date = Date() - minutes.minutes
@@ -138,6 +144,9 @@ class TrackController: NSObject, ObservableObject {
             objectWillChange.send()
             // This could be done more intelligently by adding or removing a day at
             // the start or the end, but this is simple and should be a fine solution.
+            // You might think doing it that way would animate TicksView nicely, but it
+            // actually wouldn't make a difference because it displays its days based on
+            // their date relative to today, regardless of the content of the TickControllers.
             tickControllers.values.forEach { $0.loadTicks() }
         }
     }

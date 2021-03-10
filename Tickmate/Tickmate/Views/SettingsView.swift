@@ -11,7 +11,7 @@ import SwiftDate
 struct SettingsView: View {
     
     @AppStorage(Defaults.customDayStart.rawValue) private var customDayStart: Bool = false
-    @AppStorage(Defaults.customDayStartMinutes.rawValue) private var minutes: Int = 60
+//    @AppStorage(Defaults.customDayStartMinutes.rawValue) private var minutes: Int = 60
     @AppStorage(Defaults.weekSeparatorSpaces.rawValue) private var weekSeparatorSpaces: Bool = true
     @AppStorage(Defaults.weekSeparatorLines.rawValue) private var weekSeparatorLines: Bool = true
     
@@ -19,7 +19,8 @@ struct SettingsView: View {
     
     @Binding var showing: Bool
     
-    @State private var timeOffset: Date = Date()
+    @Binding var timeOffset: Date
+    @Binding var customDayStartChanged: Bool
     
     var body: some View {
         Form {
@@ -52,15 +53,12 @@ struct SettingsView: View {
                 }
             }
         }
-        .onAppear {
-            if let date = DateInRegion(components: { dateComponents in
-                dateComponents.minute = minutes
-            }, region: .current) {
-                timeOffset = date.date
-            }
+        .onChange(of: customDayStart) { _ in
+            customDayStartChanged = true
         }
-        .onChange(of: customDayStart, perform: updateCustomDayStart)
-        .onChange(of: timeOffset, perform: updateCustomDayStart)
+        .onChange(of: timeOffset) { _ in
+            customDayStartChanged = true
+        }
     }
     
     private let dateFormatter: DateFormatter = {
@@ -70,18 +68,12 @@ struct SettingsView: View {
         return formatter
     }()
     
-    private func updateCustomDayStart(_: Any? = nil) {
-        let components = timeOffset.in(region: .current).dateComponents
-        minutes = (components.hour ?? 0) * 60 + (components.minute ?? 0)
-        trackController.setCustomDayStart(minutes: minutes)
-    }
-    
 }
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
-            SettingsView(showing: .constant(true))
+            SettingsView(showing: .constant(true), timeOffset: .constant(Date()), customDayStartChanged: .constant(false))
         }
     }
 }

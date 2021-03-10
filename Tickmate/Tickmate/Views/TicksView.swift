@@ -24,9 +24,9 @@ struct TicksView: View {
     
     @EnvironmentObject private var trackController: TrackController
     
+    var scrollToBottomToggle: Bool = false
+    
     @State private var showingTrack: Track?
-    @State private var showingTracks = false
-    @State private var showingSettings = false
     
     var body: some View {
         VStack(spacing: 0) {
@@ -79,40 +79,14 @@ struct TicksView: View {
                 .onAppear {
                     proxy.scrollTo(0)
                 }
-            }
-            .sheet(isPresented: $showingTracks) {
-                NavigationView {
-                    TracksView(showing: $showingTracks)
+                .onChange(of: scrollToBottomToggle) { _ in
+                    withAnimation {
+                        proxy.scrollTo(0)
+                    }
                 }
-                .environment(\.managedObjectContext, moc)
-                .environmentObject(trackController)
             }
         }
         .navigationBarTitle("Tickmate", displayMode: .inline)
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button {
-                    showingTracks = true
-                } label: {
-                    Image(systemName: "text.justify")
-                        .imageScale(.large)
-                }
-            }
-            ToolbarItem(placement: .navigation) {
-                Button {
-                    showingSettings = true
-                } label: {
-                    Image(systemName: "gear")
-                        .imageScale(.large)
-                }
-                .sheet(isPresented: $showingSettings) {
-                    NavigationView {
-                        SettingsView(showing: $showingSettings)
-                    }
-                    .environmentObject(trackController)
-                }
-            }
-        }
     }
 }
 
