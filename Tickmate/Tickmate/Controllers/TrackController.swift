@@ -13,6 +13,7 @@ class TrackController: NSObject, ObservableObject {
     
     var tickControllers: [Track: TickController] = [:]
     var date: Date
+    var weekday: Int
     var fetchedResultsController: NSFetchedResultsController<Track>
     
     init(preview: Bool = false) {
@@ -22,6 +23,7 @@ class TrackController: NSObject, ObservableObject {
         } else {
             date = Date()
         }
+        weekday = date.in(region: .current).weekday
         
         // FRC
         let context = preview ? PersistenceController.preview.container.viewContext : PersistenceController.shared.container.viewContext
@@ -97,6 +99,21 @@ class TrackController: NSObject, ObservableObject {
         return TextWithCaption(text: weekday, caption: dateFormatter.string(from: date))
     }
     
+    func weekend(day: Int) -> Bool {
+        weekday - day % 7 == 1
+    }
+    
+    func insets(day: Int) -> Edge.Set? {
+        switch weekday - day % 7 {
+        case 1:
+            return .bottom
+        case 2:
+            return .top
+        default:
+            return nil
+        }
+    }
+    
     func newTrack(index: Int16, context moc: NSManagedObjectContext) -> Track {
         Track(name: "New Track", startDate: TrackController.iso8601.string(from: date.in(region: .current).date), index: index, context: moc)
     }
@@ -112,6 +129,7 @@ class TrackController: NSObject, ObservableObject {
         guard UserDefaults.standard.bool(forKey: Defaults.customDayStart.rawValue) else { return }
         let oldDate = date
         date = Date() - minutes.minutes
+        weekday = date.in(region: .current).weekday
         
         if oldDate.in(region: .current).dateComponents.day != date.in(region: .current).dateComponents.day {
             // The custom start date changed and the day needs to be updated

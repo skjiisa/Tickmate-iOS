@@ -66,15 +66,7 @@ struct TicksView: View {
                     }
                     
                     ForEach(0..<365) { dayComplement in
-                        let day = 364 - dayComplement
-                        HStack {
-                            trackController.dayLabel(day: day)
-                                .frame(width: 80, alignment: .leading)
-                            ForEach(tracks) { track in
-                                TickView(day: day, track: track, tickController: trackController.tickController(for: track))
-                            }
-                        }
-                        .id(day)
+                        DayRow(364 - dayComplement, tracks: tracks)
                     }
                 }
                 .listStyle(PlainListStyle())
@@ -116,6 +108,59 @@ struct TicksView: View {
                 }
             }
         }
+    }
+}
+
+struct DayRow: View {
+    
+    @Environment(\.colorScheme) private var colorScheme
+    @EnvironmentObject private var trackController: TrackController
+    
+    let day: Int
+    var tracks: FetchedResults<Track>
+    
+    init(_ day: Int, tracks: FetchedResults<Track>) {
+        self.day = day
+        self.tracks = tracks
+    }
+    
+    private var backgroud: some View {
+        Group {
+            if trackController.weekend(day: day) {
+                VStack {
+                    Spacer()
+                    Capsule()
+                        .foregroundColor(.gray)
+                        .frame(height: 4)
+                        .offset(x: 12, y: 0)
+                }
+            }
+        }
+    }
+    
+    var body: some View {
+        VStack {
+            if trackController.insets(day: day) == .top {
+                Rectangle()
+                    .frame(height: 0)
+                    .opacity(0)
+            }
+            HStack {
+                trackController.dayLabel(day: day)
+                    .frame(width: 80, alignment: .leading)
+                ForEach(tracks) { track in
+                    TickView(day: day, track: track, tickController: trackController.tickController(for: track))
+                }
+            }
+            if day > 0 && trackController.insets(day: day) == .bottom {
+                Rectangle()
+                    // To make up for the height of the separator line
+                    .frame(height: 4)
+                    .opacity(0)
+            }
+        }
+        .listRowBackground(backgroud)
+        .id(day)
     }
 }
 
