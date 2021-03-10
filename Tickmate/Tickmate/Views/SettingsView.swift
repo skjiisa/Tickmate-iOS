@@ -14,6 +14,7 @@ struct SettingsView: View {
     @AppStorage(Defaults.weekSeparatorSpaces.rawValue) private var weekSeparatorSpaces: Bool = true
     @AppStorage(Defaults.weekSeparatorLines.rawValue) private var weekSeparatorLines: Bool = true
     @AppStorage(Defaults.weekStartDay.rawValue) private var weekStartDay = 2
+    @AppStorage(Defaults.relativeDates.rawValue) private var relativeDates = true
     
     @EnvironmentObject private var trackController: TrackController
     
@@ -37,6 +38,12 @@ struct SettingsView: View {
                             text: "New day start time",
                             caption: "")
                     }
+                }
+            }
+            
+            Section {
+                Toggle(isOn: $relativeDates) {
+                    TextWithCaption(text: "Use relative dates", caption: "Today, Yesterday")
                 }
             }
             

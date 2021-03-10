@@ -55,7 +55,7 @@ struct ContentView: View {
                                 updateCustomDayStart()
                                 customDayStartChanged = false
                             }
-                            trackController.updateWeekStartDay()
+                            trackController.updateSettings()
                         } content: {
                             NavigationView {
                                 SettingsView(showing: $showingSettings, timeOffset: $timeOffset, customDayStartChanged: $customDayStartChanged)

@@ -12,16 +12,19 @@ import SwiftDate
 class TrackController: NSObject, ObservableObject {
     
     var tickControllers: [Track: TickController] = [:]
+    
     var date: Date
     var weekday: Int
     var weekStartDay: Int
+    var relativeDates: Bool
     
     var fetchedResultsController: NSFetchedResultsController<Track>
     
     init(preview: Bool = false) {
         UserDefaults.standard.register(defaults: [
             Defaults.customDayStartMinutes.rawValue: 0,
-            Defaults.weekStartDay.rawValue: 2
+            Defaults.weekStartDay.rawValue: 2,
+            Defaults.relativeDates.rawValue: true
         ])
         
         if UserDefaults.standard.bool(forKey: Defaults.customDayStart.rawValue) {
@@ -32,6 +35,7 @@ class TrackController: NSObject, ObservableObject {
         weekday = date.in(region: .current).weekday
         
         weekStartDay = UserDefaults.standard.integer(forKey: Defaults.weekStartDay.rawValue)
+        relativeDates = UserDefaults.standard.bool(forKey: Defaults.relativeDates.rawValue)
         
         // FRC
         let context = preview ? PersistenceController.preview.container.viewContext : PersistenceController.shared.container.viewContext
@@ -96,9 +100,9 @@ class TrackController: NSObject, ObservableObject {
         
         let weekday: String
         switch day {
-        case 0:
+        case 0 where relativeDates:
             weekday = "Today"
-        case 1:
+        case 1 where relativeDates:
             weekday = "Yesterday"
         default:
             weekday = TrackController.weekdayFormatter.string(from: date)
@@ -159,11 +163,14 @@ class TrackController: NSObject, ObservableObject {
         }
     }
     
-    func updateWeekStartDay() {
+    func updateSettings() {
         let day = UserDefaults.standard.integer(forKey: Defaults.weekStartDay.rawValue)
-        guard weekStartDay != day else { return }
+        let relativeDates = UserDefaults.standard.bool(forKey: Defaults.relativeDates.rawValue)
+        
+        guard weekStartDay != day || relativeDates != self.relativeDates else { return }
         objectWillChange.send()
         weekStartDay = day
+        self.relativeDates = relativeDates
     }
     
 }
