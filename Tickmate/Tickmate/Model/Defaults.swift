@@ -8,6 +8,8 @@
 import Foundation
 
 enum Defaults: String {
-    case customDayStart
-    case customDayStartMinutes
+    case customDayStart             // Bool
+    case customDayStartMinutes      // Int
+    case weekSeparatorSpaces        // Bool
+    case weekSeparatorLines         // Bool
 }

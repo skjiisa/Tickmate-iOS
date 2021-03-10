@@ -12,6 +12,8 @@ struct SettingsView: View {
     
     @AppStorage(Defaults.customDayStart.rawValue) private var customDayStart: Bool = false
     @AppStorage(Defaults.customDayStartMinutes.rawValue) private var minutes: Int = 60
+    @AppStorage(Defaults.weekSeparatorSpaces.rawValue) private var weekSeparatorSpaces: Bool = true
+    @AppStorage(Defaults.weekSeparatorLines.rawValue) private var weekSeparatorLines: Bool = true
     
     @EnvironmentObject private var trackController: TrackController
     
@@ -35,6 +37,11 @@ struct SettingsView: View {
                             caption: "")
                     }
                 }
+            }
+            
+            Section(header: Text("Week Separators")) {
+                Toggle("Separator lines", isOn: $weekSeparatorLines)
+                Toggle("Separator spaces", isOn: $weekSeparatorSpaces)
             }
         }
         .navigationTitle("Settings")
