@@ -18,6 +18,7 @@ struct TracksView: View {
     @Binding var showing: Bool
     
     @State private var selection: Track?
+    @State private var showingPresets = false
     
     private var tracks: [Track] {
         trackController.fetchedResultsController.fetchedObjects ?? []
@@ -34,13 +35,22 @@ struct TracksView: View {
             
             Button {
                 let newTrack = trackController.newTrack(index: (tracks.last?.index ?? -1) + 1, context: moc)
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-                    selection = newTrack
-                }
+                select(track: newTrack, delay: 0.25)
             } label: {
                 HStack {
                     Spacer()
-                    Text("New Track")
+                    Text("Create new track")
+                    Spacer()
+                }
+            }
+            .foregroundColor(.accentColor)
+            
+            Button {
+                showingPresets = true
+            } label: {
+                HStack {
+                    Spacer()
+                    Text("Add preset track")
                     Spacer()
                 }
             }
@@ -60,6 +70,15 @@ struct TracksView: View {
                 }
             }
         }
+        .sheet(isPresented: $showingPresets) {
+            NavigationView {
+                PresetTracksView { trackRepresentation in
+                    showingPresets = false
+                    let newTrack = trackController.newTrack(from: trackRepresentation, index: (tracks.last?.index ?? -1) + 1, context: moc)
+                    select(track: newTrack, delay: 0.5)
+                }
+            }
+        }
     }
     
     private func delete(_ indexSet: IndexSet) {
@@ -75,6 +94,12 @@ struct TracksView: View {
         }.forEach { $0.track.index = $0.newIndex }
         
         PersistenceController.save(context: moc)
+    }
+    
+    private func select(track: Track, delay: Double) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            selection = track
+        }
     }
 }
 

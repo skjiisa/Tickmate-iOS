@@ -93,6 +93,13 @@ class TrackController: NSObject, ObservableObject {
         Track(name: "New Track", startDate: TrackController.iso8601.string(from: date.in(region: .current).date), index: index, context: moc)
     }
     
+    func newTrack(from representation: TrackRepresentation, index: Int16, context moc: NSManagedObjectContext) -> Track {
+        let track = Track(name: "", startDate: TrackController.iso8601.string(from: date.in(region: .current).date), index: index, context: moc)
+        representation.save(to: track)
+        PersistenceController.save(context: moc)
+        return track
+    }
+    
 }
 
 extension TrackController: NSFetchedResultsControllerDelegate {
