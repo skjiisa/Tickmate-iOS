@@ -126,13 +126,15 @@ class TrackController: NSObject, ObservableObject {
     }
     
     func setCustomDayStart(minutes: Int) {
-        guard UserDefaults.standard.bool(forKey: Defaults.customDayStart.rawValue) else { return }
+        // Clear the offset if customDayStart is off
+        let minutes = UserDefaults.standard.bool(forKey: Defaults.customDayStart.rawValue) ? minutes : 0
+        
         let oldDate = date
         date = Date() - minutes.minutes
         weekday = date.in(region: .current).weekday
         
+        // Check if the custom start date changed and the day needs to be updated
         if oldDate.in(region: .current).dateComponents.day != date.in(region: .current).dateComponents.day {
-            // The custom start date changed and the day needs to be updated
             objectWillChange.send()
             // This could be done more intelligently by adding or removing a day at
             // the start or the end, but this is simple and should be a fine solution.

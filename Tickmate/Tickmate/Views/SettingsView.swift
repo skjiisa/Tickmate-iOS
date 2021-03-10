@@ -52,11 +52,8 @@ struct SettingsView: View {
                 timeOffset = date.date
             }
         }
-        .onChange(of: timeOffset) { value in
-            let components = value.in(region: .current).dateComponents
-            minutes = (components.hour ?? 0) * 60 + (components.minute ?? 0)
-            trackController.setCustomDayStart(minutes: minutes)
-        }
+        .onChange(of: customDayStart, perform: updateCustomDayStart)
+        .onChange(of: timeOffset, perform: updateCustomDayStart)
     }
     
     private let dateFormatter: DateFormatter = {
@@ -65,6 +62,12 @@ struct SettingsView: View {
         formatter.timeStyle = .short
         return formatter
     }()
+    
+    private func updateCustomDayStart(_: Any? = nil) {
+        let components = timeOffset.in(region: .current).dateComponents
+        minutes = (components.hour ?? 0) * 60 + (components.minute ?? 0)
+        trackController.setCustomDayStart(minutes: minutes)
+    }
     
 }
 
