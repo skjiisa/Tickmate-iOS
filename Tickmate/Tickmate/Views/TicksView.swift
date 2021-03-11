@@ -168,6 +168,8 @@ struct TickView: View {
         !track.reversed || day <= tickController.todayOffset ?? 0
     }
     
+    @State private var pressing = false
+    
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 3)
@@ -182,15 +184,18 @@ struct TickView: View {
             tickController.tick(day: day)
             UISelectionFeedbackGenerator().selectionChanged()
         }
-        // This long press feels too long, and setting
-        // minimumDuration below 0.5 doesn't have an effect.
-        //TODO: write custom gesture.
-        .onLongPressGesture {
+        .onLongPressGesture { pressing in
+            guard track.multiple else { return }
+            withAnimation(pressing ? .easeInOut(duration: 0.6) : .interactiveSpring()) {
+                self.pressing = pressing
+            }
+        } perform: {
             guard track.multiple else { return }
             if tickController.untick(day: day) {
                 UIImpactFeedbackGenerator(style: .soft).impactOccurred()
             }
         }
+        .scaleEffect(pressing ? 1.1 : 1)
         .opacity(validDate ? 1 : 0)
         .disabled(!validDate)
     }
