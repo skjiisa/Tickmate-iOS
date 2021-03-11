@@ -74,6 +74,10 @@ struct SettingsView: View {
                 Link("Privacy Policy", destination: URL(string: "https://github.com/Isvvc/Tickmate-iOS/blob/main/Privacy%20Policy.txt")!)
                 Link("Source Code", destination: URL(string: "https://github.com/Isvvc/Tickmate-iOS/")!)
             }
+            
+            Section {
+                NavigationLink("Acknowledgements", destination: AcknowledgementsView())
+            }
         }
         .navigationTitle("Settings")
         .toolbar {
