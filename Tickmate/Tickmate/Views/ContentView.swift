@@ -23,9 +23,7 @@ struct ContentView: View {
 
     var body: some View {
         NavigationView {
-//            Group {
             TicksView(scrollToBottomToggle: scrollToBottomToggle)
-//            }
                 .toolbar {
                     ToolbarItem(placement: .primaryAction) {
                         Button {
@@ -33,13 +31,6 @@ struct ContentView: View {
                         } label: {
                             Image(systemName: "text.justify")
                                 .imageScale(.large)
-                        }
-                        .sheet(isPresented: $showingTracks) {
-                            NavigationView {
-                                TracksView(showing: $showingTracks)
-                            }
-                            .environment(\.managedObjectContext, moc)
-                            .environmentObject(trackController)
                         }
                     }
                     ToolbarItem(placement: .navigation) {
@@ -49,24 +40,37 @@ struct ContentView: View {
                             Image(systemName: "gear")
                                 .imageScale(.large)
                         }
-                        .sheet(isPresented: $showingSettings) {
-                            scrollToBottomToggle.toggle()
-                            if customDayStartChanged {
-                                updateCustomDayStart()
-                                customDayStartChanged = false
-                            }
-                            trackController.updateSettings()
-                        } content: {
-                            NavigationView {
-                                SettingsView(showing: $showingSettings, timeOffset: $timeOffset, customDayStartChanged: $customDayStartChanged)
-                            }
-                            .environmentObject(trackController)
-                        }
                     }
                 }
         }
         .environmentObject(trackController)
         .onAppear(perform: loadTimeOffset)
+        
+        // See https://write.as/angelo/stupid-swiftui-tricks-debugging-sheet-dismissal
+        // for why the sheets are attached to EmptyViews
+        EmptyView()
+            .sheet(isPresented: $showingTracks) {
+                NavigationView {
+                    TracksView(showing: $showingTracks)
+                }
+                .environment(\.managedObjectContext, moc)
+                .environmentObject(trackController)
+            }
+        
+        EmptyView()
+            .sheet(isPresented: $showingSettings) {
+                scrollToBottomToggle.toggle()
+                if customDayStartChanged {
+                    updateCustomDayStart()
+                    customDayStartChanged = false
+                }
+                trackController.updateSettings()
+            } content: {
+                NavigationView {
+                    SettingsView(showing: $showingSettings, timeOffset: $timeOffset, customDayStartChanged: $customDayStartChanged)
+                }
+                .environmentObject(trackController)
+            }
     }
     
     private func loadTimeOffset() {
@@ -78,6 +82,9 @@ struct ContentView: View {
     }
     
     private func updateCustomDayStart() {
+        // UPDATE: This might be fixed now with the sheets being
+        // attached to EmptyViews instead of to the NavigationView.
+        
         // If this change is performed while SettingsView is showing (such
         // as in an onChange), TicksView will reload and ContentView will
         // try to re-present SettingsView for some reason, leading to a bug
