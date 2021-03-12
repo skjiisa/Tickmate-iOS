@@ -15,8 +15,8 @@ class TrackController: NSObject, ObservableObject {
     
     var date: Date
     var weekday: Int
-    var weekStartDay: Int
-    var relativeDates: Bool
+    @Published var weekStartDay: Int
+    @Published var relativeDates: Bool
     
     var fetchedResultsController: NSFetchedResultsController<Track>
     
@@ -161,16 +161,6 @@ class TrackController: NSObject, ObservableObject {
             // their date relative to today, regardless of the content of the TickControllers.
             tickControllers.values.forEach { $0.loadTicks() }
         }
-    }
-    
-    func updateSettings() {
-        let day = UserDefaults.standard.integer(forKey: Defaults.weekStartDay.rawValue)
-        let relativeDates = UserDefaults.standard.bool(forKey: Defaults.relativeDates.rawValue)
-        
-        guard weekStartDay != day || relativeDates != self.relativeDates else { return }
-        objectWillChange.send()
-        weekStartDay = day
-        self.relativeDates = relativeDates
     }
     
 }
