@@ -18,6 +18,8 @@ class TrackController: NSObject, ObservableObject {
     @Published var weekStartDay: Int
     @Published var relativeDates: Bool
     
+    private var work: DispatchWorkItem?
+    
     var fetchedResultsController: NSFetchedResultsController<Track>
     
     init(preview: Bool = false) {
@@ -160,6 +162,27 @@ class TrackController: NSObject, ObservableObject {
             // actually wouldn't make a difference because it displays its days based on
             // their date relative to today, regardless of the content of the TickControllers.
             tickControllers.values.forEach { $0.loadTicks() }
+        }
+    }
+    
+    /// Queue a Core Data save on the current view context.
+    ///
+    /// Call this function when you want to save a small change when other small changes may happen soon after.
+    /// This will delay the save by 3 seconds and only save once if called multiple times.
+    /// - Parameter now: Whether the save should be performed immediately or
+    func save(now: Bool = false) {
+        work?.cancel()
+        let work = DispatchWorkItem { [weak self] in
+            self?.work = nil
+            guard let context = self?.fetchedResultsController.managedObjectContext else { return }
+            PersistenceController.save(context: context)
+            print("Saved")
+        }
+        if now {
+            work.perform()
+        } else {
+            self.work = work
+            DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: work)
         }
     }
     
