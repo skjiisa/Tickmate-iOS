@@ -6,13 +6,13 @@
 //
 
 import SwiftUI
-import CoreData
-import SwiftDate
+import Introspect
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var moc
     
     @StateObject private var trackController = TrackController()
+    @StateObject private var vcContainer = ViewControllerContainer()
     
     @State private var showingSettings = false
     @State private var showingTracks = false
@@ -46,11 +46,18 @@ struct ContentView: View {
         // for why the sheets are attached to EmptyViews
         EmptyView()
             .sheet(isPresented: $showingTracks) {
+                vcContainer.deactivateEditMode()
+            } content: {
                 NavigationView {
                     TracksView(showing: $showingTracks)
                 }
                 .environment(\.managedObjectContext, moc)
                 .environmentObject(trackController)
+                .environmentObject(vcContainer)
+                .introspectViewController { vc in
+                    print("ContentView sheet")
+                    vc.presentationController?.delegate = vcContainer
+                }
             }
         
         EmptyView()

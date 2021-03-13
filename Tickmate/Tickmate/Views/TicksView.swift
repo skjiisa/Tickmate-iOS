@@ -26,6 +26,8 @@ struct TicksView: View {
     
     var scrollToBottomToggle: Bool = false
     
+    @StateObject private var vcContainer = ViewControllerContainer()
+    
     @State private var showingTrack: Track?
     
     var body: some View {
@@ -56,9 +58,16 @@ struct TicksView: View {
             }
             .padding(.horizontal)
             .padding(.vertical, 4)
-            .sheet(item: $showingTrack) { track in
+            .sheet(item: $showingTrack) {
+                vcContainer.deactivateEditMode()
+            } content: { track in
                 NavigationView {
                     TrackView(track: track, selection: $showingTrack, sheet: true)
+                }
+                .environmentObject(vcContainer)
+                .introspectViewController { vc in
+                    print("TicksView sheet")
+                    vc.presentationController?.delegate = vcContainer
                 }
             }
             
