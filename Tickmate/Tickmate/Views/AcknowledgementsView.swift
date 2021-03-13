@@ -15,7 +15,8 @@ struct AcknowledgementsView: View {
         license: .bsd2)
     
     private var acknowledgements = [
-        Acknowledgement(name: "SwiftDate", copyright: "2018 Daniele Margutti", link: "https://github.com/malcommac/SwiftDate", license: .mit)
+        Acknowledgement(name: "SwiftDate", copyright: "2018 Daniele Margutti", link: "https://github.com/malcommac/SwiftDate", license: .mit),
+        Acknowledgement(name: "Introspect for SwiftUI", copyright: "2019 Timber Software", license: .mit)
     ]
     
     @State private var selection: Acknowledgement?
