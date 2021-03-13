@@ -12,10 +12,32 @@ import SwiftDate
 class TrackController: NSObject, ObservableObject {
     
     var tickControllers: [Track: TickController] = [:]
-    let date = Date()
+    
+    var date: Date
+    var weekday: Int
+    @Published var weekStartDay: Int
+    @Published var relativeDates: Bool
+    
     var fetchedResultsController: NSFetchedResultsController<Track>
     
     init(preview: Bool = false) {
+        UserDefaults.standard.register(defaults: [
+            Defaults.customDayStartMinutes.rawValue: 0,
+            Defaults.weekStartDay.rawValue: 2,
+            Defaults.relativeDates.rawValue: true
+        ])
+        
+        if UserDefaults.standard.bool(forKey: Defaults.customDayStart.rawValue) {
+            date = Date() - UserDefaults.standard.integer(forKey: Defaults.customDayStartMinutes.rawValue).minutes
+        } else {
+            date = Date()
+        }
+        weekday = date.in(region: .current).weekday
+        
+        weekStartDay = UserDefaults.standard.integer(forKey: Defaults.weekStartDay.rawValue)
+        relativeDates = UserDefaults.standard.bool(forKey: Defaults.relativeDates.rawValue)
+        
+        // FRC
         let context = preview ? PersistenceController.preview.container.viewContext : PersistenceController.shared.container.viewContext
         
         let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
@@ -78,15 +100,30 @@ class TrackController: NSObject, ObservableObject {
         
         let weekday: String
         switch day {
-        case 0:
+        case 0 where relativeDates:
             weekday = "Today"
-        case 1:
+        case 1 where relativeDates:
             weekday = "Yesterday"
         default:
             weekday = TrackController.weekdayFormatter.string(from: date)
         }
         
         return TextWithCaption(text: weekday, caption: dateFormatter.string(from: date))
+    }
+    
+    func weekend(day: Int) -> Bool {
+        weekday - day % 7 + 1 == weekStartDay
+    }
+    
+    func insets(day: Int) -> Edge.Set? {
+        switch weekday - day % 7 + 1 {
+        case weekStartDay:
+            return .bottom
+        case (weekStartDay + 1) % 7:
+            return .top
+        default:
+            return nil
+        }
     }
     
     func newTrack(index: Int16, context moc: NSManagedObjectContext) -> Track {
@@ -98,6 +135,32 @@ class TrackController: NSObject, ObservableObject {
         representation.save(to: track)
         PersistenceController.save(context: moc)
         return track
+    }
+    
+    func setCustomDayStart(minutes givenMinutes: Int) {
+        let minutes: Int
+        if UserDefaults.standard.bool(forKey: Defaults.customDayStart.rawValue) {
+            minutes = givenMinutes
+            UserDefaults.standard.setValue(minutes, forKey: Defaults.customDayStartMinutes.rawValue)
+        } else {
+            // Clear the offset if customDayStart is off
+            minutes = 0
+        }
+        
+        let oldDate = date
+        date = Date() - minutes.minutes
+        weekday = date.in(region: .current).weekday
+        
+        // Check if the custom start date changed and the day needs to be updated
+        if oldDate.in(region: .current).dateComponents.day != date.in(region: .current).dateComponents.day {
+            objectWillChange.send()
+            // This could be done more intelligently by adding or removing a day at
+            // the start or the end, but this is simple and should be a fine solution.
+            // You might think doing it that way would animate TicksView nicely, but it
+            // actually wouldn't make a difference because it displays its days based on
+            // their date relative to today, regardless of the content of the TickControllers.
+            tickControllers.values.forEach { $0.loadTicks() }
+        }
     }
     
 }
