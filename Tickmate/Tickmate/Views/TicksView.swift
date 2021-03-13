@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftDate
+import Introspect
 
 //MARK: Ticks View
 
@@ -84,6 +85,9 @@ struct TicksView: View {
                     }
                 }
                 .listStyle(PlainListStyle())
+                .introspectTableView { tableView in
+                    tableView.scrollsToTop = false
+                }
                 .padding(0)
                 .onAppear {
                     proxy.scrollTo(0)
