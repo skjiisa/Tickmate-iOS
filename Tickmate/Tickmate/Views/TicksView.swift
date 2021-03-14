@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftDate
+import Introspect
 
 //MARK: Ticks View
 
@@ -25,6 +26,8 @@ struct TicksView: View {
     @EnvironmentObject private var trackController: TrackController
     
     var scrollToBottomToggle: Bool = false
+    
+    @StateObject private var vcContainer = ViewControllerContainer()
     
     @State private var showingTrack: Track?
     
@@ -56,9 +59,16 @@ struct TicksView: View {
             }
             .padding(.horizontal)
             .padding(.vertical, 4)
-            .sheet(item: $showingTrack) { track in
+            .sheet(item: $showingTrack) {
+                vcContainer.deactivateEditMode()
+            } content: { track in
                 NavigationView {
                     TrackView(track: track, selection: $showingTrack, sheet: true)
+                }
+                .environmentObject(vcContainer)
+                .introspectViewController { vc in
+                    print("TicksView sheet")
+                    vc.presentationController?.delegate = vcContainer
                 }
             }
             
@@ -75,6 +85,9 @@ struct TicksView: View {
                     }
                 }
                 .listStyle(PlainListStyle())
+                .introspectTableView { tableView in
+                    tableView.scrollsToTop = false
+                }
                 .padding(0)
                 .onAppear {
                     proxy.scrollTo(0)

@@ -23,6 +23,8 @@
 		59EF632D25E5CF24003E7259 /* TrackRepresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59EF632C25E5CF24003E7259 /* TrackRepresentation.swift */; };
 		59EF633725E5DC93003E7259 /* TextWithCaption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59EF633625E5DC93003E7259 /* TextWithCaption.swift */; };
 		59F0980225E081CC00667971 /* TicksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F0980125E081CC00667971 /* TicksView.swift */; };
+		59F3EDBB25FC46770009CDEC /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = 59F3EDBA25FC46770009CDEC /* Introspect */; };
+		59F3EDC225FC4F270009CDEC /* ViewControllerContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F3EDC125FC4F270009CDEC /* ViewControllerContainer.swift */; };
 		59F6EA9D25E369830069DF40 /* Tickmate+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F6EA9C25E369830069DF40 /* Tickmate+Convenience.swift */; };
 		59F6EAA425E36D510069DF40 /* TickController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F6EAA325E36D510069DF40 /* TickController.swift */; };
 		59F6EAA725E36D680069DF40 /* TrackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F6EAA625E36D680069DF40 /* TrackController.swift */; };
@@ -53,6 +55,7 @@
 		59EF632C25E5CF24003E7259 /* TrackRepresentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackRepresentation.swift; sourceTree = "<group>"; };
 		59EF633625E5DC93003E7259 /* TextWithCaption.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextWithCaption.swift; sourceTree = "<group>"; };
 		59F0980125E081CC00667971 /* TicksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicksView.swift; sourceTree = "<group>"; };
+		59F3EDC125FC4F270009CDEC /* ViewControllerContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllerContainer.swift; sourceTree = "<group>"; };
 		59F6EA9C25E369830069DF40 /* Tickmate+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Tickmate+Convenience.swift"; sourceTree = "<group>"; };
 		59F6EAA325E36D510069DF40 /* TickController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TickController.swift; sourceTree = "<group>"; };
 		59F6EAA625E36D680069DF40 /* TrackController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackController.swift; sourceTree = "<group>"; };
@@ -72,6 +75,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				59F6EAAE25E377E40069DF40 /* SwiftDate in Frameworks */,
+				59F3EDBB25FC46770009CDEC /* Introspect in Frameworks */,
 				5964545225E987C9004FE184 /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -181,6 +185,7 @@
 				59FBCF2925E07BD8007B114F /* Persistence.swift */,
 				59F6EAA325E36D510069DF40 /* TickController.swift */,
 				59F6EAA625E36D680069DF40 /* TrackController.swift */,
+				59F3EDC125FC4F270009CDEC /* ViewControllerContainer.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -203,6 +208,7 @@
 			name = Tickmate;
 			packageProductDependencies = (
 				59F6EAAD25E377E40069DF40 /* SwiftDate */,
+				59F3EDBA25FC46770009CDEC /* Introspect */,
 			);
 			productName = Tickmate;
 			productReference = 59FBCF1D25E07BD5007B114F /* Tickmate.app */;
@@ -233,6 +239,7 @@
 			mainGroup = 59FBCF1425E07BD5007B114F;
 			packageReferences = (
 				59F6EAAC25E377E40069DF40 /* XCRemoteSwiftPackageReference "SwiftDate" */,
+				59F3EDB925FC46770009CDEC /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
 			);
 			productRefGroup = 59FBCF1E25E07BD5007B114F /* Products */;
 			projectDirPath = "";
@@ -260,6 +267,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				59F3EDC225FC4F270009CDEC /* ViewControllerContainer.swift in Sources */,
 				59FBCF2A25E07BD8007B114F /* Persistence.swift in Sources */,
 				59C23A6C25E70E1A00AFBC4B /* SymbolPicker.swift in Sources */,
 				59F6EAA725E36D680069DF40 /* TrackController.swift in Sources */,
@@ -474,6 +482,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		59F3EDB925FC46770009CDEC /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/siteline/SwiftUI-Introspect.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.2;
+			};
+		};
 		59F6EAAC25E377E40069DF40 /* XCRemoteSwiftPackageReference "SwiftDate" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/malcommac/SwiftDate.git";
@@ -485,6 +501,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		59F3EDBA25FC46770009CDEC /* Introspect */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 59F3EDB925FC46770009CDEC /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
+			productName = Introspect;
+		};
 		59F6EAAD25E377E40069DF40 /* SwiftDate */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 59F6EAAC25E377E40069DF40 /* XCRemoteSwiftPackageReference "SwiftDate" */;

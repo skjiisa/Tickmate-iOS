@@ -148,10 +148,7 @@ class TickController: NSObject, ObservableObject {
     //MARK: Private
     
     private func save() {
-        if let moc = track.managedObjectContext,
-           moc.hasChanges {
-            PersistenceController.save(context: moc)
-        }
+        trackController?.save()
     }
     
     private func day(for tick: Tick) -> Int? {

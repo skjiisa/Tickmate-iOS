@@ -13,6 +13,7 @@ import SwiftUI
 struct StateEditButton: View {
     
     @Binding var editMode: EditMode
+    var doneText = "Done"
     
     var body: some View {
         Button {
@@ -21,7 +22,7 @@ struct StateEditButton: View {
             }
         } label: {
             if editMode.isEditing {
-                Text("Done")
+                Text(doneText)
             } else {
                 Text("Edit")
             }
