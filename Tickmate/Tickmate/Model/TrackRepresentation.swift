@@ -22,6 +22,14 @@ struct TrackRepresentation: Equatable, Hashable {
         self.systemImage = systemImage
     }
     
+    init(name: String = "", red: Int, green: Int, blue: Int, multiple: Bool = false, reversed: Bool = false, systemImage: String? = nil) {
+        self.name = name
+        self.color = .init(red: Double(red)/255, green: Double(green)/255, blue: Double(blue)/255)
+        self.multiple = multiple
+        self.reversed = reversed
+        self.systemImage = systemImage
+    }
+    
     var lightText: Bool {
         guard let components = color.cgColor?.components,
               components.count >= 3 else { return true }
