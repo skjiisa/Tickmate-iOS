@@ -148,7 +148,7 @@ class TickController: NSObject, ObservableObject {
     //MARK: Private
     
     private func save() {
-        trackController?.save()
+        trackController?.scheduleSave()
     }
     
     private func day(for tick: Tick) -> Int? {

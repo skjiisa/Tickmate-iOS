@@ -173,12 +173,21 @@ class TrackController: NSObject, ObservableObject {
         }
     }
     
-    /// Queue a Core Data save on the current view context.
+    /// Schedule a Core Data save on the current view context.
     ///
     /// Call this function when you want to save a small change when other small changes may happen soon after.
     /// This will delay the save by 3 seconds and only save once if called multiple times.
-    /// - Parameter now: Whether the save should be performed immediately or
-    func save(now: Bool = false) {
+    /// - Parameter now: Setting this parameter to `true` will shortcut the schedule, if there is one, and save immediatly.
+    /// If there is no scheduled save, this function will do nothing instead.
+    func scheduleSave(now: Bool = false) {
+        guard !now else {
+            if let work = work {
+                work.perform()
+                work.cancel()
+            }
+            return
+        }
+        
         work?.cancel()
         let work = DispatchWorkItem { [weak self] in
             self?.work = nil
@@ -186,12 +195,8 @@ class TrackController: NSObject, ObservableObject {
             PersistenceController.save(context: context)
             print("Saved")
         }
-        if now {
-            work.perform()
-        } else {
-            self.work = work
-            DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: work)
-        }
+        self.work = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: work)
     }
     
 }

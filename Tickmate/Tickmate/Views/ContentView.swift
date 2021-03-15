@@ -42,7 +42,7 @@ struct ContentView: View {
         }
         .environmentObject(trackController)
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
-            trackController.save(now: true)
+            trackController.scheduleSave(now: true)
         }
         
         // See https://write.as/angelo/stupid-swiftui-tricks-debugging-sheet-dismissal
