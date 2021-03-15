@@ -138,7 +138,7 @@ struct DayRow: View {
     }
     
     var body: some View {
-        VStack(spacing: nil) {
+        VStack(alignment: .leading, spacing: nil) {
             if spaces && trackController.insets(day: day) == .top {
                 Rectangle()
                     .frame(height: 0)

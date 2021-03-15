@@ -40,6 +40,7 @@ struct ContentView: View {
                     }
                 }
         }
+        .navigationViewStyle(StackNavigationViewStyle())
         .environmentObject(trackController)
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
             trackController.scheduleSave(now: true)
