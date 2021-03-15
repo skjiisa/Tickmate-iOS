@@ -86,7 +86,7 @@ class TickController: NSObject, ObservableObject {
                     // Tag it as a duplicate so the FRC doesn't
                     // remove its day from the ticks array.
                     tick.duplicate = true
-                    track.managedObjectContext!.delete(tick)
+                    track.managedObjectContext?.delete(tick)
                     changesToSave = true
                     i += 1
                 }

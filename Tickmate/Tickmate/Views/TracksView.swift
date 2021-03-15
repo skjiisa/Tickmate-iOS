@@ -82,8 +82,11 @@ struct TracksView: View {
     }
     
     private func delete(_ indexSet: IndexSet) {
-        indexSet.map { tracks[$0] }.forEach(moc.delete)
-        // TrackController's FRC will update the indices and save for us
+        indexSet.map { tracks[$0] }.forEach {
+            trackController.delete(track: $0, context: moc)
+        }
+        // TrackController's FRC will update the indices for us
+        PersistenceController.save(context: moc)
     }
     
     private func move(_ indices: IndexSet, newOffset: Int) {

@@ -139,6 +139,14 @@ class TrackController: NSObject, ObservableObject {
         return track
     }
     
+    func delete(track: Track, context moc: NSManagedObjectContext) {
+        tickControllers.removeValue(forKey: track)
+        if let ticks = track.ticks as? Set<NSManagedObject> {
+            ticks.forEach(moc.delete)
+        }
+        moc.delete(track)
+    }
+    
     func setCustomDayStart(minutes givenMinutes: Int) {
         let minutes: Int
         if UserDefaults.standard.bool(forKey: Defaults.customDayStart.rawValue) {

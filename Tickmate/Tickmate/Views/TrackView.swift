@@ -11,6 +11,7 @@ struct TrackView: View {
     @Environment(\.managedObjectContext) private var moc
     
     @EnvironmentObject private var vcContainer: ViewControllerContainer
+    @EnvironmentObject private var trackController: TrackController
     
     @ObservedObject var track: Track
     @Binding var selection: Track?
@@ -138,7 +139,7 @@ struct TrackView: View {
     
     private func delete() {
         selection = nil
-        moc.delete(track)
+        trackController.delete(track: track, context: moc)
         PersistenceController.save(context: moc)
     }
 }
@@ -154,6 +155,7 @@ struct TrackView_Previews: PreviewProvider {
             TrackView(track: track, selection: .constant(nil), sheet: false)
                 .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
                 .environmentObject(ViewControllerContainer())
+                .environmentObject(TrackController())
         }
     }
 }

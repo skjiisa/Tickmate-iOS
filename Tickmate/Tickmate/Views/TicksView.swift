@@ -66,6 +66,7 @@ struct TicksView: View {
                     TrackView(track: track, selection: $showingTrack, sheet: true)
                 }
                 .environmentObject(vcContainer)
+                .environmentObject(trackController)
                 .introspectViewController { vc in
                     print("TicksView sheet")
                     vc.presentationController?.delegate = vcContainer
