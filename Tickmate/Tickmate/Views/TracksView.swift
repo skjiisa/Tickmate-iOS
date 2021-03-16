@@ -78,6 +78,7 @@ struct TracksView: View {
                     select(track: newTrack, delay: 0.5)
                 }
             }
+            .navigationViewStyle(StackNavigationViewStyle())
         }
     }
     

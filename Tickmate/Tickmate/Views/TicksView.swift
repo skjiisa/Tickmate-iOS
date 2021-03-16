@@ -83,6 +83,8 @@ struct TicksView: View {
                     
                     ForEach(0..<365) { dayComplement in
                         DayRow(364 - dayComplement, tracks: tracks, spaces: weekSeparatorSpaces, lines: weekSeparatorLines)
+                            .listRowInsets(.init(top: 4, leading: 0, bottom: 4, trailing: 0))
+                            .padding(.horizontal)
                     }
                 }
                 .listStyle(PlainListStyle())
@@ -188,6 +190,7 @@ struct TickView: View {
         ZStack {
             RoundedRectangle(cornerRadius: 3)
                 .foregroundColor(color)
+                .frame(height: 32)
             let count = tickController.getTick(for: day)?.count ?? 0
             if count > 1 {
                 Text("\(count)")
