@@ -77,6 +77,13 @@ struct TracksView: View {
                     let newTrack = trackController.newTrack(from: trackRepresentation, index: (tracks.last?.index ?? -1) + 1, context: moc)
                     select(track: newTrack, delay: 0.5)
                 }
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancel") {
+                            showingPresets = false
+                        }
+                    }
+                }
             }
             .navigationViewStyle(StackNavigationViewStyle())
         }

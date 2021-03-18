@@ -69,7 +69,6 @@ struct ContentView: View {
                 .environmentObject(trackController)
                 .environmentObject(vcContainer)
                 .introspectViewController { vc in
-                    print("ContentView sheet")
                     vc.presentationController?.delegate = vcContainer
                 }
             }

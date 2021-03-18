@@ -49,7 +49,12 @@ struct OnboardingView: View {
                 .padding()
                 
                 NavigationLink(
-                    destination: PresetTracksView(onSelect: select),
+                    destination: PresetTracksView(onSelect: select)
+                        .toolbar {
+                            Button("Close") {
+                                dismiss()
+                            }
+                        },
                     isActive: $showingPresets) {
                     EmptyView()
                 }
