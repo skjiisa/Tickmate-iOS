@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		59342E1C2603F3DF007E9F64 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59342E1B2603F3DF007E9F64 /* OnboardingView.swift */; };
 		5964545225E987C9004FE184 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5964545125E987C9004FE184 /* CloudKit.framework */; };
 		597A7FDD25F6E1C900256268 /* StateEditButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 597A7FDC25F6E1C900256268 /* StateEditButton.swift */; };
 		597DF5B025E5E90800DC8D28 /* Color+RGB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 597DF5AF25E5E90800DC8D28 /* Color+RGB.swift */; };
@@ -38,6 +39,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		59342E1B2603F3DF007E9F64 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		5964544E25E987C6004FE184 /* Tickmate.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Tickmate.entitlements; sourceTree = "<group>"; };
 		5964545125E987C9004FE184 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		597A7FDC25F6E1C900256268 /* StateEditButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateEditButton.swift; sourceTree = "<group>"; };
@@ -175,6 +177,7 @@
 				5991968E25F813ED003215CC /* PresetTracksView.swift */,
 				59E6E14D25F88177008A74A9 /* SettingsView.swift */,
 				59E9397125F98ACD002FD8CD /* AcknowledgementsView.swift */,
+				59342E1B2603F3DF007E9F64 /* OnboardingView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -288,6 +291,7 @@
 				59EF633725E5DC93003E7259 /* TextWithCaption.swift in Sources */,
 				597DF5B025E5E90800DC8D28 /* Color+RGB.swift in Sources */,
 				59E6E15125F8837E008A74A9 /* Defaults.swift in Sources */,
+				59342E1C2603F3DF007E9F64 /* OnboardingView.swift in Sources */,
 				597A7FDD25F6E1C900256268 /* StateEditButton.swift in Sources */,
 				59E6E14E25F88177008A74A9 /* SettingsView.swift in Sources */,
 			);
