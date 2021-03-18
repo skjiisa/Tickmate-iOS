@@ -6,14 +6,21 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct OnboardingView: View {
+    
+    @Environment(\.managedObjectContext) private var moc
+    
+    @EnvironmentObject private var trackController: TrackController
     
     @Binding var showing: Bool
     
     let bodyText = "Tickmate is a 1-bit journal for keeping track of any daily occurances."
         + " It's great for tracking habits you hope to build or break,"
         + " so you can visualize your progress over time."
+    
+    @State private var showingPresets = false
     
     var body: some View {
         NavigationView {
@@ -30,17 +37,21 @@ struct OnboardingView: View {
                     .minimumScaleFactor(1.0)
                     .fixedSize(horizontal: false, vertical: true)
                 Spacer()
-                Button {
-                    showing = false
-                } label: {
+                Button(action: start) {
                     RoundedRectangle(cornerRadius: 10)
                         .frame(height: 64)
-                        .padding()
                         .overlay(
                             Text("Get started")
                                 .foregroundColor(.white)
                                 .font(.headline)
                         )
+                }
+                .padding()
+                
+                NavigationLink(
+                    destination: PresetTracksView(onSelect: select),
+                    isActive: $showingPresets) {
+                    EmptyView()
                 }
             }
             .navigationTitle("Tickmate")
@@ -48,6 +59,28 @@ struct OnboardingView: View {
         }
         .navigationViewStyle(StackNavigationViewStyle())
     }
+    
+    private func start() {
+        // Check if this is a new install by checking if there are any Tracks
+        if trackController.fetchedResultsController.fetchedObjects?.first != nil {
+            // Thera are existing Tracks, so just dismiss.
+            dismiss()
+        } else {
+            // There are no Tracks, so show the presets.
+            showingPresets = true
+        }
+    }
+    
+    private func select(_ trackRepresentation: TrackRepresentation) {
+        trackController.newTrack(from: trackRepresentation, index: 0, context: moc)
+        dismiss()
+    }
+    
+    private func dismiss() {
+        UserDefaults.standard.setValue(true, forKey: Defaults.onboardingComplete.rawValue)
+        showing = false
+    }
+    
 }
 
 struct LogoView: View {

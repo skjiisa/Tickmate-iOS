@@ -88,9 +88,7 @@ struct ContentView: View {
             .sheet(isPresented: $showingOnboarding) {
                 OnboardingView(showing: $showingOnboarding)
                     .environment(\.managedObjectContext, moc)
-//                    .introspectViewController { vc in
-//                        vc.isModalInPresentation = true
-//                    }
+                    .environmentObject(trackController)
             }
     }
     
