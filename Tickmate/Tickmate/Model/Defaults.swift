@@ -14,4 +14,5 @@ enum Defaults: String {
     case weekSeparatorLines         // Bool
     case weekStartDay               // Int
     case relativeDates              // Bool
+    case onboardingComplete         // Bool
 }

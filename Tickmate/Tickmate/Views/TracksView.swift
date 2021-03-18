@@ -77,13 +77,24 @@ struct TracksView: View {
                     let newTrack = trackController.newTrack(from: trackRepresentation, index: (tracks.last?.index ?? -1) + 1, context: moc)
                     select(track: newTrack, delay: 0.5)
                 }
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancel") {
+                            showingPresets = false
+                        }
+                    }
+                }
             }
+            .navigationViewStyle(StackNavigationViewStyle())
         }
     }
     
     private func delete(_ indexSet: IndexSet) {
-        indexSet.map { tracks[$0] }.forEach(moc.delete)
-        // TrackController's FRC will update the indices and save for us
+        indexSet.map { tracks[$0] }.forEach {
+            trackController.delete(track: $0, context: moc)
+        }
+        // TrackController's FRC will update the indices for us
+        PersistenceController.save(context: moc)
     }
     
     private func move(_ indices: IndexSet, newOffset: Int) {

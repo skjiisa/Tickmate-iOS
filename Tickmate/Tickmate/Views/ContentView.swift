@@ -11,12 +11,15 @@ import Introspect
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var moc
     
+    @AppStorage(Defaults.onboardingComplete.rawValue) private var onboardingComplete: Bool = false
+    
     @StateObject private var trackController = TrackController()
     @StateObject private var vcContainer = ViewControllerContainer()
     
     @State private var showingSettings = false
     @State private var showingTracks = false
     @State private var scrollToBottomToggle = false
+    @State private var showingOnboarding = false
     
     var body: some View {
         NavigationView {
@@ -40,9 +43,17 @@ struct ContentView: View {
                     }
                 }
         }
+        .navigationViewStyle(StackNavigationViewStyle())
         .environmentObject(trackController)
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
-            trackController.save(now: true)
+            trackController.scheduleSave(now: true)
+        }
+        .onAppear {
+            if !onboardingComplete {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                    showingOnboarding = true
+                }
+            }
         }
         
         // See https://write.as/angelo/stupid-swiftui-tricks-debugging-sheet-dismissal
@@ -58,7 +69,6 @@ struct ContentView: View {
                 .environmentObject(trackController)
                 .environmentObject(vcContainer)
                 .introspectViewController { vc in
-                    print("ContentView sheet")
                     vc.presentationController?.delegate = vcContainer
                 }
             }
@@ -71,6 +81,13 @@ struct ContentView: View {
                     SettingsView(showing: $showingSettings)
                 }
                 .environmentObject(trackController)
+            }
+        
+        EmptyView()
+            .sheet(isPresented: $showingOnboarding) {
+                OnboardingView(showing: $showingOnboarding)
+                    .environment(\.managedObjectContext, moc)
+                    .environmentObject(trackController)
             }
     }
     
