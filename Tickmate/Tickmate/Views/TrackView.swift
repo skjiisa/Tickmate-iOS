@@ -50,7 +50,7 @@ struct TrackView: View {
                 }
                 
                 if draftTrack.reversed {
-                    DatePicker(selection: $draftTrack.startDate, displayedComponents: [.date]) {
+                    DatePicker(selection: $draftTrack.startDate, in: Date.distantPast...trackController.date, displayedComponents: [.date]) {
                         TextWithCaption(
                             text: "Start date",
                             caption: "Days after this will automatically be ticked unless you untick them.")
@@ -103,7 +103,7 @@ struct TrackView: View {
             ToolbarItem(placement: .primaryAction) {
                 StateEditButton(editMode: $vcContainer.editMode, doneText: "Save") {
                     if vcContainer.editMode == .inactive {
-                        save()
+                        trackController.save(draftTrack, to: track, context: moc)
                     }
                 }
             }
@@ -133,15 +133,6 @@ struct TrackView: View {
             }
             vcContainer.deactivateEditMode()
         }
-    }
-    
-    private func save() {
-        let oldStartDate = track.startDate
-        draftTrack.save(to: track)
-        if track.startDate != oldStartDate {
-            trackController.loadTicks(for: track)
-        }
-        PersistenceController.save(context: moc)
     }
     
     private func cancel() {

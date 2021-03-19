@@ -9,7 +9,11 @@ import CoreData
 import SwiftUI
 import SwiftDate
 
+//MARK: TrackController
+
 class TrackController: NSObject, ObservableObject {
+    
+    //MARK: Properties
     
     var tickControllers: [Track: TickController] = [:]
     
@@ -61,6 +65,8 @@ class TrackController: NSObject, ObservableObject {
         }
     }
     
+    //MARK: Date Formatters
+    
     private var dateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .short
@@ -81,6 +87,8 @@ class TrackController: NSObject, ObservableObject {
         return formatter
     }()
     
+    //MARK: Ticks
+    
     func loadTicks(for track: Track) {
         if let tickController = tickControllers[track] {
             tickController.loadTicks()
@@ -96,6 +104,8 @@ class TrackController: NSObject, ObservableObject {
             return tickController
         }()
     }
+    
+    //MARK: Labels
     
     func dayLabel(day: Int) -> TextWithCaption {
         let date = self.date - day.days
@@ -128,6 +138,8 @@ class TrackController: NSObject, ObservableObject {
         }
     }
     
+    //MARK: Track CRUD
+    
     func newTrack(index: Int16, context moc: NSManagedObjectContext) -> Track {
         Track(name: "New Track", startDate: TrackController.iso8601.string(from: date.in(region: .current).date), index: index, context: moc)
     }
@@ -147,6 +159,37 @@ class TrackController: NSObject, ObservableObject {
         }
         moc.delete(track)
     }
+    
+    func save(_ trackRepresentation: TrackRepresentation, to track: Track, context moc: NSManagedObjectContext) {
+        let oldStartDate = track.startDate
+        trackRepresentation.save(to: track)
+        if track.startDate != oldStartDate {
+            // The start date changed
+            updateTickDateOffsets(for: track, oldStartString: oldStartDate)
+            loadTicks(for: track)
+        }
+        PersistenceController.save(context: moc)
+    }
+    
+    func updateTickDateOffsets(for track: Track, oldStartString: String?) {
+        guard let oldStartString = oldStartString,
+              let newStartString = track.startDate,
+              let oldStartDate = DateInRegion(oldStartString, region: .current),
+              let newStartDate = DateInRegion(newStartString, region: .current) else { return }
+        let calculatedOffset: Int?
+        if oldStartDate > newStartDate {
+            calculatedOffset = (oldStartDate - (newStartDate - 2.hours)).toUnit(.day)
+        } else {
+            calculatedOffset = ((oldStartDate - 2.hours) - newStartDate).toUnit(.day)
+        }
+        
+        guard let intOffset = calculatedOffset,
+              let ticks = track.ticks as? Set<Tick> else { return }
+        let offset = Int16(intOffset)
+        ticks.forEach { $0.dayOffset += offset }
+    }
+    
+    //MARK: Settings
     
     func setCustomDayStart(minutes givenMinutes: Int) {
         let minutes: Int
@@ -201,6 +244,8 @@ class TrackController: NSObject, ObservableObject {
     }
     
 }
+
+//MARK: Fetched Results Controller Delegate
 
 extension TrackController: NSFetchedResultsControllerDelegate {
     func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {

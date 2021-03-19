@@ -50,11 +50,8 @@ struct TrackRepresentation: Equatable, Hashable {
         multiple = track.multiple
         reversed = track.reversed
         if let startDateString = track.startDate,
-//           let startDateInRegion = DateInRegion(startDateString, region: .current) {
            let startDate = TrackController.iso8601.date(from: startDateString) {
-//            startDate = startDateInRegion.date
             self.startDate = startDate
-            print(track.startDate, startDate)
         }
         
         if let trackImage = track.systemImage {
