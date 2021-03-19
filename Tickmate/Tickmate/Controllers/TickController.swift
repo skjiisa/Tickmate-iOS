@@ -54,7 +54,10 @@ class TickController: NSObject, ObservableObject {
               let startDateString = track.startDate,
               let startDate = DateInRegion(startDateString, region: .current)?.dateTruncated(at: [.hour, .minute, .second]),
               let today = trackController?.date.in(region: .current).dateTruncated(at: [.hour, .minute, .second]),
-              let todayOffset = (today - startDate).toUnit(.day) else { return }
+              // Subtract 2 hours here to overestimate the offset to account for for any daylight savings time changes.
+              // Because we're truncating at the number of days, having one or two hours extra won't increase
+              // the day offset, but having one hour less because of DST would incorrectly offset the day.
+              let todayOffset = (today - (startDate - 2.hours)).toUnit(.day) else { return }
         self.todayOffset = todayOffset
         
         var ticks = [Tick?]()
