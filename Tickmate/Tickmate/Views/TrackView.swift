@@ -41,12 +41,20 @@ struct TrackView: View {
                             + " Long press to decrease counter.")
                 }
                 
-                Toggle(isOn: $draftTrack.reversed) {
+                Toggle(isOn: $draftTrack.reversed.animation()) {
                     TextWithCaption(
                         text: "Reversed",
                         caption: "Days will be ticked by default."
                             + " Tapping a day will untick it."
                             + " Good for tracking abstaining from bad habits.")
+                }
+                
+                if draftTrack.reversed {
+                    DatePicker(selection: $draftTrack.startDate, displayedComponents: [.date]) {
+                        TextWithCaption(
+                            text: "Start date",
+                            caption: "Days after this will automatically be ticked unless you untick them.")
+                    }
                 }
                 
                 ColorPicker("Color", selection: $draftTrack.color, supportsOpacity: false)
@@ -128,7 +136,11 @@ struct TrackView: View {
     }
     
     private func save() {
+        let oldStartDate = track.startDate
         draftTrack.save(to: track)
+        if track.startDate != oldStartDate {
+            trackController.loadTicks(for: track)
+        }
         PersistenceController.save(context: moc)
     }
     
