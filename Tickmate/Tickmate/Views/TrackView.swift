@@ -93,7 +93,11 @@ struct TrackView: View {
         .navigationTitle("Track details")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
-                StateEditButton(editMode: $vcContainer.editMode, doneText: "Save")
+                StateEditButton(editMode: $vcContainer.editMode, doneText: "Save") {
+                    if vcContainer.editMode == .inactive {
+                        save()
+                    }
+                }
             }
             ToolbarItem(placement: .cancellationAction) {
                 if sheet || vcContainer.editMode.isEditing {

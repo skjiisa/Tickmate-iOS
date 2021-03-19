@@ -14,12 +14,14 @@ struct StateEditButton: View {
     
     @Binding var editMode: EditMode
     var doneText = "Done"
+    var onTap: () -> Void = {}
     
     var body: some View {
         Button {
             withAnimation {
                 editMode = editMode == .active ? .inactive : .active
             }
+            onTap()
         } label: {
             if editMode.isEditing {
                 Text(doneText)
