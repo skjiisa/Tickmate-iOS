@@ -64,10 +64,18 @@ struct AcknowledgementDetail: View {
 // MARK: Acknowledgement
 
 struct Acknowledgement: Hashable {
+    
     var name: String
     var copyright: String
-    var link: String? = nil
+    var link: String?
     var license: License
+    
+    internal init(name: String, copyright: String, link: String?, license: Acknowledgement.License) {
+        self.name = name
+        self.copyright = copyright
+        self.link = link
+        self.license = license
+    }
     
     enum License {
         case mit
