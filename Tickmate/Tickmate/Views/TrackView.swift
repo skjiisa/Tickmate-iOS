@@ -123,6 +123,11 @@ struct TrackView: View {
         .onChange(of: draftTrack) { _ in
             setEditMode()
         }
+        .onChange(of: vcContainer.editMode) { value in
+            if !value.isEditing {
+                dismissKeyboard()
+            }
+        }
         .onAppear {
             if !initialized {
                 draftTrack.load(track: track)

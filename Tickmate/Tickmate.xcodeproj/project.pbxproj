@@ -14,6 +14,7 @@
 		5991968F25F813ED003215CC /* PresetTracksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5991968E25F813ED003215CC /* PresetTracksView.swift */; };
 		5991969225F817F7003215CC /* PresetTracks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5991969125F817F7003215CC /* PresetTracks.swift */; };
 		599D9F5225EC5A4900DF3795 /* TracksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599D9F5125EC5A4900DF3795 /* TracksView.swift */; };
+		59A0D8932645CF1600E01E61 /* View+DismissKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A0D8922645CF1600E01E61 /* View+DismissKeyboard.swift */; };
 		59C23A6725E70D7000AFBC4B /* SymbolsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C23A6625E70D7000AFBC4B /* SymbolsList.swift */; };
 		59C23A6C25E70E1A00AFBC4B /* SymbolPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C23A6B25E70E1A00AFBC4B /* SymbolPicker.swift */; };
 		59E6E14E25F88177008A74A9 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E6E14D25F88177008A74A9 /* SettingsView.swift */; };
@@ -47,6 +48,7 @@
 		5991968E25F813ED003215CC /* PresetTracksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetTracksView.swift; sourceTree = "<group>"; };
 		5991969125F817F7003215CC /* PresetTracks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetTracks.swift; sourceTree = "<group>"; };
 		599D9F5125EC5A4900DF3795 /* TracksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TracksView.swift; sourceTree = "<group>"; };
+		59A0D8922645CF1600E01E61 /* View+DismissKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+DismissKeyboard.swift"; sourceTree = "<group>"; };
 		59C23A6625E70D7000AFBC4B /* SymbolsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolsList.swift; sourceTree = "<group>"; };
 		59C23A6B25E70E1A00AFBC4B /* SymbolPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolPicker.swift; sourceTree = "<group>"; };
 		59E6E14D25F88177008A74A9 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -110,6 +112,7 @@
 				597DF5AF25E5E90800DC8D28 /* Color+RGB.swift */,
 				597A7FDC25F6E1C900256268 /* StateEditButton.swift */,
 				59E9397425F98BCB002FD8CD /* AcknowledgementLink.swift */,
+				59A0D8922645CF1600E01E61 /* View+DismissKeyboard.swift */,
 			);
 			path = "Supplementary Views";
 			sourceTree = "<group>";
@@ -288,6 +291,7 @@
 				5991969225F817F7003215CC /* PresetTracks.swift in Sources */,
 				599D9F5225EC5A4900DF3795 /* TracksView.swift in Sources */,
 				59F6EA9D25E369830069DF40 /* Tickmate+Convenience.swift in Sources */,
+				59A0D8932645CF1600E01E61 /* View+DismissKeyboard.swift in Sources */,
 				59EF633725E5DC93003E7259 /* TextWithCaption.swift in Sources */,
 				597DF5B025E5E90800DC8D28 /* Color+RGB.swift in Sources */,
 				59E6E15125F8837E008A74A9 /* Defaults.swift in Sources */,
