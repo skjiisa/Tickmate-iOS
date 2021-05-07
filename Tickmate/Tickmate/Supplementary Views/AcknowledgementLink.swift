@@ -128,7 +128,7 @@ struct AcknowledgementLink_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             List {
-                AcknowledgementLink(acknowledgement, selection: .constant(nil))
+                AcknowledgementLink(acknowledgement, selection: .constant(acknowledgement))
             }
             .listStyle(InsetGroupedListStyle())
             .navigationTitle("Acknowledgements")

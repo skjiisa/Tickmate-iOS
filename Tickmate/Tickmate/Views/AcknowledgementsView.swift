@@ -30,6 +30,16 @@ struct AcknowledgementsView: View {
                 AcknowledgementLink(tickmateAcknowledgement, selection: $selection)
             }
             
+            Section {
+                Link(destination: URL(string: "https://github.com/lordi/tickmate")!) {
+                    HStack {
+                        TextWithCaption(text: "Based on Tickmate", caption: "by Hannes Gräuler")
+                        Spacer()
+                        Image(systemName: "arrow.up.right")
+                    }
+                }
+            }
+            
             Section(header: Text("Libraries")) {
                 ForEach(acknowledgements, id: \.self) { acknowledgement in
                     AcknowledgementLink(acknowledgement, selection: $selection)
