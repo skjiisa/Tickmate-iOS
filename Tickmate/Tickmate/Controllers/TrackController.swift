@@ -22,11 +22,14 @@ class TrackController: NSObject, ObservableObject {
     @Published var weekStartDay: Int
     @Published var relativeDates: Bool
     
+    private var preview: Bool
     private var work: DispatchWorkItem?
     
     var fetchedResultsController: NSFetchedResultsController<Track>
     
     init(preview: Bool = false) {
+        self.preview = preview
+        
         UserDefaults.standard.register(defaults: [
             Defaults.customDayStartMinutes.rawValue: 0,
             Defaults.weekStartDay.rawValue: 2,
@@ -44,7 +47,7 @@ class TrackController: NSObject, ObservableObject {
         relativeDates = UserDefaults.standard.bool(forKey: Defaults.relativeDates.rawValue)
         
         // FRC
-        let context = preview ? PersistenceController.preview.container.viewContext : PersistenceController.shared.container.viewContext
+        let context = (preview ? PersistenceController.preview : PersistenceController.shared).container.viewContext
         
         let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Track.index, ascending: true)]
@@ -93,13 +96,13 @@ class TrackController: NSObject, ObservableObject {
         if let tickController = tickControllers[track] {
             tickController.loadTicks()
         } else {
-            tickControllers[track] = TickController(track: track, trackController: self)
+            tickControllers[track] = TickController(track: track, trackController: self, preview: preview)
         }
     }
     
     func tickController(for track: Track) -> TickController {
         tickControllers[track] ?? {
-            let tickController = TickController(track: track, trackController: self)
+            let tickController = TickController(track: track, trackController: self, preview: preview)
             tickControllers[track] = tickController
             return tickController
         }()

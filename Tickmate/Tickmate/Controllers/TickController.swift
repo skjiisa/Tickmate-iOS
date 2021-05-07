@@ -18,11 +18,12 @@ class TickController: NSObject, ObservableObject {
     weak var trackController: TrackController?
     var todayOffset: Int?
     
-    init(track: Track, trackController: TrackController) {
+    init(track: Track, trackController: TrackController, preview: Bool) {
         self.track = track
         self.trackController = trackController
         
-        let moc = track.managedObjectContext ?? PersistenceController.preview.container.viewContext
+        let moc = track.managedObjectContext ?? (preview ? PersistenceController.preview : PersistenceController.shared).container.viewContext
+        
         let fetchRequest: NSFetchRequest<Tick> = Tick.fetchRequest()
         fetchRequest.predicate = NSPredicate(format: "track == %@", track)
         fetchRequest.sortDescriptors = [
