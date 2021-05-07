@@ -19,16 +19,23 @@ struct OnboardingView: View {
     let bodyText = "Tickmate is a 1-bit journal for keeping track of any daily occurances."
         + " It's great for tracking habits you hope to build or break,"
         + " so you can visualize your progress over time."
+        + "\nYou can also track any other occurances you might want to remember."
     
     @State private var showingPresets = false
     
     var body: some View {
         NavigationView {
             VStack {
+                HStack {
+                    Text("Tickmate")
+                        .padding()
+                        .font(.bold(.largeTitle)())
+                    Spacer()
+                }
+                
                 Spacer()
                 LogoView()
-                    .padding()
-                    .scaleEffect()
+                    .frame(maxHeight: 180)
                 
                 Spacer()
                 Text(bodyText)
@@ -36,6 +43,7 @@ struct OnboardingView: View {
                     .multilineTextAlignment(.leading)
                     .minimumScaleFactor(1.0)
                     .fixedSize(horizontal: false, vertical: true)
+                
                 Spacer()
                 Button(action: start) {
                     RoundedRectangle(cornerRadius: 10)
@@ -59,7 +67,7 @@ struct OnboardingView: View {
                     EmptyView()
                 }
             }
-            .navigationTitle("Tickmate")
+            .navigationBarHidden(true)
             .padding(.bottom)
         }
         .navigationViewStyle(StackNavigationViewStyle())
@@ -105,7 +113,7 @@ struct LogoView: View {
                 HStack {
                     ForEach(0..<3) { column in
                         RoundedRectangle(cornerRadius: 3.0)
-                            .frame(width: 64, height: 32)
+                            .aspectRatio(2, contentMode: .fit)
                             .foregroundColor(ticked[row][column] ? colors[column] : Color(.systemFill))
                     }
                 }
@@ -119,6 +127,10 @@ struct OnboardingView_Previews: PreviewProvider {
         OnboardingView(showing: .constant(true))
             .previewDevice(PreviewDevice(rawValue: "iPhone 12 Pro Max"))
             .previewDisplayName("iPhone 12 Pro Max")
+        
+        OnboardingView(showing: .constant(true))
+            .previewDevice(PreviewDevice(rawValue: "iPhone SE (2nd generation)"))
+            .previewDisplayName("iPhone SE 2")
         
         OnboardingView(showing: .constant(true))
             .previewDevice(PreviewDevice(rawValue: "iPhone SE (1st generation)"))
