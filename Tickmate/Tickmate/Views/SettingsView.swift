@@ -81,7 +81,7 @@ struct SettingsView: View {
         }
         .navigationTitle("Settings")
         .toolbar {
-            ToolbarItem(placement: .navigation) {
+            ToolbarItem(placement: .primaryAction) {
                 Button("Done") {
                     showing = false
                 }
