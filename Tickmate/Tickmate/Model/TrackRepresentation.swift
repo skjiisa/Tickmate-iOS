@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftDate
 
 struct TrackRepresentation: Equatable, Hashable {
     var name: String
@@ -13,13 +14,15 @@ struct TrackRepresentation: Equatable, Hashable {
     var multiple: Bool
     var reversed: Bool
     var systemImage: String?
+    var startDate: Date
     
-    init(name: String = "", color: Color = .black, multiple: Bool = false, reversed: Bool = false, systemImage: String? = nil) {
+    init(name: String = "", color: Color = .black, multiple: Bool = false, reversed: Bool = false, systemImage: String? = nil, startDate: Date = Date()) {
         self.name = name
         self.color = color
         self.multiple = multiple
         self.reversed = reversed
         self.systemImage = systemImage
+        self.startDate = startDate
     }
     
     init(name: String = "", red: Int, green: Int, blue: Int, multiple: Bool = false, reversed: Bool = false, systemImage: String? = nil) {
@@ -28,6 +31,7 @@ struct TrackRepresentation: Equatable, Hashable {
         self.multiple = multiple
         self.reversed = reversed
         self.systemImage = systemImage
+        self.startDate = Date()
     }
     
     var lightText: Bool {
@@ -45,6 +49,10 @@ struct TrackRepresentation: Equatable, Hashable {
         name = track.name == "New Track" ? "" : track.name ?? ""
         multiple = track.multiple
         reversed = track.reversed
+        if let startDateString = track.startDate,
+           let startDate = TrackController.iso8601.date(from: startDateString) {
+            self.startDate = startDate
+        }
         
         if let trackImage = track.systemImage {
             systemImage = trackImage
@@ -65,6 +73,7 @@ struct TrackRepresentation: Equatable, Hashable {
         track.reversed = reversed
         track.systemImage = systemImage
         track.color = Int32(color.rgb)
+        track.startDate = TrackController.iso8601.string(from: startDate)
     }
     
     static func == (rep: TrackRepresentation, track: Track) -> Bool {
@@ -73,7 +82,8 @@ struct TrackRepresentation: Equatable, Hashable {
             rep.multiple == track.multiple &&
             rep.reversed == track.reversed &&
             rep.systemImage == track.systemImage &&
-            Int32(rep.color.rgb) == track.color
+            Int32(rep.color.rgb) == track.color &&
+            TrackController.iso8601.string(from: rep.startDate) == track.startDate
     }
     
     static func == (track: Track, rep: TrackRepresentation) -> Bool {

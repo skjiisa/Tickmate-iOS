@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct TrackView: View {
+    
+    //MARK: Properties
+    
     @Environment(\.managedObjectContext) private var moc
     
     @EnvironmentObject private var vcContainer: ViewControllerContainer
@@ -22,6 +25,8 @@ struct TrackView: View {
     @State private var initialized = false
     @State private var showingSymbolPicker = false
     @State private var showDelete = false
+    
+    //MARK: Body
     
     var body: some View {
         Form {
@@ -41,12 +46,20 @@ struct TrackView: View {
                             + " Long press to decrease counter.")
                 }
                 
-                Toggle(isOn: $draftTrack.reversed) {
+                Toggle(isOn: $draftTrack.reversed.animation()) {
                     TextWithCaption(
                         text: "Reversed",
                         caption: "Days will be ticked by default."
                             + " Tapping a day will untick it."
                             + " Good for tracking abstaining from bad habits.")
+                }
+                
+                if draftTrack.reversed {
+                    DatePicker(selection: $draftTrack.startDate, in: Date.distantPast...trackController.date, displayedComponents: [.date]) {
+                        TextWithCaption(
+                            text: "Start date",
+                            caption: "Days after this will automatically be ticked unless you untick them.")
+                    }
                 }
                 
                 ColorPicker("Color", selection: $draftTrack.color, supportsOpacity: false)
@@ -89,13 +102,12 @@ struct TrackView: View {
                     ])
             }
         }
-        .environment(\.editMode, $vcContainer.editMode)
         .navigationTitle("Track details")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 StateEditButton(editMode: $vcContainer.editMode, doneText: "Save") {
                     if vcContainer.editMode == .inactive {
-                        save()
+                        trackController.save(draftTrack, to: track, context: moc)
                     }
                 }
             }
@@ -108,14 +120,21 @@ struct TrackView: View {
             }
         }
         .navigationBarBackButtonHidden(vcContainer.editMode.isEditing)
-        .onChange(of: draftTrack) { value in
-            vcContainer.editMode = value == track ? .inactive : .active
+        .onChange(of: draftTrack) { _ in
+            setEditMode()
+        }
+        .onChange(of: vcContainer.editMode) { value in
+            if !value.isEditing {
+                dismissKeyboard()
+            }
         }
         .onAppear {
             if !initialized {
                 draftTrack.load(track: track)
                 enabled = track.enabled
                 initialized = true
+            } else {
+                setEditMode()
             }
         }
         .onDisappear {
@@ -127,17 +146,24 @@ struct TrackView: View {
         }
     }
     
-    private func save() {
-        draftTrack.save(to: track)
-        PersistenceController.save(context: moc)
+    //MARK: Functions
+    
+    private func setEditMode() {
+        vcContainer.editMode = draftTrack == track ? .inactive : .active
     }
     
     private func cancel() {
-        withAnimation {
-            draftTrack.load(track: track)
-            // In case the user entered edit mode without making any changes,
-            // which would mean onChange(of: draftTrack) wouldn't get called.
-            vcContainer.editMode = draftTrack == track ? .inactive : .active
+        if track.name == "New Track",
+           track.ticks?.anyObject() == nil {
+            // This is a brand new track. Delete it instead of exiting edit mode
+            delete()
+        } else {
+            withAnimation {
+                draftTrack.load(track: track)
+                // In case the user entered edit mode without making any changes,
+                // which would mean onChange(of: draftTrack) wouldn't get called.
+                setEditMode()
+            }
         }
     }
     
@@ -147,6 +173,8 @@ struct TrackView: View {
         PersistenceController.save(context: moc)
     }
 }
+
+//MARK: Previews
 
 struct TrackView_Previews: PreviewProvider {
         
