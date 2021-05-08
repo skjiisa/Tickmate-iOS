@@ -42,6 +42,54 @@ class PersistenceController {
         result.save()
         return result
     }()
+    
+    func loadDemo() -> PersistenceController {
+        let viewContext = container.viewContext
+        
+        let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
+        fetchRequest.fetchLimit = 1
+        guard (try? viewContext.fetch(fetchRequest))?.isEmpty ?? false else { return self }
+        print("Loading demo...")
+        
+        let startDateOffset = 14
+        let dateString = TrackController.iso8601.string(from: Date() - startDateOffset.days)
+        
+        let demoTracks = [
+            [true, true, true, false, true, true, true, true, true, true, false, true, false, true, true, true, true, false, false, false, false, true, true, false],
+            [false, true, true, true, true, true, true, true, true, true, true, false, true, false, true, true, true, false, true, true, true, true, true, false],
+            [true, true, true, false, true, false, false, true, false, true, false, true, false, true, false].map { !$0 },   // This one is reversed
+            [true, true, true, true, true, false, true, true, false, true, false, true, true, true, true, true, false, true, true, true, true, true, true, true]
+        ]
+        
+        for (i, ticks) in demoTracks.enumerated() {
+            let track = Track(
+                name: String(UUID().uuidString.dropLast(28)),
+                multiple: i > 0,
+                reversed: i == 2,
+                startDate: dateString,
+                index: Int16(i),
+                context: viewContext)
+            PresetTracks[i].save(to: track)
+            track.startDate = dateString
+            
+            for (j, tick) in ticks.enumerated() where tick {
+                Tick(track: track, dayOffset: Int16(startDateOffset - j), context: viewContext)
+            }
+        }
+        
+        let disabledTrack = Track(
+            name: String(UUID().uuidString.dropLast(28)),
+            multiple: false,
+            reversed: false,
+            startDate: dateString,
+            index: 4,
+            context: viewContext)
+        PresetTracks[5].save(to: disabledTrack)
+        disabledTrack.enabled = false
+        
+        save()
+        return self
+    }
 
     let container: NSPersistentCloudKitContainer
 
