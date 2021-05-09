@@ -12,11 +12,12 @@ struct AcknowledgementsView: View {
     private var tickmateAcknowledgement = Acknowledgement(
         name: "BSD 2-Clause License",
         copyright: "2021, Isaac Lyons",
+        link: nil,
         license: .bsd2)
     
     private var acknowledgements = [
         Acknowledgement(name: "SwiftDate", copyright: "2018 Daniele Margutti", link: "https://github.com/malcommac/SwiftDate", license: .mit),
-        Acknowledgement(name: "Introspect for SwiftUI", copyright: "2019 Timber Software", license: .mit)
+        Acknowledgement(name: "Introspect for SwiftUI", copyright: "2019 Timber Software", link: "https://github.com/siteline/SwiftUI-Introspect", license: .mit)
     ]
     
     @State private var selection: Acknowledgement?
@@ -27,6 +28,16 @@ struct AcknowledgementsView: View {
             Section(header: Text("License")) {
                 Text("This app is open-source software.")
                 AcknowledgementLink(tickmateAcknowledgement, selection: $selection)
+            }
+            
+            Section {
+                Link(destination: URL(string: "https://github.com/lordi/tickmate")!) {
+                    HStack {
+                        TextWithCaption(text: "Based on Tickmate", caption: "by Hannes Gräuler")
+                        Spacer()
+                        Image(systemName: "arrow.up.right")
+                    }
+                }
             }
             
             Section(header: Text("Libraries")) {
