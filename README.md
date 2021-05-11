@@ -1,6 +1,8 @@
 # Tickmate
 
-1-bit journal
+1-bit Journal
+
+[Download on the App Store](https://apps.apple.com/us/app/tickmate-1-bit-journal/id1558621933)
 
 ### Screenshots
 
