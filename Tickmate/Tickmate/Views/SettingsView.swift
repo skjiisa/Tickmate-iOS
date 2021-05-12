@@ -10,18 +10,23 @@ import SwiftDate
 
 struct SettingsView: View {
     
+    //MARK: Properties
+    
     @AppStorage(Defaults.customDayStart.rawValue) private var customDayStart: Bool = false
     @AppStorage(Defaults.customDayStartMinutes.rawValue) private var minutes: Int = 60
     @AppStorage(Defaults.weekSeparatorSpaces.rawValue) private var weekSeparatorSpaces: Bool = true
     @AppStorage(Defaults.weekSeparatorLines.rawValue) private var weekSeparatorLines: Bool = true
     @AppStorage(Defaults.weekStartDay.rawValue) private var weekStartDay = 2
     @AppStorage(Defaults.relativeDates.rawValue) private var relativeDates = true
+    @AppStorage(Defaults.useEnabled.rawValue) private var useEnabled = true
     
     @EnvironmentObject private var trackController: TrackController
     
     @Binding var showing: Bool
     
     @State private var timeOffset: Date = Date()
+    
+    //MARK: Body
     
     var body: some View {
         Form {
@@ -68,6 +73,12 @@ struct SettingsView: View {
                 }
             }
             
+            Section(header: Text("iCloud Sync"),
+                    footer: Text("Disable if you want to have different"
+                                    + " Tracks enabled on different devices.")) {
+                Toggle("Sync Track enabled state", isOn: $useEnabled)
+            }
+            
             Section(header: Text("App Information")) {
                 Link("Support Website", destination: URL(string: "https://github.com/Isvvc/Tickmate-iOS/issues")!)
                 Link("Email Support", destination: URL(string: "mailto:lyons@tuta.io")!)
@@ -104,12 +115,7 @@ struct SettingsView: View {
         }
     }
     
-    private let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .none
-        formatter.timeStyle = .short
-        return formatter
-    }()
+    //MARK: Functions
     
     private func updateCustomDayStart(_: Any? = nil) {
         let components = timeOffset.in(region: .current).dateComponents
@@ -118,6 +124,8 @@ struct SettingsView: View {
     }
     
 }
+
+//MARK: Previews
 
 struct SettingsView_Previews: PreviewProvider {
     static var previews: some View {
