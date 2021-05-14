@@ -19,14 +19,20 @@ struct GroupsView: View {
         animation: .default)
     private var groups: FetchedResults<TrackGroup>
     
+    @AppStorage(Defaults.showAllTracks.rawValue) private var showAllTracks = true
+    
     @State private var selection: TrackGroup?
     
     //MARK: Body
     
     var body: some View {
         Form {
-            ForEach(groups) { group in
-                NavigationLink(group.displayName, destination: GroupView(group: group), tag: group, selection: $selection)
+            Section {
+                Toggle("All Tracks", isOn: $showAllTracks)
+                
+                ForEach(groups) { group in
+                    NavigationLink(group.displayName, destination: GroupView(group: group), tag: group, selection: $selection)
+                }
             }
             
             Section {

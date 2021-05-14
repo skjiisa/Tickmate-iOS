@@ -15,4 +15,5 @@ enum Defaults: String {
     case weekStartDay               // Int
     case relativeDates              // Bool
     case onboardingComplete         // Bool
+    case showAllTracks              // Bool
 }

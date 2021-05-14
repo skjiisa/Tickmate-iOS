@@ -17,6 +17,7 @@ struct ContentView: View {
         sortDescriptors: [NSSortDescriptor(keyPath: \TrackGroup.name, ascending: true)])
     private var groups: FetchedResults<TrackGroup>
     
+    @AppStorage(Defaults.showAllTracks.rawValue) private var showAllTracks = true
     @AppStorage(Defaults.onboardingComplete.rawValue) private var onboardingComplete: Bool = false
     
     @StateObject private var trackController = TrackController()
@@ -30,11 +31,16 @@ struct ContentView: View {
     var body: some View {
         NavigationView {
             TabView {
-                TicksView(scrollToBottomToggle: scrollToBottomToggle)
+                if showAllTracks || groups.count == 0 {
+                    TicksView(scrollToBottomToggle: scrollToBottomToggle)
+                }
+                
                 ForEach(groups) { group in
                     TicksView(group: group, scrollToBottomToggle: scrollToBottomToggle)
                 }
             }
+            // This is here to force the TabView to update because Page Tab Views are bugged
+            .id(UUID())
             .ignoresSafeArea(.container, edges: .bottom)
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
             .navigationBarTitle("Tickmate", displayMode: .inline)
