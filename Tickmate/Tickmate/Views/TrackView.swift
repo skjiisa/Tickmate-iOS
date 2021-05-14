@@ -82,15 +82,10 @@ struct TrackView: View {
             }
             
             Section {
-                Button {
+                Button("Delete") {
                     showDelete = true
-                } label: {
-                    HStack {
-                        Spacer()
-                        Text("Delete")
-                        Spacer()
-                    }
                 }
+                .centered()
                 .accentColor(.red)
             }
             .actionSheet(isPresented: $showDelete) {

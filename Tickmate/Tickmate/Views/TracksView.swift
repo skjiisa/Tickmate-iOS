@@ -37,27 +37,17 @@ struct TracksView: View {
             .onMove(perform: move)
             .animation(.easeInOut(duration: 0.25))
             
-            Button {
+            Button("Create new track") {
                 let newTrack = trackController.newTrack(index: (tracks.last?.index ?? -1) + 1, context: moc)
                 select(track: newTrack, delay: 0.25)
-            } label: {
-                HStack {
-                    Spacer()
-                    Text("Create new track")
-                    Spacer()
-                }
             }
+            .centered()
             .foregroundColor(.accentColor)
             
-            Button {
+            Button("Add preset track") {
                 showingPresets = true
-            } label: {
-                HStack {
-                    Spacer()
-                    Text("Add preset track")
-                    Spacer()
-                }
             }
+            .centered()
             .foregroundColor(.accentColor)
         }
         .environment(\.editMode, $editMode)
