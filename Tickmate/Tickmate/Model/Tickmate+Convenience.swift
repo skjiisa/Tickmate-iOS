@@ -8,6 +8,14 @@
 import CoreData
 import SwiftUI
 
+extension TrackGroup {
+    @discardableResult
+    convenience init(name: String, context moc: NSManagedObjectContext) {
+        self.init(context: moc)
+        self.name = name
+    }
+}
+
 extension Track {
     @discardableResult
     convenience init(name: String, color: Int32? = nil, multiple: Bool = false, reversed: Bool = false, startDate: String, systemImage: String? = nil, index: Int16, context moc: NSManagedObjectContext) {

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17709" systemVersion="20D74" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="18154" systemVersion="20E232" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="YES" userDefinedModelVersionIdentifier="">
     <entity name="Tick" representedClassName="Tick" syncable="YES" codeGenerationType="class">
         <attribute name="count" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="dayOffset" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
@@ -16,10 +16,16 @@
         <attribute name="reversed" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="startDate" optional="YES" attributeType="String"/>
         <attribute name="systemImage" optional="YES" attributeType="String"/>
+        <relationship name="groups" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="TrackGroup" inverseName="tracks" inverseEntity="TrackGroup"/>
         <relationship name="ticks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Tick" inverseName="track" inverseEntity="Tick"/>
+    </entity>
+    <entity name="TrackGroup" representedClassName="TrackGroup" syncable="YES" codeGenerationType="class">
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="tracks" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Track" inverseName="groups" inverseEntity="Track"/>
     </entity>
     <elements>
         <element name="Tick" positionX="-45" positionY="36" width="128" height="104"/>
-        <element name="Track" positionX="-54" positionY="-9" width="128" height="164"/>
+        <element name="Track" positionX="-54" positionY="-9" width="128" height="179"/>
+        <element name="TrackGroup" positionX="-45" positionY="63" width="128" height="59"/>
     </elements>
 </model>

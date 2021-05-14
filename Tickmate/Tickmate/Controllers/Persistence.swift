@@ -15,6 +15,9 @@ class PersistenceController {
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
+        
+        let group = TrackGroup(name: "Test group", context: viewContext)
+        
         let dateString = TrackController.iso8601.string(from: Date() - 5.days)
         for i: Int16 in 0..<3 {
             let track = Track(
@@ -37,6 +40,7 @@ class PersistenceController {
                 for day in 0..<5 where Bool.random() {
                     Tick(track: track, dayOffset: Int16(day))
                 }
+                track.groups = [group]
             }
         }
         result.save()

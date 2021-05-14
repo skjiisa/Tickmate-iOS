@@ -25,7 +25,11 @@ struct TracksView: View {
     }
     
     var body: some View {
-        List {
+        Form {
+            Section {
+                NavigationLink("Groups", destination: GroupsView())
+            }
+            
             ForEach(tracks) { track in
                 TrackCell(track: track, selection: $selection)
             }
