@@ -23,25 +23,31 @@ struct ContentView: View {
     
     var body: some View {
         NavigationView {
-            TicksView(scrollToBottomToggle: scrollToBottomToggle)
-                .toolbar {
-                    ToolbarItem(placement: .primaryAction) {
-                        Button {
-                            showingTracks = true
-                        } label: {
-                            Image(systemName: "text.justify")
-                                .imageScale(.large)
-                        }
+            TabView {
+                TicksView(scrollToBottomToggle: scrollToBottomToggle)
+                TicksView(scrollToBottomToggle: scrollToBottomToggle)
+            }
+            .ignoresSafeArea(.container, edges: .bottom)
+            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+            .navigationBarTitle("Tickmate", displayMode: .inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        showingTracks = true
+                    } label: {
+                        Label("Tracks", systemImage: "text.justify")
                     }
-                    ToolbarItem(placement: .navigation) {
-                        Button {
-                            showingSettings = true
-                        } label: {
-                            Image(systemName: "gear")
-                                .imageScale(.large)
-                        }
-                    }
+                    .imageScale(.large)
                 }
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        showingSettings = true
+                    } label: {
+                        Label("Settings", systemImage: "gear")
+                    }
+                    .imageScale(.large)
+                }
+            }
         }
         .navigationViewStyle(StackNavigationViewStyle())
         .environmentObject(trackController)
