@@ -19,7 +19,7 @@ struct GroupView: View {
     var body: some View {
         Form {
             Section(header: Text("Name")) {
-                TextField("Name", text: $group.editorName)
+                TextField("Name", text: $group.wrappedName)
             }
             
             Section(header: Text("Tracks")) {

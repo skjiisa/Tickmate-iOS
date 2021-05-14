@@ -8,8 +8,23 @@
 import Foundation
 
 extension TrackGroup {
-    var editorName: String {
-        get { name == "New Group" ? "" : name ?? "" }
+    var wrappedName: String {
+        get { name ?? "" }
         set { name = newValue }
+    }
+    
+    var displayName: String {
+        name ??? "New Group"
+    }
+}
+
+infix operator ???: NilCoalescingPrecedence
+extension Collection {
+    static func ??? (lhs: Self?, rhs: Self) -> Self {
+        if let lhs = lhs,
+           !lhs.isEmpty {
+            return lhs
+        }
+        return rhs
     }
 }

@@ -8,18 +8,48 @@
 import SwiftUI
 
 struct GroupsView: View {
-    @FetchRequest(entity: TrackGroup.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \TrackGroup.name, ascending: true)])
+    
+    //MARK: Properties
+    
+    @Environment(\.managedObjectContext) private var moc
+    
+    @FetchRequest(
+        entity: TrackGroup.entity(),
+        sortDescriptors: [NSSortDescriptor(keyPath: \TrackGroup.name, ascending: true)],
+        animation: .default)
     private var groups: FetchedResults<TrackGroup>
+    
+    @State private var selection: TrackGroup?
+    
+    //MARK: Body
     
     var body: some View {
         Form {
             ForEach(groups) { group in
-                Text(group.name ?? "New Group")
+                NavigationLink(group.displayName, destination: GroupView(group: group), tag: group, selection: $selection)
+            }
+            
+            Section {
+                Button("Create new group") {
+                    let newGroup = TrackGroup(context: moc)
+                    select(newGroup, delay: 0.25)
+                }
+                .centered()
             }
         }
         .navigationTitle("Groups")
     }
+    
+    //MARK: Functions
+    
+    private func select(_ group: TrackGroup, delay: Double) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            selection = group
+        }
+    }
 }
+
+//MARK: Previews
 
 struct GroupsView_Previews: PreviewProvider {
     static var previews: some View {
