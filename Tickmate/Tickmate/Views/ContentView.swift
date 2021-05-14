@@ -9,7 +9,13 @@ import SwiftUI
 import Introspect
 
 struct ContentView: View {
+    
     @Environment(\.managedObjectContext) private var moc
+    
+    @FetchRequest(
+        entity: TrackGroup.entity(),
+        sortDescriptors: [NSSortDescriptor(keyPath: \TrackGroup.name, ascending: true)])
+    private var groups: FetchedResults<TrackGroup>
     
     @AppStorage(Defaults.onboardingComplete.rawValue) private var onboardingComplete: Bool = false
     
@@ -25,7 +31,9 @@ struct ContentView: View {
         NavigationView {
             TabView {
                 TicksView(scrollToBottomToggle: scrollToBottomToggle)
-                TicksView(scrollToBottomToggle: scrollToBottomToggle)
+                ForEach(groups) { group in
+                    TicksView(group: group, scrollToBottomToggle: scrollToBottomToggle)
+                }
             }
             .ignoresSafeArea(.container, edges: .bottom)
             .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))

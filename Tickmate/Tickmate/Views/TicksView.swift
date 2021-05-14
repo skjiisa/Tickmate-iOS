@@ -14,11 +14,11 @@ import Introspect
 struct TicksView: View {
     
     @Environment(\.managedObjectContext) private var moc
-    @FetchRequest(
-        entity: Track.entity(),
-        sortDescriptors: [NSSortDescriptor(keyPath: \Track.index, ascending: true)],
-        predicate: NSPredicate(format: "enabled == YES"))
-    private var tracks: FetchedResults<Track>
+    
+    private var fetchRequest: FetchRequest<Track>
+    private var tracks: FetchedResults<Track> {
+        fetchRequest.wrappedValue
+    }
     
     @AppStorage(Defaults.weekSeparatorLines.rawValue) private var weekSeparatorLines: Bool = true
     @AppStorage(Defaults.weekSeparatorSpaces.rawValue) private var weekSeparatorSpaces: Bool = true
@@ -31,6 +31,22 @@ struct TicksView: View {
     
     @State private var showingTrack: Track?
     @State private var initialized = false
+    
+    init(scrollToBottomToggle: Bool = false) {
+        self.scrollToBottomToggle = scrollToBottomToggle
+        fetchRequest = FetchRequest(
+            entity: Track.entity(),
+            sortDescriptors: [NSSortDescriptor(keyPath: \Track.index, ascending: true)],
+            predicate: NSPredicate(format: "enabled == YES"))
+    }
+    
+    init(group: TrackGroup, scrollToBottomToggle: Bool = false) {
+        self.scrollToBottomToggle = scrollToBottomToggle
+        fetchRequest = FetchRequest(
+            entity: Track.entity(),
+            sortDescriptors: [NSSortDescriptor(keyPath: \Track.index, ascending: true)],
+            predicate: NSPredicate(format: "enabled == YES AND %@ IN groups", group))
+    }
     
     var body: some View {
         VStack(spacing: 0) {
