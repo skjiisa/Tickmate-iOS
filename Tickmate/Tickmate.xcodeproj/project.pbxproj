@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		592CE888264F19B400668684 /* View+Centered.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592CE887264F19B400668684 /* View+Centered.swift */; };
 		592CE88A264F1CA800668684 /* GroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592CE889264F1CA800668684 /* GroupView.swift */; };
-		592CE88E264F200A00668684 /* GroupRepresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592CE88D264F200A00668684 /* GroupRepresentation.swift */; };
+		592CE890264F337000668684 /* Tickmate+Wrapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592CE88F264F337000668684 /* Tickmate+Wrapping.swift */; };
 		59342E1C2603F3DF007E9F64 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59342E1B2603F3DF007E9F64 /* OnboardingView.swift */; };
 		5964545225E987C9004FE184 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5964545125E987C9004FE184 /* CloudKit.framework */; };
 		597A7FDD25F6E1C900256268 /* StateEditButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 597A7FDC25F6E1C900256268 /* StateEditButton.swift */; };
@@ -46,7 +46,7 @@
 /* Begin PBXFileReference section */
 		592CE887264F19B400668684 /* View+Centered.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Centered.swift"; sourceTree = "<group>"; };
 		592CE889264F1CA800668684 /* GroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupView.swift; sourceTree = "<group>"; };
-		592CE88D264F200A00668684 /* GroupRepresentation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupRepresentation.swift; sourceTree = "<group>"; };
+		592CE88F264F337000668684 /* Tickmate+Wrapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Tickmate+Wrapping.swift"; sourceTree = "<group>"; };
 		59342E1B2603F3DF007E9F64 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		5964544E25E987C6004FE184 /* Tickmate.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Tickmate.entitlements; sourceTree = "<group>"; };
 		5964545125E987C9004FE184 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
@@ -172,8 +172,8 @@
 			children = (
 				59FBCF2B25E07BD8007B114F /* Tickmate.xcdatamodeld */,
 				59F6EA9C25E369830069DF40 /* Tickmate+Convenience.swift */,
+				592CE88F264F337000668684 /* Tickmate+Wrapping.swift */,
 				59EF632C25E5CF24003E7259 /* TrackRepresentation.swift */,
-				592CE88D264F200A00668684 /* GroupRepresentation.swift */,
 				59E6E15025F8837E008A74A9 /* Defaults.swift */,
 			);
 			path = Model;
@@ -287,6 +287,7 @@
 			files = (
 				59F3EDC225FC4F270009CDEC /* ViewControllerContainer.swift in Sources */,
 				59FBCF2A25E07BD8007B114F /* Persistence.swift in Sources */,
+				592CE890264F337000668684 /* Tickmate+Wrapping.swift in Sources */,
 				592CE88A264F1CA800668684 /* GroupView.swift in Sources */,
 				592CE888264F19B400668684 /* View+Centered.swift in Sources */,
 				59C23A6C25E70E1A00AFBC4B /* SymbolPicker.swift in Sources */,
@@ -310,7 +311,6 @@
 				59EF633725E5DC93003E7259 /* TextWithCaption.swift in Sources */,
 				597DF5B025E5E90800DC8D28 /* Color+RGB.swift in Sources */,
 				59E6E15125F8837E008A74A9 /* Defaults.swift in Sources */,
-				592CE88E264F200A00668684 /* GroupRepresentation.swift in Sources */,
 				59342E1C2603F3DF007E9F64 /* OnboardingView.swift in Sources */,
 				597A7FDD25F6E1C900256268 /* StateEditButton.swift in Sources */,
 				59E6E14E25F88177008A74A9 /* SettingsView.swift in Sources */,

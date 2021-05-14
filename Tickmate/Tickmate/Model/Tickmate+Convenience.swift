@@ -55,6 +55,16 @@ extension Tick {
     }
 }
 
+extension NSMutableSet {
+    func toggle(_ member: Element) {
+        if contains(member) {
+            remove(member)
+        } else {
+            add(member)
+        }
+    }
+}
+
 extension Set {
     mutating func toggle(_ member: Element) {
         if contains(member) {

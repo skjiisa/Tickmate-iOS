@@ -9,27 +9,27 @@ import SwiftUI
 
 struct GroupView: View {
     
+    @Environment(\.managedObjectContext) private var moc
+    
     @FetchRequest(entity: Track.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Track.index, ascending: true)])
     private var tracks: FetchedResults<Track>
     
     @ObservedObject var group: TrackGroup
     
-    @State private var draftGroup = GroupRepresentation()
-    
     var body: some View {
         Form {
             Section(header: Text("Name")) {
-                TextField("Name", text: $draftGroup.name)
+                TextField("Name", text: $group.editorName)
             }
             
             Section(header: Text("Tracks")) {
                 ForEach(tracks) { track in
                     Button {
-                        draftGroup.tracks.toggle(track)
+                        group.mutableSetValue(forKey: "tracks").toggle(track)
                     } label: {
                         HStack {
                             Text(track.name ?? "New Track")
-                            if draftGroup.tracks.contains(track) {
+                            if group.tracks?.contains(track) ?? false {
                                 Spacer()
                                 Image(systemName: "checkmark")
                                     .foregroundColor(.accentColor)
@@ -39,16 +39,10 @@ struct GroupView: View {
                     .foregroundColor(.primary)
                 }
             }
-            
-            // I don't know why, but draftGroup.tracks.contains(track)
-            // doesn't update unless there's another check somewhere else.
-            if draftGroup.loaded {
-                EmptyView()
-            }
         }
         .navigationTitle("Group details")
-        .onAppear {
-            draftGroup.load(group)
+        .onDisappear {
+            PersistenceController.save(context: moc)
         }
     }
 }
