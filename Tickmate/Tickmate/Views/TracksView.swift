@@ -7,7 +7,11 @@
 
 import SwiftUI
 
+//MARK: TracksView
+
 struct TracksView: View {
+    
+    //MARK: Properties
     
     @Environment(\.managedObjectContext) private var moc
     // The environment EditMode is buggy, so using a custom @State property instead
@@ -23,6 +27,8 @@ struct TracksView: View {
     private var tracks: [Track] {
         trackController.fetchedResultsController.fetchedObjects ?? []
     }
+    
+    //MARK: Body
     
     var body: some View {
         Form {
@@ -83,6 +89,8 @@ struct TracksView: View {
         }
     }
     
+    //MARK: Functions
+    
     private func delete(_ indexSet: IndexSet) {
         indexSet.map { tracks[$0] }.forEach {
             trackController.delete(track: $0, context: moc)
@@ -107,6 +115,8 @@ struct TracksView: View {
         }
     }
 }
+
+//MARK: TrackCell
 
 struct TrackCell: View {
     
@@ -152,6 +162,8 @@ struct TrackCell: View {
         .foregroundColor(track.enabled ? .primary : .secondary)
     }
 }
+
+//MARK: Previews
 
 struct TracksView_Previews: PreviewProvider {
     static var previews: some View {

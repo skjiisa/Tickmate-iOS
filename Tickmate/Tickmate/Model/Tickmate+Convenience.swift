@@ -54,3 +54,13 @@ extension Tick {
         self.init(track: track, dayOffset: dayOffset, context: moc)
     }
 }
+
+extension Set {
+    mutating func toggle(_ member: Element) {
+        if contains(member) {
+            remove(member)
+        } else {
+            insert(member)
+        }
+    }
+}
