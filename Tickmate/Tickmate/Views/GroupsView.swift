@@ -33,6 +33,10 @@ struct GroupsView: View {
                 ForEach(groups) { group in
                     NavigationLink(group.displayName, destination: GroupView(group: group), tag: group, selection: $selection)
                 }
+                .onDelete { indexSet in
+                    indexSet.map { groups[$0] }.forEach(moc.delete)
+                    PersistenceController.save(context: moc)
+                }
             }
             
             Section {
