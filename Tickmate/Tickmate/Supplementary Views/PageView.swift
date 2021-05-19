@@ -39,11 +39,16 @@ struct PageView<Content: View>: View {
                     currentIndex = min(max(Int(newIndex), 0), pageCount - 1)
                 }
             )
-            .onChange(of: pageCount) { value in
-                if currentIndex > value - 1 {
-                    currentIndex = value - 1
-                }
-            }
+            .onChange(of: pageCount) { _ in updatePage() }
+            .onAppear(perform: updatePage)
+        }
+    }
+    
+    private func updatePage() {
+        // If scrolled passed the end (such as when
+        // a group is removed), go to the last page.
+        if currentIndex > pageCount - 1 {
+            currentIndex = pageCount - 1
         }
     }
 }

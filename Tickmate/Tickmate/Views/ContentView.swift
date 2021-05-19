@@ -19,6 +19,7 @@ struct ContentView: View {
     
     @AppStorage(Defaults.showAllTracks.rawValue) private var showAllTracks = true
     @AppStorage(Defaults.onboardingComplete.rawValue) private var onboardingComplete: Bool = false
+    @AppStorage(Defaults.groupPage.rawValue) private var page = 0
     
     @StateObject private var trackController = TrackController()
     @StateObject private var vcContainer = ViewControllerContainer()
@@ -27,7 +28,6 @@ struct ContentView: View {
     @State private var showingTracks = false
     @State private var scrollToBottomToggle = false
     @State private var showingOnboarding = false
-    @State private var page = 0
     
     var body: some View {
         NavigationView {

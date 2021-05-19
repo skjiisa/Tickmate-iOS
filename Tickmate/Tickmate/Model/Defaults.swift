@@ -16,4 +16,5 @@ enum Defaults: String {
     case relativeDates              // Bool
     case onboardingComplete         // Bool
     case showAllTracks              // Bool
+    case groupPage                  // Int
 }
