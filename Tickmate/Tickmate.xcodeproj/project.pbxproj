@@ -11,6 +11,7 @@
 		592CE88A264F1CA800668684 /* GroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592CE889264F1CA800668684 /* GroupView.swift */; };
 		592CE890264F337000668684 /* Tickmate+Wrapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592CE88F264F337000668684 /* Tickmate+Wrapping.swift */; };
 		59342E1C2603F3DF007E9F64 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59342E1B2603F3DF007E9F64 /* OnboardingView.swift */; };
+		5939239C2654CE050085DABD /* PageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5939239B2654CE050085DABD /* PageView.swift */; };
 		5964545225E987C9004FE184 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5964545125E987C9004FE184 /* CloudKit.framework */; };
 		597A7FDD25F6E1C900256268 /* StateEditButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 597A7FDC25F6E1C900256268 /* StateEditButton.swift */; };
 		597DF5B025E5E90800DC8D28 /* Color+RGB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 597DF5AF25E5E90800DC8D28 /* Color+RGB.swift */; };
@@ -48,6 +49,7 @@
 		592CE889264F1CA800668684 /* GroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupView.swift; sourceTree = "<group>"; };
 		592CE88F264F337000668684 /* Tickmate+Wrapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Tickmate+Wrapping.swift"; sourceTree = "<group>"; };
 		59342E1B2603F3DF007E9F64 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		5939239B2654CE050085DABD /* PageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageView.swift; sourceTree = "<group>"; };
 		5964544E25E987C6004FE184 /* Tickmate.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Tickmate.entitlements; sourceTree = "<group>"; };
 		5964545125E987C9004FE184 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		597A7FDC25F6E1C900256268 /* StateEditButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateEditButton.swift; sourceTree = "<group>"; };
@@ -122,6 +124,7 @@
 				59E9397425F98BCB002FD8CD /* AcknowledgementLink.swift */,
 				59A0D8922645CF1600E01E61 /* View+DismissKeyboard.swift */,
 				592CE887264F19B400668684 /* View+Centered.swift */,
+				5939239B2654CE050085DABD /* PageView.swift */,
 			);
 			path = "Supplementary Views";
 			sourceTree = "<group>";
@@ -310,6 +313,7 @@
 				59A0D8932645CF1600E01E61 /* View+DismissKeyboard.swift in Sources */,
 				59EF633725E5DC93003E7259 /* TextWithCaption.swift in Sources */,
 				597DF5B025E5E90800DC8D28 /* Color+RGB.swift in Sources */,
+				5939239C2654CE050085DABD /* PageView.swift in Sources */,
 				59E6E15125F8837E008A74A9 /* Defaults.swift in Sources */,
 				59342E1C2603F3DF007E9F64 /* OnboardingView.swift in Sources */,
 				597A7FDD25F6E1C900256268 /* StateEditButton.swift in Sources */,

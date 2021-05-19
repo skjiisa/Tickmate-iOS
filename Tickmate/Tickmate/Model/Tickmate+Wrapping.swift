@@ -18,6 +18,12 @@ extension TrackGroup {
     }
 }
 
+extension Bool {
+    var int: Int {
+        self ? 1 : 0
+    }
+}
+
 infix operator ???: NilCoalescingPrecedence
 extension Collection {
     static func ??? (lhs: Self?, rhs: Self) -> Self {

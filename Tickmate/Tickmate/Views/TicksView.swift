@@ -30,7 +30,6 @@ struct TicksView: View {
     @StateObject private var vcContainer = ViewControllerContainer()
     
     @State private var showingTrack: Track?
-    @State private var initialized = false
     
     init(scrollToBottomToggle: Bool = false) {
         self.scrollToBottomToggle = scrollToBottomToggle
@@ -106,20 +105,9 @@ struct TicksView: View {
                 .listStyle(PlainListStyle())
                 .introspectTableView { tableView in
                     tableView.scrollsToTop = false
-                    tableView.scrollIndicatorInsets = .init(top: 0, left: 0, bottom: 30, right: 0)
-                    tableView.contentInset = .init(top: 0, left: 0, bottom: 30, right: 0)
-                    if !initialized {
-                        initialized = true
-                    }
                 }
                 .padding(0)
                 .onAppear {
-                    proxy.scrollTo(0)
-                }
-                .onChange(of: initialized) { value in
-                    // onAppear seems to run before introspectTableView, so the
-                    // bottom inset doesn't exist when its scrollTo is run.
-                    // We want it to run after the insets are set.
                     proxy.scrollTo(0)
                 }
                 .onChange(of: scrollToBottomToggle) { _ in

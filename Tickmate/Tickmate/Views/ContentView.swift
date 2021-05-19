@@ -27,10 +27,11 @@ struct ContentView: View {
     @State private var showingTracks = false
     @State private var scrollToBottomToggle = false
     @State private var showingOnboarding = false
+    @State private var page = 0
     
     var body: some View {
         NavigationView {
-            TabView {
+            PageView(pageCount: groups.count + (showAllTracks || groups.count == 0).int, currentIndex: $page) {
                 if showAllTracks || groups.count == 0 {
                     TicksView(scrollToBottomToggle: scrollToBottomToggle)
                 }
@@ -39,10 +40,6 @@ struct ContentView: View {
                     TicksView(group: group, scrollToBottomToggle: scrollToBottomToggle)
                 }
             }
-            // This is here to force the TabView to update because Page Tab Views are bugged
-            .id(UUID())
-            .ignoresSafeArea(.container, edges: .bottom)
-            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
             .navigationBarTitle("Tickmate", displayMode: .inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -60,6 +57,14 @@ struct ContentView: View {
                         Label("Settings", systemImage: "gear")
                     }
                     .imageScale(.large)
+                }
+            }
+            .onChange(of: showAllTracks) { value in
+                if value,
+                   groups.count > 0 {
+                    // A page 0 was just inserted.
+                    // Increment the page number to keep it on the same page.
+                    page += 1
                 }
             }
         }
