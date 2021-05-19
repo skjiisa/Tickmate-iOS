@@ -23,19 +23,17 @@ struct PageView<Content: View>: View {
             }
             .frame(width: geo.size.width, alignment: .leading)
             .offset(x: -CGFloat(currentIndex) * geo.size.width + translation)
-            // Might want to figure out a better animation to use here
-            .animation(dragging ? .none : .spring())
+            .animation(dragging ? .none : .push)
             .gesture(
                 DragGesture().updating($translation) { value, state, _ in
                     dragging = true
                     state = (currentIndex == 0 && value.translation.width > 0)
                         || (currentIndex == pageCount - 1 && value.translation.width < 0)
-                        // This could be more advanced than just / 2
-                        ? value.translation.width / 2
+                        ? value.translation.width / 3
                         : value.translation.width
                 }
                 .onEnded { value in
-                    let offset = value.translation.width / geo.size.width
+                    let offset = value.predictedEndTranslation.width / geo.size.width
                     let newIndex = (CGFloat(currentIndex) - offset).rounded()
                     dragging = false
                     currentIndex = min(max(Int(newIndex), 0), pageCount - 1)
