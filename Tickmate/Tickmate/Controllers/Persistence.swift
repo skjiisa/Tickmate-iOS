@@ -10,11 +10,18 @@ import CoreData
 import SwiftDate
 
 class PersistenceController {
+    
+    //MARK: Static instances
+    
     static let shared = PersistenceController()
 
     static var preview: PersistenceController = {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
+        
+        let group = TrackGroup(name: "Test group", context: viewContext)
+        result.previewGroup = group
+        
         let dateString = TrackController.iso8601.string(from: Date() - 5.days)
         for i: Int16 in 0..<3 {
             let track = Track(
@@ -37,6 +44,7 @@ class PersistenceController {
                 for day in 0..<5 where Bool.random() {
                     Tick(track: track, dayOffset: Int16(day))
                 }
+                track.groups = [group]
             }
         }
         result.save()
@@ -90,8 +98,13 @@ class PersistenceController {
         save()
         return self
     }
+    
+    //MARK: Properties
 
     let container: NSPersistentCloudKitContainer
+    
+    // Preview content
+    var previewGroup: TrackGroup?
 
     init(inMemory: Bool = false) {
         container = NSPersistentCloudKitContainer(name: "Tickmate")

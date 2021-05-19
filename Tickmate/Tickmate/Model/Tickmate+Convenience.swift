@@ -8,6 +8,14 @@
 import CoreData
 import SwiftUI
 
+extension TrackGroup {
+    @discardableResult
+    convenience init(name: String, context moc: NSManagedObjectContext) {
+        self.init(context: moc)
+        self.name = name
+    }
+}
+
 extension Track {
     @discardableResult
     convenience init(name: String, color: Int32? = nil, multiple: Bool = false, reversed: Bool = false, startDate: String, systemImage: String? = nil, index: Int16, context moc: NSManagedObjectContext) {
@@ -44,5 +52,25 @@ extension Tick {
     convenience init?(track: Track, dayOffset: Int16) {
         guard let moc = track.managedObjectContext else { return nil }
         self.init(track: track, dayOffset: dayOffset, context: moc)
+    }
+}
+
+extension NSMutableSet {
+    func toggle(_ member: Element) {
+        if contains(member) {
+            remove(member)
+        } else {
+            add(member)
+        }
+    }
+}
+
+extension Set {
+    mutating func toggle(_ member: Element) {
+        if contains(member) {
+            remove(member)
+        } else {
+            insert(member)
+        }
     }
 }

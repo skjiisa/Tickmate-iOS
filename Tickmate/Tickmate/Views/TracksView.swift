@@ -7,7 +7,11 @@
 
 import SwiftUI
 
+//MARK: TracksView
+
 struct TracksView: View {
+    
+    //MARK: Properties
     
     @Environment(\.managedObjectContext) private var moc
     // The environment EditMode is buggy, so using a custom @State property instead
@@ -24,8 +28,14 @@ struct TracksView: View {
         trackController.fetchedResultsController.fetchedObjects ?? []
     }
     
+    //MARK: Body
+    
     var body: some View {
-        List {
+        Form {
+            Section {
+                NavigationLink("Groups", destination: GroupsView())
+            }
+            
             ForEach(tracks) { track in
                 TrackCell(track: track, selection: $selection)
             }
@@ -33,27 +43,17 @@ struct TracksView: View {
             .onMove(perform: move)
             .animation(.easeInOut(duration: 0.25))
             
-            Button {
+            Button("Create new track") {
                 let newTrack = trackController.newTrack(index: (tracks.last?.index ?? -1) + 1, context: moc)
                 select(track: newTrack, delay: 0.25)
-            } label: {
-                HStack {
-                    Spacer()
-                    Text("Create new track")
-                    Spacer()
-                }
             }
+            .centered()
             .foregroundColor(.accentColor)
             
-            Button {
+            Button("Add preset track") {
                 showingPresets = true
-            } label: {
-                HStack {
-                    Spacer()
-                    Text("Add preset track")
-                    Spacer()
-                }
             }
+            .centered()
             .foregroundColor(.accentColor)
         }
         .environment(\.editMode, $editMode)
@@ -89,6 +89,8 @@ struct TracksView: View {
         }
     }
     
+    //MARK: Functions
+    
     private func delete(_ indexSet: IndexSet) {
         indexSet.map { tracks[$0] }.forEach {
             trackController.delete(track: $0, context: moc)
@@ -113,6 +115,8 @@ struct TracksView: View {
         }
     }
 }
+
+//MARK: TrackCell
 
 struct TrackCell: View {
     
@@ -158,6 +162,8 @@ struct TrackCell: View {
         .foregroundColor(track.enabled ? .primary : .secondary)
     }
 }
+
+//MARK: Previews
 
 struct TracksView_Previews: PreviewProvider {
     static var previews: some View {

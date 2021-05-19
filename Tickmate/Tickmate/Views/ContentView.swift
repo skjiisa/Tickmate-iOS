@@ -9,9 +9,17 @@ import SwiftUI
 import Introspect
 
 struct ContentView: View {
+    
     @Environment(\.managedObjectContext) private var moc
     
+    @FetchRequest(
+        entity: TrackGroup.entity(),
+        sortDescriptors: [NSSortDescriptor(keyPath: \TrackGroup.name, ascending: true)])
+    private var groups: FetchedResults<TrackGroup>
+    
+    @AppStorage(Defaults.showAllTracks.rawValue) private var showAllTracks = true
     @AppStorage(Defaults.onboardingComplete.rawValue) private var onboardingComplete: Bool = false
+    @AppStorage(Defaults.groupPage.rawValue) private var page = 0
     
     @StateObject private var trackController = TrackController()
     @StateObject private var vcContainer = ViewControllerContainer()
@@ -21,27 +29,49 @@ struct ContentView: View {
     @State private var scrollToBottomToggle = false
     @State private var showingOnboarding = false
     
+    var selectedGroup: TrackGroup? {
+        (page == 0 && showAllTracks) || page - showAllTracks.int >= groups.count ? nil : groups[page - showAllTracks.int]
+    }
+    
+    var title: String {
+        selectedGroup?.displayName ?? "Tickmate"
+    }
+    
     var body: some View {
         NavigationView {
-            TicksView(scrollToBottomToggle: scrollToBottomToggle)
-                .toolbar {
-                    ToolbarItem(placement: .primaryAction) {
-                        Button {
-                            showingTracks = true
-                        } label: {
-                            Image(systemName: "text.justify")
-                                .imageScale(.large)
-                        }
-                    }
-                    ToolbarItem(placement: .navigation) {
-                        Button {
-                            showingSettings = true
-                        } label: {
-                            Image(systemName: "gear")
-                                .imageScale(.large)
-                        }
-                    }
+            PageView(pageCount: groups.count + (showAllTracks || groups.count == 0).int, currentIndex: $page) {
+                if showAllTracks || groups.count == 0 {
+                    TicksView(scrollToBottomToggle: scrollToBottomToggle)
                 }
+                
+                ForEach(groups) { group in
+                    TicksView(group: group, scrollToBottomToggle: scrollToBottomToggle)
+                }
+            }
+            .navigationBarTitle(title, displayMode: .inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button {
+                        showingTracks = true
+                    } label: {
+                        Label("Tracks", systemImage: "text.justify")
+                    }
+                    .imageScale(.large)
+                }
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        showingSettings = true
+                    } label: {
+                        Label("Settings", systemImage: "gear")
+                    }
+                    .imageScale(.large)
+                }
+            }
+            .onChange(of: showAllTracks) { value in
+                if groups.count > 0 {
+                    page += value ? 1 : -1
+                }
+            }
         }
         .navigationViewStyle(StackNavigationViewStyle())
         .environmentObject(trackController)
