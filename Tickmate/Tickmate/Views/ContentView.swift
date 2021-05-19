@@ -29,14 +29,6 @@ struct ContentView: View {
     @State private var scrollToBottomToggle = false
     @State private var showingOnboarding = false
     
-    var selectedGroup: TrackGroup? {
-        (page == 0 && showAllTracks) || page - showAllTracks.int >= groups.count ? nil : groups[page - showAllTracks.int]
-    }
-    
-    var title: String {
-        selectedGroup?.displayName ?? "Tickmate"
-    }
-    
     var body: some View {
         NavigationView {
             PageView(pageCount: groups.count + (showAllTracks || groups.count == 0).int, currentIndex: $page) {
@@ -48,7 +40,7 @@ struct ContentView: View {
                     TicksView(group: group, scrollToBottomToggle: scrollToBottomToggle)
                 }
             }
-            .navigationBarTitle(title, displayMode: .inline)
+            .navigationBarTitle("Tickmate", displayMode: .inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {

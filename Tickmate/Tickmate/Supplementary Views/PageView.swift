@@ -34,9 +34,14 @@ struct PageView<Content: View>: View {
                 }
                 .onEnded { value in
                     let offset = value.predictedEndTranslation.width / geo.size.width
-                    let newIndex = (CGFloat(currentIndex) - offset).rounded()
+                    let newIndex = Int((CGFloat(currentIndex) - offset).rounded())
+                    let adjacentIndex = newIndex > currentIndex
+                        ? min(newIndex, currentIndex + 1)
+                        : newIndex < currentIndex
+                        ? max(newIndex, currentIndex - 1)
+                        : currentIndex
                     dragging = false
-                    currentIndex = min(max(Int(newIndex), 0), pageCount - 1)
+                    currentIndex = min(max(adjacentIndex, 0), pageCount - 1)
                 }
             )
             .onChange(of: pageCount) { _ in updatePage() }
