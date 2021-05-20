@@ -47,6 +47,7 @@ struct TrackView: View {
                             setEditMode()
                             return false
                         }
+                        vcContainer.textFieldShouldEnableEditMode = true
                         textField.delegate = vcContainer
                     }
             }

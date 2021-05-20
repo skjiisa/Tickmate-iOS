@@ -15,6 +15,7 @@ class ViewControllerContainer: NSObject, ObservableObject, UIAdaptivePresentatio
     weak var textField: UITextField?
     
     var shouldReturn: (() -> Bool)?
+    var textFieldShouldEnableEditMode = false
     
     func deactivateEditMode() {
         // Because editMode is @Published, if a View edits it in an Introspect function, that will
@@ -34,6 +35,8 @@ class ViewControllerContainer: NSObject, ObservableObject, UIAdaptivePresentatio
     }
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        editMode = .active
+        if textFieldShouldEnableEditMode {
+            editMode = .active
+        }
     }
 }

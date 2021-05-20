@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Introspect
 
 struct GroupView: View {
     
@@ -14,10 +15,12 @@ struct GroupView: View {
     @FetchRequest(entity: Track.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Track.index, ascending: true)])
     private var allTracks: FetchedResults<Track>
     
+    @EnvironmentObject private var vcContainer: ViewControllerContainer
     @EnvironmentObject private var trackController: TrackController
     
     @ObservedObject var group: TrackGroup
     
+    @State private var name = ""
     @State private var selectedTracks = Set<Track>()
     
     //MARK: Body
@@ -25,7 +28,21 @@ struct GroupView: View {
     var body: some View {
         Form {
             Section(header: Text("Name")) {
-                TextField("Name", text: $group.wrappedName)
+                TextField("Name", text: $name).introspectTextField { textField in
+                    textField.returnKeyType = .done
+                    vcContainer.textField = textField
+                    vcContainer.shouldReturn = {
+                        if let correctedText = textField.text {
+                            name = correctedText
+                            group.name = correctedText
+                            print(correctedText)
+                        }
+                        dismissKeyboard()
+                        return false
+                    }
+                    vcContainer.textFieldShouldEnableEditMode = false
+                    textField.delegate = vcContainer
+                }
             }
             
             Section(header: Text("Tracks")) {
@@ -36,18 +53,20 @@ struct GroupView: View {
         }
         .navigationTitle("Group details")
         .onAppear {
-            guard let tracks = group.tracks as? Set<Track> else { return }
-            selectedTracks = tracks
+            name = group.wrappedName
+            if let tracks = group.tracks as? Set<Track> {
+                selectedTracks = tracks
+            }
         }
         .onDisappear {
             withAnimation {
                 group.tracks = selectedTracks as NSSet
+                // If we try using the environment's moc to save, this will
+                // crash the app if the user makes this view disappear by
+                // dismissing the sheet. I'm guessing this is because of
+                // the environment disappearing too, deallocating the moc.
+                trackController.scheduleSave()
             }
-            // If we try using the environment's moc to save, this will
-            // crash the app if the user makes this view disappear by
-            // dismissing the sheet. I'm guessing this is because of
-            // the environment disappearing too, deallocating the moc.
-            trackController.scheduleSave()
         }
     }
     
