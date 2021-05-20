@@ -7,11 +7,14 @@
 
 import SwiftUI
 
-class ViewControllerContainer: NSObject, ObservableObject, UIAdaptivePresentationControllerDelegate {
+class ViewControllerContainer: NSObject, ObservableObject, UIAdaptivePresentationControllerDelegate, UITextFieldDelegate {
     
     @Published var editMode = EditMode.inactive
     
     weak var vc: UIViewController? = nil
+    weak var textField: UITextField?
+    
+    var shouldReturn: (() -> Bool)?
     
     func deactivateEditMode() {
         // Because editMode is @Published, if a View edits it in an Introspect function, that will
@@ -24,5 +27,13 @@ class ViewControllerContainer: NSObject, ObservableObject, UIAdaptivePresentatio
     
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
         !editMode.isEditing
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        shouldReturn?() ?? true
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        editMode = .active
     }
 }

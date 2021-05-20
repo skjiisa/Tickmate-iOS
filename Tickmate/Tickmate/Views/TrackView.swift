@@ -36,17 +36,30 @@ struct TrackView: View {
             
             Section(header: Text("Name")) {
                 TextField("Name", text: $draftTrack.name)
+                    .introspectTextField { textField in
+                        vcContainer.textField = textField
+                        vcContainer.shouldReturn = {
+                            // There is a bug with SwiftUI TextFields that causes them
+                            // to revert autocorrect changes on return. Dismissing the
+                            // keyboad before returning fixes the issue visually. Setting
+                            // the name to the UITextField's text fixes it mechanically.
+                            correctedKeyboardDismiss()
+                            setEditMode()
+                            return false
+                        }
+                        textField.delegate = vcContainer
+                    }
             }
             
             Section(header: Text("Settings")) {
-                Toggle(isOn: $draftTrack.multiple) {
+                Toggle(isOn: $draftTrack.multiple.onChange(setEditMode)) {
                     TextWithCaption(
                         text: "Allow multiple",
                         caption: "Multiple ticks on a day will be counted."
                             + " Long press to decrease counter.")
                 }
                 
-                Toggle(isOn: $draftTrack.reversed.animation()) {
+                Toggle(isOn: $draftTrack.reversed.animation().onChange(setEditMode)) {
                     TextWithCaption(
                         text: "Reversed",
                         caption: "Days will be ticked by default."
@@ -55,17 +68,20 @@ struct TrackView: View {
                 }
                 
                 if draftTrack.reversed {
-                    DatePicker(selection: $draftTrack.startDate, in: Date.distantPast...trackController.date, displayedComponents: [.date]) {
+                    DatePicker(selection: $draftTrack.startDate.onChange(setEditMode), in: Date.distantPast...trackController.date, displayedComponents: [.date]) {
                         TextWithCaption(
                             text: "Start date",
                             caption: "Days after this will automatically be ticked unless you untick them.")
                     }
                 }
                 
-                ColorPicker("Color", selection: $draftTrack.color, supportsOpacity: false)
+                ColorPicker("Color", selection: $draftTrack.color.onChange(setEditMode), supportsOpacity: false)
                 
                 NavigationLink(
-                    destination: SymbolPicker(selection: $draftTrack.systemImage),
+                    destination: SymbolPicker(selection: $draftTrack.systemImage.onChange({ _ in
+                        showingSymbolPicker = false
+                        setEditMode()
+                    })),
                     isActive: $showingSymbolPicker) {
                     HStack {
                         Text("Symbol")
@@ -75,9 +91,6 @@ struct TrackView: View {
                                 .imageScale(.large)
                         }
                     }
-                }
-                .onChange(of: draftTrack.systemImage) { value in
-                    showingSymbolPicker = false
                 }
             }
             
@@ -102,7 +115,7 @@ struct TrackView: View {
             ToolbarItem(placement: .primaryAction) {
                 StateEditButton(editMode: $vcContainer.editMode, doneText: "Save") {
                     if vcContainer.editMode == .inactive {
-                        trackController.save(draftTrack, to: track, context: moc)
+                        save()
                     }
                 }
             }
@@ -115,12 +128,9 @@ struct TrackView: View {
             }
         }
         .navigationBarBackButtonHidden(vcContainer.editMode.isEditing)
-        .onChange(of: draftTrack) { _ in
-            setEditMode()
-        }
         .onChange(of: vcContainer.editMode) { value in
             if !value.isEditing {
-                dismissKeyboard()
+                correctedKeyboardDismiss()
             }
         }
         .onAppear {
@@ -128,9 +138,8 @@ struct TrackView: View {
                 draftTrack.load(track: track)
                 enabled = track.enabled
                 initialized = true
-            } else {
-                setEditMode()
             }
+            setEditMode()
         }
         .onDisappear {
             if enabled != track.enabled {
@@ -143,8 +152,20 @@ struct TrackView: View {
     
     //MARK: Functions
     
-    private func setEditMode() {
+    private func correctedKeyboardDismiss() {
+        dismissKeyboard()
+        if let correctedText = vcContainer.textField?.text {
+            draftTrack.name = correctedText
+        }
+    }
+    
+    private func setEditMode(_: Any? = nil) {
         vcContainer.editMode = draftTrack == track ? .inactive : .active
+    }
+    
+    private func save() {
+        correctedKeyboardDismiss()
+        trackController.save(draftTrack, to: track, context: moc)
     }
     
     private func cancel() {
