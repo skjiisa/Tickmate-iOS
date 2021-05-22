@@ -6,43 +6,93 @@
 //
 
 import SwiftUI
+import Introspect
 
 struct GroupView: View {
     
-    @Environment(\.managedObjectContext) private var moc
+    //MARK: Properties
     
     @FetchRequest(entity: Track.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Track.index, ascending: true)])
-    private var tracks: FetchedResults<Track>
+    private var allTracks: FetchedResults<Track>
+    
+    @EnvironmentObject private var vcContainer: ViewControllerContainer
+    @EnvironmentObject private var trackController: TrackController
     
     @ObservedObject var group: TrackGroup
+    
+    @State private var name = ""
+    @State private var selectedTracks = Set<Track>()
+    
+    //MARK: Body
     
     var body: some View {
         Form {
             Section(header: Text("Name")) {
-                TextField("Name", text: $group.wrappedName)
+                TextField("Name", text: $name).introspectTextField { textField in
+                    textField.returnKeyType = .done
+                    vcContainer.textField = textField
+                    vcContainer.shouldReturn = {
+                        if let correctedText = textField.text {
+                            name = correctedText
+                            group.name = correctedText
+                            print(correctedText)
+                        }
+                        dismissKeyboard()
+                        return false
+                    }
+                    vcContainer.textFieldShouldEnableEditMode = false
+                    textField.delegate = vcContainer
+                }
             }
             
             Section(header: Text("Tracks")) {
-                ForEach(tracks) { track in
-                    Button {
-                        group.mutableSetValue(forKey: "tracks").toggle(track)
-                    } label: {
-                        HStack {
-                            Text(track.name ?? "New Track")
-                            if group.tracks?.contains(track) ?? false {
-                                Spacer()
-                                Image(systemName: "checkmark")
-                                    .foregroundColor(.accentColor)
-                            }
-                        }
-                    }
-                    .foregroundColor(.primary)
+                ForEach(allTracks) { track in
+                    TrackRow(track: track, selectedTracks: $selectedTracks)
                 }
             }
         }
         .navigationTitle("Group details")
+        .onAppear {
+            name = group.wrappedName
+            if let tracks = group.tracks as? Set<Track> {
+                selectedTracks = tracks
+            }
+        }
         .onDisappear {
-            PersistenceController.save(context: moc)
+            withAnimation {
+                group.tracks = selectedTracks as NSSet
+                // If we try using the environment's moc to save, this will
+                // crash the app if the user makes this view disappear by
+                // dismissing the sheet. I'm guessing this is because of
+                // the environment disappearing too, deallocating the moc.
+                trackController.scheduleSave()
+            }
+        }
+    }
+    
+    //MARK: TrackRew
+    
+    struct TrackRow: View {
+        var track: Track
+        @Binding var selectedTracks: Set<Track>
+        
+        var body: some View {
+            Button {
+                withAnimation(.interactiveSpring()) {
+                    selectedTracks.toggle(track)
+                }
+            } label: {
+                HStack {
+                    Text(track.name ?? "New Track")
+                    if selectedTracks.contains(track) {
+                        Spacer()
+                        Image(systemName: "checkmark")
+                            .foregroundColor(.accentColor)
+                            .transition(.scale)
+                    }
+                }
+            }
+            .foregroundColor(.primary)
         }
     }
 }
