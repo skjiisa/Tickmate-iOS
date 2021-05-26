@@ -14,7 +14,7 @@ struct ContentView: View {
     
     @FetchRequest(
         entity: TrackGroup.entity(),
-        sortDescriptors: [NSSortDescriptor(keyPath: \TrackGroup.name, ascending: true)])
+        sortDescriptors: [NSSortDescriptor(keyPath: \TrackGroup.index, ascending: true)])
     private var groups: FetchedResults<TrackGroup>
     
     @AppStorage(Defaults.showAllTracks.rawValue) private var showAllTracks = true
@@ -22,6 +22,7 @@ struct ContentView: View {
     @AppStorage(Defaults.groupPage.rawValue) private var page = 0
     
     @StateObject private var trackController = TrackController()
+    @StateObject private var groupController = GroupController()
     @StateObject private var vcContainer = ViewControllerContainer()
     
     @State private var showingSettings = false
@@ -89,6 +90,7 @@ struct ContentView: View {
                 }
                 .environment(\.managedObjectContext, moc)
                 .environmentObject(trackController)
+                .environmentObject(groupController)
                 .environmentObject(vcContainer)
                 .introspectViewController { vc in
                     vc.presentationController?.delegate = vcContainer

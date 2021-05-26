@@ -13,15 +13,15 @@ struct GroupsView: View {
     
     @Environment(\.managedObjectContext) private var moc
     
-    @FetchRequest(
-        entity: TrackGroup.entity(),
-        sortDescriptors: [NSSortDescriptor(keyPath: \TrackGroup.name, ascending: true)],
-        animation: .default)
-    private var groups: FetchedResults<TrackGroup>
-    
     @AppStorage(Defaults.showAllTracks.rawValue) private var showAllTracks = true
     
+    @EnvironmentObject private var groupController: GroupController
+    
     @State private var selection: TrackGroup?
+    
+    private var groups: [TrackGroup] {
+        groupController.fetchedResultsController.fetchedObjects ?? []
+    }
     
     //MARK: Body
     
@@ -33,24 +33,40 @@ struct GroupsView: View {
                 ForEach(groups) { group in
                     NavigationLink(group.displayName, destination: GroupView(group: group), tag: group, selection: $selection)
                 }
-                .onDelete { indexSet in
-                    indexSet.map { groups[$0] }.forEach(moc.delete)
-                    PersistenceController.save(context: moc)
-                }
+                .onDelete(perform: delete)
+                .onMove(perform: move)
             }
             
             Section {
                 Button("Create new group") {
-                    let newGroup = TrackGroup(context: moc)
+                    let newGroup = TrackGroup(index: Int16(groups.count), context: moc)
                     select(newGroup, delay: 0.25)
                 }
                 .centered()
             }
         }
         .navigationTitle("Groups")
+        .toolbar {
+            EditButton()
+        }
     }
     
     //MARK: Functions
+    
+    private func delete(_ indexSet: IndexSet) {
+        indexSet.map { groups[$0] }.forEach(moc.delete)
+        PersistenceController.save(context: moc)
+    }
+    
+    private func move(_ indices: IndexSet, newOffset: Int) {
+        var groupIndices = groups.enumerated().map { $0.offset }
+        groupIndices.move(fromOffsets: indices, toOffset: newOffset)
+        groupIndices.enumerated().compactMap { offset, element in
+            element != offset ? (group: groups[element], newIndex: Int16(offset)) : nil
+        }.forEach { $0.index = $1 }
+        
+        PersistenceController.save(context: moc)
+    }
     
     private func select(_ group: TrackGroup, delay: Double) {
         DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
@@ -67,5 +83,6 @@ struct GroupsView_Previews: PreviewProvider {
             GroupsView()
         }
         .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        .environmentObject(GroupController(preview: true))
     }
 }

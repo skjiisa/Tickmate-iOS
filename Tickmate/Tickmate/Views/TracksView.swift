@@ -103,8 +103,8 @@ struct TracksView: View {
         var trackIndices = tracks.enumerated().map { $0.offset }
         trackIndices.move(fromOffsets: indices, toOffset: newOffset)
         trackIndices.enumerated().compactMap { offset, element in
-            element != offset ? (track: tracks[element], newIndex: Int16(offset)) : nil
-        }.forEach { $0.track.index = $0.newIndex }
+            element != offset ? (tracks[element], Int16(offset)) : nil
+        }.forEach { $0.index = $1 }
         
         PersistenceController.save(context: moc)
     }
