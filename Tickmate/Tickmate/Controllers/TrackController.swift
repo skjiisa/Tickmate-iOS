@@ -52,10 +52,11 @@ class TrackController: NSObject, ObservableObject {
         let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Track.index, ascending: true)]
         
-        fetchedResultsController = NSFetchedResultsController<Track>(fetchRequest: fetchRequest,
-                                                                     managedObjectContext: context,
-                                                                     sectionNameKeyPath: nil,
-                                                                     cacheName: nil)
+        fetchedResultsController = NSFetchedResultsController<Track>(
+            fetchRequest: fetchRequest,
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil)
         
         super.init()
         

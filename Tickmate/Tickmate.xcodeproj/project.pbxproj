@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		5904EAAF2657111300B2D0A0 /* Binding+onChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5904EAAE2657111300B2D0A0 /* Binding+onChange.swift */; };
+		592850F2265EF54B00E682F5 /* GroupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592850F1265EF54B00E682F5 /* GroupController.swift */; };
 		592CE888264F19B400668684 /* View+Centered.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592CE887264F19B400668684 /* View+Centered.swift */; };
 		592CE88A264F1CA800668684 /* GroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592CE889264F1CA800668684 /* GroupView.swift */; };
 		592CE890264F337000668684 /* Tickmate+Wrapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592CE88F264F337000668684 /* Tickmate+Wrapping.swift */; };
@@ -48,6 +49,7 @@
 
 /* Begin PBXFileReference section */
 		5904EAAE2657111300B2D0A0 /* Binding+onChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Binding+onChange.swift"; sourceTree = "<group>"; };
+		592850F1265EF54B00E682F5 /* GroupController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupController.swift; sourceTree = "<group>"; };
 		592CE887264F19B400668684 /* View+Centered.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Centered.swift"; sourceTree = "<group>"; };
 		592CE889264F1CA800668684 /* GroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupView.swift; sourceTree = "<group>"; };
 		592CE88F264F337000668684 /* Tickmate+Wrapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Tickmate+Wrapping.swift"; sourceTree = "<group>"; };
@@ -212,6 +214,7 @@
 				59FBCF2925E07BD8007B114F /* Persistence.swift */,
 				59F6EAA325E36D510069DF40 /* TickController.swift */,
 				59F6EAA625E36D680069DF40 /* TrackController.swift */,
+				592850F1265EF54B00E682F5 /* GroupController.swift */,
 				59F3EDC125FC4F270009CDEC /* ViewControllerContainer.swift */,
 			);
 			path = Controllers;
@@ -305,6 +308,7 @@
 				59F6EAA425E36D510069DF40 /* TickController.swift in Sources */,
 				59E9397225F98ACD002FD8CD /* AcknowledgementsView.swift in Sources */,
 				59EF632D25E5CF24003E7259 /* TrackRepresentation.swift in Sources */,
+				592850F2265EF54B00E682F5 /* GroupController.swift in Sources */,
 				59EF632925E5CD4B003E7259 /* TrackView.swift in Sources */,
 				59C23A6725E70D7000AFBC4B /* SymbolsList.swift in Sources */,
 				5991968F25F813ED003215CC /* PresetTracksView.swift in Sources */,
