@@ -11,6 +11,7 @@ import SwiftUI
 class GroupController: NSObject, ObservableObject {
     
     var fetchedResultsController: NSFetchedResultsController<TrackGroup>
+    var trackController: TrackController?
     
     init(preview: Bool = false) {
         let context = (preview ? PersistenceController.preview : PersistenceController.shared).container.viewContext
@@ -58,7 +59,8 @@ extension GroupController: NSFetchedResultsControllerDelegate {
             }
         
         if changed {
-            PersistenceController.save(context: fetchedResultsController.managedObjectContext)
+            trackController?.scheduleSave()
         }
+        trackController?.scheduleSave(now: true)
     }
 }

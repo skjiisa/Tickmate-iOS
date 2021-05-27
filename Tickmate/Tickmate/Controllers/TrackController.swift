@@ -270,12 +270,13 @@ extension TrackController: NSFetchedResultsControllerDelegate {
             if item.index != index {
                 item.index = index
                 changed = true
-                print("Index updated to \(index)")
             }
         }
         
         if changed {
-            PersistenceController.save(context: fetchedResultsController.managedObjectContext)
+            scheduleSave()
         }
+        // This will only save if there is one scheduled
+        scheduleSave(now: true)
     }
 }

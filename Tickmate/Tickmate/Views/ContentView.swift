@@ -72,6 +72,7 @@ struct ContentView: View {
             trackController.scheduleSave(now: true)
         }
         .onAppear {
+            groupController.trackController = trackController
             if !onboardingComplete {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
                     showingOnboarding = true

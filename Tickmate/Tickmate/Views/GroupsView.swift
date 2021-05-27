@@ -15,6 +15,7 @@ struct GroupsView: View {
     
     @AppStorage(Defaults.showAllTracks.rawValue) private var showAllTracks = true
     
+    @EnvironmentObject private var trackController: TrackController
     @EnvironmentObject private var groupController: GroupController
     
     @State private var selection: TrackGroup?
@@ -55,7 +56,7 @@ struct GroupsView: View {
     
     private func delete(_ indexSet: IndexSet) {
         indexSet.map { groups[$0] }.forEach(moc.delete)
-        PersistenceController.save(context: moc)
+        trackController.scheduleSave()
     }
     
     private func move(_ indices: IndexSet, newOffset: Int) {
