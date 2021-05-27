@@ -14,10 +14,18 @@ struct ContentView: View {
     
     @FetchRequest(
         entity: TrackGroup.entity(),
-        sortDescriptors: [NSSortDescriptor(keyPath: \TrackGroup.index, ascending: true)])
+        sortDescriptors: [NSSortDescriptor(keyPath: \TrackGroup.index, ascending: true)],
+        predicate: NSPredicate(format: "tracks.@count > 0"))
     private var groups: FetchedResults<TrackGroup>
     
+    private var ungroupedTracksFetchRequest = FetchRequest<Track>(
+        entity: Track.entity(),
+        sortDescriptors: [NSSortDescriptor(keyPath: \Track.index, ascending: true)],
+        predicate: NSPredicate(format: "enabled == YES AND groups.@count == 0"),
+        animation: .default)
+    
     @AppStorage(Defaults.showAllTracks.rawValue) private var showAllTracks = true
+    @AppStorage(Defaults.showUngroupedTracks.rawValue) private var showUngroupedTracks = false
     @AppStorage(Defaults.onboardingComplete.rawValue) private var onboardingComplete: Bool = false
     @AppStorage(Defaults.groupPage.rawValue) private var page = 0
     
@@ -30,11 +38,23 @@ struct ContentView: View {
     @State private var scrollToBottomToggle = false
     @State private var showingOnboarding = false
     
+    private var showingAllTracks: Bool {
+        showAllTracks || groups.count == 0
+    }
+    
+    private var showingUngroupedTracks: Bool {
+        showUngroupedTracks && ungroupedTracksFetchRequest.wrappedValue.count > 0
+    }
+    
     var body: some View {
         NavigationView {
-            PageView(pageCount: groups.count + (showAllTracks || groups.count == 0).int, currentIndex: $page) {
-                if showAllTracks || groups.count == 0 {
+            PageView(pageCount: groups.count + showAllTracks.int + showingUngroupedTracks.int, currentIndex: $page) {
+                if showingAllTracks {
                     TicksView(scrollToBottomToggle: scrollToBottomToggle)
+                }
+                
+                if showingUngroupedTracks {
+                    TicksView(fetchRequest: ungroupedTracksFetchRequest, scrollToBottomToggle: scrollToBottomToggle)
                 }
                 
                 ForEach(groups) { group in
@@ -60,10 +80,11 @@ struct ContentView: View {
                     .imageScale(.large)
                 }
             }
-            .onChange(of: showAllTracks) { value in
-                if groups.count > 0 {
-                    page += value ? 1 : (page == 0 ? 0 : -1)
-                }
+            .onChange(of: showAllTracks, perform: updatePage)
+            .onChange(of: showUngroupedTracks) { value in
+                // If there are no ungrouped tracks, then nothing needs to change
+                guard ungroupedTracksFetchRequest.wrappedValue.count > 0 else { return }
+                updatePage(pageInserted: value)
             }
         }
         .navigationViewStyle(StackNavigationViewStyle())
@@ -77,7 +98,7 @@ struct ContentView: View {
             // There have been bugs with page numbers in the past.
             // This is just in case the page number gets bugged
             // and is scrolled past the edge.
-            if page > 0 || (page >= groups.count + showAllTracks.int) {
+            if page > 0 || (page >= groups.count + showingAllTracks.int + showingUngroupedTracks.int) {
                 page = 0
             }
             
@@ -122,6 +143,12 @@ struct ContentView: View {
                     .environment(\.managedObjectContext, moc)
                     .environmentObject(trackController)
             }
+    }
+    
+    private func updatePage(pageInserted: Bool) {
+        if groups.count > 0 {
+            page += pageInserted ? 1 : (page == 0 ? 0 : -1)
+        }
     }
     
 }

@@ -47,6 +47,11 @@ struct TicksView: View {
             predicate: NSPredicate(format: "enabled == YES AND %@ IN groups", group))
     }
     
+    init(fetchRequest: FetchRequest<Track>, scrollToBottomToggle: Bool = false) {
+        self.fetchRequest = fetchRequest
+        self.scrollToBottomToggle = scrollToBottomToggle
+    }
+    
     var body: some View {
         VStack(spacing: 0) {
             HStack {

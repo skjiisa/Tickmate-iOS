@@ -32,7 +32,7 @@ struct TracksView: View {
     
     var body: some View {
         Form {
-            Section {
+            Section(footer: Text("Swipe left and right on the main screen to change group")) {
                 NavigationLink("Groups", destination: GroupsView())
             }
             

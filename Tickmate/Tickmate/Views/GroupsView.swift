@@ -14,6 +14,7 @@ struct GroupsView: View {
     @Environment(\.managedObjectContext) private var moc
     
     @AppStorage(Defaults.showAllTracks.rawValue) private var showAllTracks = true
+    @AppStorage(Defaults.showUngroupedTracks.rawValue) private var showUngroupedTracks = false
     
     @EnvironmentObject private var trackController: TrackController
     @EnvironmentObject private var groupController: GroupController
@@ -29,7 +30,12 @@ struct GroupsView: View {
     var body: some View {
         Form {
             Section {
-                Toggle("All Tracks", isOn: $showAllTracks)
+                Toggle(isOn: $showAllTracks) {
+                    TextWithCaption(text: "All Tracks", caption: "Show group of all tracks")
+                }
+                Toggle(isOn: $showUngroupedTracks) {
+                    TextWithCaption(text: "Ungrouped Tracks", caption: "Show group of all ungrouped tracks")
+                }
                 
                 ForEach(groups) { group in
                     NavigationLink(group.displayName, destination: GroupView(group: group), tag: group, selection: $selection)
