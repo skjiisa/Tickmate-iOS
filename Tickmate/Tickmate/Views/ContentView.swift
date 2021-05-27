@@ -62,7 +62,7 @@ struct ContentView: View {
             }
             .onChange(of: showAllTracks) { value in
                 if groups.count > 0 {
-                    page += value ? 1 : -1
+                    page += value ? 1 : (page == 0 ? 0 : -1)
                 }
             }
         }
@@ -73,6 +73,14 @@ struct ContentView: View {
         }
         .onAppear {
             groupController.trackController = trackController
+            
+            // There have been bugs with page numbers in the past.
+            // This is just in case the page number gets bugged
+            // and is scrolled past the edge.
+            if page > 0 || (page >= groups.count + showAllTracks.int) {
+                page = 0
+            }
+            
             if !onboardingComplete {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
                     showingOnboarding = true
