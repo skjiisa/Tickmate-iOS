@@ -14,7 +14,7 @@ struct PageView<Content: View>: View {
     @ViewBuilder var content: Content
     
     @GestureState private var translation: CGFloat = 0
-    @State private var dragging = false
+    @State private var dragging = true
     
     var body: some View {
         GeometryReader { geo in
