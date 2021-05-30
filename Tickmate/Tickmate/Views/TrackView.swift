@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+//MARK: TrackView
+
 struct TrackView: View {
     
     //MARK: Properties
@@ -32,6 +34,7 @@ struct TrackView: View {
         Form {
             Section {
                 Toggle("Enabled", isOn: $enabled)
+                NavigationLink("Groups", destination: GroupsPicker(track: track))
             }
             
             Section(header: Text("Name")) {
@@ -188,6 +191,66 @@ struct TrackView: View {
         selection = nil
         trackController.delete(track: track, context: moc)
         PersistenceController.save(context: moc)
+    }
+}
+
+//MARK: GroupsPicker
+
+struct GroupsPicker: View {
+    
+    @EnvironmentObject private var trackController: TrackController
+    @EnvironmentObject private var groupController: GroupController
+    
+    @ObservedObject var track: Track
+    
+    @State private var selectedGroups = Set<TrackGroup>()
+    
+    private var allGroups: [TrackGroup] {
+        groupController.fetchedResultsController.fetchedObjects ?? []
+    }
+    
+    var body: some View {
+        Form {
+            ForEach(allGroups) { group in
+                GroupRow(group: group, selectedGroups: $selectedGroups)
+            }
+        }
+        .navigationTitle("Groups")
+        .onAppear {
+            if let groups = track.groups as? Set<TrackGroup> {
+                selectedGroups = groups
+            }
+        }
+        .onDisappear {
+            withAnimation {
+                track.groups = selectedGroups as NSSet
+                trackController.scheduleSave()
+            }
+        }
+    }
+    
+    struct GroupRow: View {
+        var group: TrackGroup
+        @Binding var selectedGroups: Set<TrackGroup>
+        
+        var body: some View {
+            Button {
+                withAnimation(.interactiveSpring()) {
+                    selectedGroups.toggle(group)
+                }
+            } label: {
+                HStack {
+                    Text(group.name ?? "New Group")
+                    if selectedGroups.contains(group) {
+                        Spacer()
+                        Image(systemName: "checkmark")
+                            .foregroundColor(.accentColor)
+                            .transition(.scale)
+                    }
+                }
+            }
+            .foregroundColor(.primary)
+        }
     }
 }
 

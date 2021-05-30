@@ -23,6 +23,7 @@ struct TicksView: View {
     @AppStorage(Defaults.weekSeparatorLines.rawValue) private var weekSeparatorLines: Bool = true
     @AppStorage(Defaults.weekSeparatorSpaces.rawValue) private var weekSeparatorSpaces: Bool = true
     
+    @EnvironmentObject private var groupController: GroupController
     @EnvironmentObject private var trackController: TrackController
     
     var scrollToBottomToggle: Bool = false
@@ -88,6 +89,7 @@ struct TicksView: View {
                 }
                 .environmentObject(vcContainer)
                 .environmentObject(trackController)
+                .environmentObject(groupController)
                 .introspectViewController { vc in
                     vc.presentationController?.delegate = vcContainer
                 }
