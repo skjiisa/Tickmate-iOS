@@ -12,6 +12,7 @@
 		592CE888264F19B400668684 /* View+Centered.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592CE887264F19B400668684 /* View+Centered.swift */; };
 		592CE88A264F1CA800668684 /* GroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592CE889264F1CA800668684 /* GroupView.swift */; };
 		592CE890264F337000668684 /* Tickmate+Wrapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592CE88F264F337000668684 /* Tickmate+Wrapping.swift */; };
+		59303A512665D00900EB900E /* TrackGroups.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59303A502665D00900EB900E /* TrackGroups.swift */; };
 		59342E1C2603F3DF007E9F64 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59342E1B2603F3DF007E9F64 /* OnboardingView.swift */; };
 		5939239C2654CE050085DABD /* PageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5939239B2654CE050085DABD /* PageView.swift */; };
 		5939239E2655B6C90085DABD /* Animation+Push.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5939239D2655B6C90085DABD /* Animation+Push.swift */; };
@@ -53,6 +54,7 @@
 		592CE887264F19B400668684 /* View+Centered.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Centered.swift"; sourceTree = "<group>"; };
 		592CE889264F1CA800668684 /* GroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupView.swift; sourceTree = "<group>"; };
 		592CE88F264F337000668684 /* Tickmate+Wrapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Tickmate+Wrapping.swift"; sourceTree = "<group>"; };
+		59303A502665D00900EB900E /* TrackGroups.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackGroups.swift; sourceTree = "<group>"; };
 		59342E1B2603F3DF007E9F64 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		5939239B2654CE050085DABD /* PageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageView.swift; sourceTree = "<group>"; };
 		5939239D2655B6C90085DABD /* Animation+Push.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Animation+Push.swift"; sourceTree = "<group>"; };
@@ -186,6 +188,7 @@
 				59EF632C25E5CF24003E7259 /* TrackRepresentation.swift */,
 				59E6E15025F8837E008A74A9 /* Defaults.swift */,
 				5904EAAE2657111300B2D0A0 /* Binding+onChange.swift */,
+				59303A502665D00900EB900E /* TrackGroups.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -302,6 +305,7 @@
 				592CE890264F337000668684 /* Tickmate+Wrapping.swift in Sources */,
 				592CE88A264F1CA800668684 /* GroupView.swift in Sources */,
 				592CE888264F19B400668684 /* View+Centered.swift in Sources */,
+				59303A512665D00900EB900E /* TrackGroups.swift in Sources */,
 				59C23A6C25E70E1A00AFBC4B /* SymbolPicker.swift in Sources */,
 				59F6EAA725E36D680069DF40 /* TrackController.swift in Sources */,
 				59F0980225E081CC00667971 /* TicksView.swift in Sources */,

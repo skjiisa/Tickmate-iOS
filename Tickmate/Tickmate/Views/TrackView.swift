@@ -22,6 +22,7 @@ struct TrackView: View {
     @Binding var selection: Track?
     let sheet: Bool
     
+    @StateObject private var groups = TrackGroups()
     @State private var draftTrack = TrackRepresentation()
     @State private var enabled = true
     @State private var initialized = false
@@ -34,7 +35,15 @@ struct TrackView: View {
         Form {
             Section {
                 Toggle("Enabled", isOn: $enabled)
-                NavigationLink("Groups", destination: GroupsPicker(track: track))
+                NavigationLink(destination: GroupsPicker(track: track, groups: groups)) {
+                    HStack {
+                        Text("Groups")
+                        Spacer()
+                        Text(groups.name)
+                            .lineLimit(1)
+                            .foregroundColor(.secondary)
+                    }
+                }
             }
             
             Section(header: Text("Name")) {
@@ -139,8 +148,9 @@ struct TrackView: View {
         }
         .onAppear {
             if !initialized {
-                draftTrack.load(track: track)
                 enabled = track.enabled
+                groups.load(track)
+                draftTrack.load(track: track)
                 initialized = true
             }
             setEditMode()
@@ -202,8 +212,7 @@ struct GroupsPicker: View {
     @EnvironmentObject private var groupController: GroupController
     
     @ObservedObject var track: Track
-    
-    @State private var selectedGroups = Set<TrackGroup>()
+    @ObservedObject var groups: TrackGroups
     
     private var allGroups: [TrackGroup] {
         groupController.fetchedResultsController.fetchedObjects ?? []
@@ -212,44 +221,30 @@ struct GroupsPicker: View {
     var body: some View {
         Form {
             ForEach(allGroups) { group in
-                GroupRow(group: group, selectedGroups: $selectedGroups)
+                Button {
+                    withAnimation(.interactiveSpring()) {
+                        groups.toggle(group, in: track)
+                    }
+                } label: {
+                    HStack {
+                        Text(group.displayName)
+                        if groups.contains(group) {
+                            Spacer()
+                            Image(systemName: "checkmark")
+                                .foregroundColor(.accentColor)
+                                .transition(.scale)
+                        }
+                    }
+                }
+                .foregroundColor(.primary)
             }
         }
         .navigationTitle("Groups")
-        .onAppear {
-            if let groups = track.groups as? Set<TrackGroup> {
-                selectedGroups = groups
-            }
-        }
         .onDisappear {
             withAnimation {
-                track.groups = selectedGroups as NSSet
+                groups.save(to: track)
                 trackController.scheduleSave()
             }
-        }
-    }
-    
-    struct GroupRow: View {
-        var group: TrackGroup
-        @Binding var selectedGroups: Set<TrackGroup>
-        
-        var body: some View {
-            Button {
-                withAnimation(.interactiveSpring()) {
-                    selectedGroups.toggle(group)
-                }
-            } label: {
-                HStack {
-                    Text(group.name ?? "New Group")
-                    if selectedGroups.contains(group) {
-                        Spacer()
-                        Image(systemName: "checkmark")
-                            .foregroundColor(.accentColor)
-                            .transition(.scale)
-                    }
-                }
-            }
-            .foregroundColor(.primary)
         }
     }
 }
