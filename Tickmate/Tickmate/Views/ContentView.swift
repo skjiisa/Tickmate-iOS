@@ -32,6 +32,7 @@ struct ContentView: View {
     @StateObject private var trackController = TrackController()
     @StateObject private var groupController = GroupController()
     @StateObject private var vcContainer = ViewControllerContainer()
+    @StateObject private var storeController = StoreController()
     
     @State private var showingSettings = false
     @State private var showingTracks = false
@@ -136,6 +137,7 @@ struct ContentView: View {
                     SettingsView(showing: $showingSettings)
                 }
                 .environmentObject(trackController)
+                .environmentObject(storeController)
             }
         
         EmptyView()

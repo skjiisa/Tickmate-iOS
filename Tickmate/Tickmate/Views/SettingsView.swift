@@ -18,6 +18,7 @@ struct SettingsView: View {
     @AppStorage(Defaults.relativeDates.rawValue) private var relativeDates = true
     
     @EnvironmentObject private var trackController: TrackController
+    @EnvironmentObject private var storeController: StoreController
     
     @Binding var showing: Bool
     
@@ -68,6 +69,37 @@ struct SettingsView: View {
                 }
             }
             
+            Section(header: Text("Premium Features")) {
+                ForEach(storeController.products, id: \.productIdentifier) { product in
+                    Button {
+                        storeController.purchase(product)
+                    } label: {
+                        HStack {
+                            TextWithCaption(product.localizedTitle, caption: product.localizedDescription)
+                                .foregroundColor(.primary)
+                            Spacer()
+                            if storeController.purchased.contains(product.productIdentifier) {
+                                Text("Purchased!")
+                                    .foregroundColor(.secondary)
+                            } else {
+                                Text(product.price, formatter: storeController.priceFormatter)
+                                .foregroundColor(.accentColor)
+                            }
+                        }
+                    }
+                    .disabled(storeController.purchased.contains(product.productIdentifier))
+                }
+                
+                #if DEBUG
+                Button("Reset purchases (debug feature)") {
+                    StoreController.Products.allCases.forEach {
+                        UserDefaults.standard.set(false, forKey: $0.rawValue)
+                        storeController.purchased.remove($0.rawValue)
+                    }
+                }
+                #endif
+            }
+            
             Section(header: Text("App Information")) {
                 Link("Support Website", destination: URL(string: "https://github.com/Isvvc/Tickmate-iOS/issues")!)
                 Link("Email Support", destination: URL(string: "mailto:lyons@tuta.io")!)
@@ -93,6 +125,7 @@ struct SettingsView: View {
             }, region: .current) {
                 timeOffset = date.date
             }
+            storeController.fetchProducts()
         }
         .onChange(of: customDayStart, perform: updateCustomDayStart)
         .onChange(of: timeOffset, perform: updateCustomDayStart)
@@ -124,5 +157,7 @@ struct SettingsView_Previews: PreviewProvider {
         NavigationView {
             SettingsView(showing: .constant(true))
         }
+        .environmentObject(TrackController())
+        .environmentObject(StoreController())
     }
 }

@@ -1,0 +1,33 @@
+{
+  "identifier" : "6A8C1B93",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "1.99",
+      "familyShareable" : false,
+      "internalID" : "07E2B154",
+      "localizations" : [
+        {
+          "description" : "Unlock track grouping feature",
+          "displayName" : "Groups",
+          "locale" : "en_US"
+        }
+      ],
+      "productID" : "vc.isv.Tickmate.groups",
+      "referenceName" : "Groups",
+      "type" : "NonConsumable"
+    }
+  ],
+  "settings" : {
+
+  },
+  "subscriptionGroups" : [
+
+  ],
+  "version" : {
+    "major" : 1,
+    "minor" : 1
+  }
+}
