@@ -69,7 +69,7 @@ struct SettingsView: View {
                 }
             }
             
-            Section(header: Text("Premium Features")) {
+            Section(header: Text("Premium Features"), footer: Text("Groups allow you to swipe left and right between different sets of tracks from the main screen")) {
                 ForEach(storeController.products, id: \.productIdentifier) { product in
                     Button {
                         storeController.purchase(product)
