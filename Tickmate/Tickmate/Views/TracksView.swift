@@ -17,6 +17,8 @@ struct TracksView: View {
     // The environment EditMode is buggy, so using a custom @State property instead
     @State private var editMode = EditMode.inactive
     
+    @AppStorage(StoreController.Products.groups.rawValue) private var groupsUnlocked: Bool = false
+    
     @EnvironmentObject private var trackController: TrackController
     
     @Binding var showing: Bool
@@ -32,9 +34,13 @@ struct TracksView: View {
     
     var body: some View {
         Form {
-            Section(footer: Text("Swipe left and right on the main screen to change group")) {
+            Section(footer: Text(
+                        groupsUnlocked
+                            ? "Swipe left and right on the main screen to change group"
+                            : "Unlock the groups upgrade from the settings page")) {
                 NavigationLink("Groups", destination: GroupsView())
             }
+            .disabled(!groupsUnlocked)
             
             ForEach(tracks) { track in
                 TrackCell(track: track, selection: $selection)
