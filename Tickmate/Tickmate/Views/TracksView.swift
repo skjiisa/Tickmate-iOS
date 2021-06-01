@@ -49,18 +49,20 @@ struct TracksView: View {
             .onMove(perform: move)
             .animation(.easeInOut(duration: 0.25))
             
-            Button("Create new track") {
-                let newTrack = trackController.newTrack(index: (tracks.last?.index ?? -1) + 1, context: moc)
-                select(track: newTrack, delay: 0.25)
+            Section {
+                Button("Create new track") {
+                    let newTrack = trackController.newTrack(index: (tracks.last?.index ?? -1) + 1, context: moc)
+                    select(track: newTrack, delay: 0.25)
+                }
+                .centered()
+                .foregroundColor(.accentColor)
+                
+                Button("Add preset track") {
+                    showingPresets = true
+                }
+                .centered()
+                .foregroundColor(.accentColor)
             }
-            .centered()
-            .foregroundColor(.accentColor)
-            
-            Button("Add preset track") {
-                showingPresets = true
-            }
-            .centered()
-            .foregroundColor(.accentColor)
         }
         .environment(\.editMode, $editMode)
         .navigationTitle("Tracks")
