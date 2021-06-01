@@ -52,10 +52,11 @@ class TrackController: NSObject, ObservableObject {
         let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Track.index, ascending: true)]
         
-        fetchedResultsController = NSFetchedResultsController<Track>(fetchRequest: fetchRequest,
-                                                                     managedObjectContext: context,
-                                                                     sectionNameKeyPath: nil,
-                                                                     cacheName: nil)
+        fetchedResultsController = NSFetchedResultsController<Track>(
+            fetchRequest: fetchRequest,
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil)
         
         super.init()
         
@@ -269,12 +270,13 @@ extension TrackController: NSFetchedResultsControllerDelegate {
             if item.index != index {
                 item.index = index
                 changed = true
-                print("Index updated to \(index)")
             }
         }
         
         if changed {
-            PersistenceController.save(context: fetchedResultsController.managedObjectContext)
+            scheduleSave()
         }
+        // This will only save if there is one scheduled
+        scheduleSave(now: true)
     }
 }

@@ -10,9 +10,10 @@ import SwiftUI
 
 extension TrackGroup {
     @discardableResult
-    convenience init(name: String, context moc: NSManagedObjectContext) {
+    convenience init(name: String? = nil, index: Int16, context moc: NSManagedObjectContext) {
         self.init(context: moc)
         self.name = name
+        self.index = index
     }
 }
 

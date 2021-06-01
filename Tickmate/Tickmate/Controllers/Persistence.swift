@@ -19,7 +19,7 @@ class PersistenceController {
         let result = PersistenceController(inMemory: true)
         let viewContext = result.container.viewContext
         
-        let group = TrackGroup(name: "Test group", context: viewContext)
+        let group = TrackGroup(name: "Test group", index: 0, context: viewContext)
         result.previewGroup = group
         
         let dateString = TrackController.iso8601.string(from: Date() - 5.days)

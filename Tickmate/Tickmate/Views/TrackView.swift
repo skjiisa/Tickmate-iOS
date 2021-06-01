@@ -7,6 +7,8 @@
 
 import SwiftUI
 
+//MARK: TrackView
+
 struct TrackView: View {
     
     //MARK: Properties
@@ -20,6 +22,7 @@ struct TrackView: View {
     @Binding var selection: Track?
     let sheet: Bool
     
+    @StateObject private var groups = TrackGroups()
     @State private var draftTrack = TrackRepresentation()
     @State private var enabled = true
     @State private var initialized = false
@@ -32,6 +35,15 @@ struct TrackView: View {
         Form {
             Section {
                 Toggle("Enabled", isOn: $enabled)
+                NavigationLink(destination: GroupsPicker(track: track, groups: groups)) {
+                    HStack {
+                        Text("Groups")
+                        Spacer()
+                        Text(groups.name)
+                            .lineLimit(1)
+                            .foregroundColor(.secondary)
+                    }
+                }
             }
             
             Section(header: Text("Name")) {
@@ -136,8 +148,9 @@ struct TrackView: View {
         }
         .onAppear {
             if !initialized {
-                draftTrack.load(track: track)
                 enabled = track.enabled
+                groups.load(track)
+                draftTrack.load(track: track)
                 initialized = true
             }
             setEditMode()
@@ -188,6 +201,51 @@ struct TrackView: View {
         selection = nil
         trackController.delete(track: track, context: moc)
         PersistenceController.save(context: moc)
+    }
+}
+
+//MARK: GroupsPicker
+
+struct GroupsPicker: View {
+    
+    @EnvironmentObject private var trackController: TrackController
+    @EnvironmentObject private var groupController: GroupController
+    
+    @ObservedObject var track: Track
+    @ObservedObject var groups: TrackGroups
+    
+    private var allGroups: [TrackGroup] {
+        groupController.fetchedResultsController.fetchedObjects ?? []
+    }
+    
+    var body: some View {
+        Form {
+            ForEach(allGroups) { group in
+                Button {
+                    withAnimation(.interactiveSpring()) {
+                        groups.toggle(group, in: track)
+                    }
+                } label: {
+                    HStack {
+                        Text(group.displayName)
+                        if groups.contains(group) {
+                            Spacer()
+                            Image(systemName: "checkmark")
+                                .foregroundColor(.accentColor)
+                                .transition(.scale)
+                        }
+                    }
+                }
+                .foregroundColor(.primary)
+            }
+        }
+        .navigationTitle("Groups")
+        .onDisappear {
+            withAnimation {
+                groups.save(to: track)
+                trackController.scheduleSave()
+            }
+        }
     }
 }
 

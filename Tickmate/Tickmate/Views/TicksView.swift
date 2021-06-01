@@ -23,6 +23,7 @@ struct TicksView: View {
     @AppStorage(Defaults.weekSeparatorLines.rawValue) private var weekSeparatorLines: Bool = true
     @AppStorage(Defaults.weekSeparatorSpaces.rawValue) private var weekSeparatorSpaces: Bool = true
     
+    @EnvironmentObject private var groupController: GroupController
     @EnvironmentObject private var trackController: TrackController
     
     var scrollToBottomToggle: Bool = false
@@ -45,6 +46,11 @@ struct TicksView: View {
             entity: Track.entity(),
             sortDescriptors: [NSSortDescriptor(keyPath: \Track.index, ascending: true)],
             predicate: NSPredicate(format: "enabled == YES AND %@ IN groups", group))
+    }
+    
+    init(fetchRequest: FetchRequest<Track>, scrollToBottomToggle: Bool = false) {
+        self.fetchRequest = fetchRequest
+        self.scrollToBottomToggle = scrollToBottomToggle
     }
     
     var body: some View {
@@ -83,6 +89,7 @@ struct TicksView: View {
                 }
                 .environmentObject(vcContainer)
                 .environmentObject(trackController)
+                .environmentObject(groupController)
                 .introspectViewController { vc in
                     vc.presentationController?.delegate = vcContainer
                 }

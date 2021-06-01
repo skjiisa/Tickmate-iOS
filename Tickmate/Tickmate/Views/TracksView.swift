@@ -32,7 +32,7 @@ struct TracksView: View {
     
     var body: some View {
         Form {
-            Section {
+            Section(footer: Text("Swipe left and right on the main screen to change group")) {
                 NavigationLink("Groups", destination: GroupsView())
             }
             
@@ -95,16 +95,15 @@ struct TracksView: View {
         indexSet.map { tracks[$0] }.forEach {
             trackController.delete(track: $0, context: moc)
         }
-        // TrackController's FRC will update the indices for us
-        PersistenceController.save(context: moc)
+        trackController.scheduleSave()
     }
     
     private func move(_ indices: IndexSet, newOffset: Int) {
         var trackIndices = tracks.enumerated().map { $0.offset }
         trackIndices.move(fromOffsets: indices, toOffset: newOffset)
         trackIndices.enumerated().compactMap { offset, element in
-            element != offset ? (track: tracks[element], newIndex: Int16(offset)) : nil
-        }.forEach { $0.track.index = $0.newIndex }
+            element != offset ? (tracks[element], Int16(offset)) : nil
+        }.forEach { $0.index = $1 }
         
         PersistenceController.save(context: moc)
     }
