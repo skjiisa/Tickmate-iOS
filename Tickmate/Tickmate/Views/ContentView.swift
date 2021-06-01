@@ -28,6 +28,7 @@ struct ContentView: View {
     @AppStorage(Defaults.showUngroupedTracks.rawValue) private var showUngroupedTracks = false
     @AppStorage(Defaults.onboardingComplete.rawValue) private var onboardingComplete: Bool = false
     @AppStorage(Defaults.groupPage.rawValue) private var page = 0
+    @AppStorage(StoreController.Products.groups.rawValue) private var groupsUnlocked: Bool = false
     
     @StateObject private var trackController = TrackController()
     @StateObject private var groupController = GroupController()
@@ -40,16 +41,22 @@ struct ContentView: View {
     @State private var showingOnboarding = false
     
     private var showingAllTracks: Bool {
-        showAllTracks || groups.count == 0
+        showAllTracks || groups.count == 0 || !groupsUnlocked
     }
     
     private var showingUngroupedTracks: Bool {
-        showUngroupedTracks && ungroupedTracksFetchRequest.wrappedValue.count > 0
+        showUngroupedTracks && ungroupedTracksFetchRequest.wrappedValue.count > 0 && groupsUnlocked
+    }
+    
+    private var pageCount: Int {
+        groupsUnlocked
+            ? groups.count + showAllTracks.int + showingUngroupedTracks.int
+            : 1
     }
     
     var body: some View {
         NavigationView {
-            PageView(pageCount: groups.count + showAllTracks.int + showingUngroupedTracks.int, currentIndex: $page) {
+            PageView(pageCount: pageCount, currentIndex: $page) {
                 if showingAllTracks {
                     TicksView(scrollToBottomToggle: scrollToBottomToggle)
                 }
@@ -58,8 +65,10 @@ struct ContentView: View {
                     TicksView(fetchRequest: ungroupedTracksFetchRequest, scrollToBottomToggle: scrollToBottomToggle)
                 }
                 
-                ForEach(groups) { group in
-                    TicksView(group: group, scrollToBottomToggle: scrollToBottomToggle)
+                if groupsUnlocked {
+                    ForEach(groups) { group in
+                        TicksView(group: group, scrollToBottomToggle: scrollToBottomToggle)
+                    }
                 }
             }
             .navigationBarTitle("Tickmate", displayMode: .inline)
@@ -100,7 +109,7 @@ struct ContentView: View {
             // There have been bugs with page numbers in the past.
             // This is just in case the page number gets bugged
             // and is scrolled past the edge.
-            if page > 0 || (page >= groups.count + showingAllTracks.int + showingUngroupedTracks.int) {
+            if page < 0 || (page >= pageCount) {
                 page = 0
             }
             
