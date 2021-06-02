@@ -15,6 +15,8 @@ struct TrackView: View {
     
     @Environment(\.managedObjectContext) private var moc
     
+    @AppStorage(StoreController.Products.groups.rawValue) private var groupsUnlocked: Bool = false
+    
     @EnvironmentObject private var vcContainer: ViewControllerContainer
     @EnvironmentObject private var trackController: TrackController
     
@@ -29,11 +31,17 @@ struct TrackView: View {
     @State private var showingSymbolPicker = false
     @State private var showDelete = false
     
+    private var groupsFooter: some View {
+        groupsUnlocked
+            ? AnyView(EmptyView())
+            : AnyView(Text("Unlock the groups upgrade from the settings page"))
+    }
+    
     //MARK: Body
     
     var body: some View {
         Form {
-            Section {
+            Section(footer: groupsFooter) {
                 Toggle("Enabled", isOn: $enabled)
                 NavigationLink(destination: GroupsPicker(track: track, groups: groups)) {
                     HStack {
@@ -44,6 +52,7 @@ struct TrackView: View {
                             .foregroundColor(.secondary)
                     }
                 }
+                .disabled(!groupsUnlocked)
             }
             
             Section(header: Text("Name")) {

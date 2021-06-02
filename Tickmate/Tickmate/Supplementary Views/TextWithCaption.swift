@@ -12,6 +12,16 @@ struct TextWithCaption: View {
     var text: String
     var caption: String?
     
+    init(text: String, caption: String? = nil) {
+        self.text = text
+        self.caption = caption
+    }
+    
+    init(_ text: String, caption: String? = nil) {
+        self.text = text
+        self.caption = caption
+    }
+    
     var body: some View {
         VStack(alignment: .leading) {
             Text(text)

@@ -18,10 +18,12 @@ struct SettingsView: View {
     @AppStorage(Defaults.relativeDates.rawValue) private var relativeDates = true
     
     @EnvironmentObject private var trackController: TrackController
+    @EnvironmentObject private var storeController: StoreController
     
     @Binding var showing: Bool
     
     @State private var timeOffset: Date = Date()
+    @State private var showingRestrictedPaymentsAlert = false
     
     var body: some View {
         Form {
@@ -68,6 +70,49 @@ struct SettingsView: View {
                 }
             }
             
+            Section(header: Text("Premium Features"), footer: Text("Groups allow you to swipe left and right between different sets of tracks from the main screen")) {
+                ForEach(storeController.products, id: \.productIdentifier) { product in
+                    Button {
+                        storeController.isAuthorizedForPayments
+                            ? storeController.purchase(product)
+                            : (showingRestrictedPaymentsAlert = true)
+                    } label: {
+                        HStack {
+                            TextWithCaption(product.localizedTitle, caption: product.localizedDescription)
+                                .foregroundColor(.primary)
+                            Spacer()
+                            if storeController.purchased.contains(product.productIdentifier) {
+                                Text("Purchased!")
+                                    .foregroundColor(.secondary)
+                            } else if storeController.purchasing.contains(product.productIdentifier) {
+                                ProgressView()
+                            } else {
+                                Text(product.price, formatter: storeController.priceFormatter)
+                                    .foregroundColor(storeController.isAuthorizedForPayments ? .accentColor : .secondary)
+                            }
+                        }
+                    }
+                    .disabled(storeController.purchased.contains(product.productIdentifier))
+                }
+                .alert(isPresented: $showingRestrictedPaymentsAlert) {
+                    Alert(title: Text("Access restricted"), message: Text("You don't have permission to make purchases on this account."))
+                }
+                
+                Button("Restore purchases") {
+                    storeController.restorePurchases()
+                }
+                .alert(alertItem: $storeController.restored)
+                
+                #if DEBUG
+                Button("Reset purchases (debug feature)") {
+                    StoreController.Products.allCases.forEach {
+                        UserDefaults.standard.set(false, forKey: $0.rawValue)
+                        storeController.removePurchased(id: $0.rawValue)
+                    }
+                }
+                #endif
+            }
+            
             Section(header: Text("App Information")) {
                 Link("Support Website", destination: URL(string: "https://github.com/Isvvc/Tickmate-iOS/issues")!)
                 Link("Email Support", destination: URL(string: "mailto:lyons@tuta.io")!)
@@ -93,6 +138,7 @@ struct SettingsView: View {
             }, region: .current) {
                 timeOffset = date.date
             }
+            storeController.fetchProducts()
         }
         .onChange(of: customDayStart, perform: updateCustomDayStart)
         .onChange(of: timeOffset, perform: updateCustomDayStart)
@@ -124,5 +170,7 @@ struct SettingsView_Previews: PreviewProvider {
         NavigationView {
             SettingsView(showing: .constant(true))
         }
+        .environmentObject(TrackController())
+        .environmentObject(StoreController())
     }
 }
