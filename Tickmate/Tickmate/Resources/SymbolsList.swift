@@ -103,6 +103,8 @@ let SymbolsList: [String] = [
     "flame",
     "flame.fill",
     "keyboard",
+    "drop",
+    "drop.fill",
     "play",
     "play.fill",
     "stop",

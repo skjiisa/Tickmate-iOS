@@ -25,7 +25,8 @@ let PresetTracks: TracksList = [
     ]),
     ("Occasional tasks", [
         .init(name: "Washed hair", red: 152, green: 109, blue: 50, multiple: false, reversed: false, systemImage: "cloud.heavyrain"),
+        .init(name: "Changed towels in bathroom", red: 214, green: 149, blue: 247, multiple: false, reversed: false, systemImage: "map"),
         .init(name: "Changed sheets", red: 251, green: 246, blue: 219, multiple: false, reversed: false, systemImage: "bed.double"),
-        .init(name: "Changed towels in bathroom", red: 177, green: 223, blue: 247, multiple: false, reversed: false, systemImage: "map")
+        .init(name: "Wash water bottle", red: 89, green: 196, blue: 246, multiple: false, reversed: false, systemImage: "drop")
     ])
 ]
