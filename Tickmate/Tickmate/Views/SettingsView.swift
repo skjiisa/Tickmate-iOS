@@ -23,6 +23,7 @@ struct SettingsView: View {
     @Binding var showing: Bool
     
     @State private var timeOffset: Date = Date()
+    @State private var showingRestrictedPaymentsAlert = false
     
     var body: some View {
         Form {
@@ -72,7 +73,9 @@ struct SettingsView: View {
             Section(header: Text("Premium Features"), footer: Text("Groups allow you to swipe left and right between different sets of tracks from the main screen")) {
                 ForEach(storeController.products, id: \.productIdentifier) { product in
                     Button {
-                        storeController.purchase(product)
+                        storeController.isAuthorizedForPayments
+                            ? storeController.purchase(product)
+                            : (showingRestrictedPaymentsAlert = true)
                     } label: {
                         HStack {
                             TextWithCaption(product.localizedTitle, caption: product.localizedDescription)
@@ -81,20 +84,30 @@ struct SettingsView: View {
                             if storeController.purchased.contains(product.productIdentifier) {
                                 Text("Purchased!")
                                     .foregroundColor(.secondary)
+                            } else if storeController.purchasing.contains(product.productIdentifier) {
+                                ProgressView()
                             } else {
                                 Text(product.price, formatter: storeController.priceFormatter)
-                                .foregroundColor(.accentColor)
+                                    .foregroundColor(storeController.isAuthorizedForPayments ? .accentColor : .secondary)
                             }
                         }
                     }
                     .disabled(storeController.purchased.contains(product.productIdentifier))
                 }
+                .alert(isPresented: $showingRestrictedPaymentsAlert) {
+                    Alert(title: Text("Access restricted"), message: Text("You don't have permission to make purchases on this account."))
+                }
+                
+                Button("Restore purchases") {
+                    storeController.restorePurchases()
+                }
+                .alert(alertItem: $storeController.restored)
                 
                 #if DEBUG
                 Button("Reset purchases (debug feature)") {
                     StoreController.Products.allCases.forEach {
                         UserDefaults.standard.set(false, forKey: $0.rawValue)
-                        storeController.purchased.remove($0.rawValue)
+                        storeController.removePurchased(id: $0.rawValue)
                     }
                 }
                 #endif

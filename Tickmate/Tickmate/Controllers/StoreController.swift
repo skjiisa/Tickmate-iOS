@@ -12,7 +12,15 @@ class StoreController: NSObject, ObservableObject {
     
     @Published private(set) var products = [SKProduct]()
     
-    @Published var purchased = Set<String>()
+    @Published private(set) var purchased = Set<String>()
+    @Published private(set) var purchasing = Set<String>()
+    @Published var restored: AlertItem?
+    
+    private var isRestoringPurchases = false
+    
+    var isAuthorizedForPayments: Bool {
+        SKPaymentQueue.canMakePayments()
+    }
     
     override init() {
         super.init()
@@ -32,14 +40,23 @@ class StoreController: NSObject, ObservableObject {
         request.start()
     }
     
-    @discardableResult
-    func purchase(_ product: SKProduct) -> Bool {
-        guard SKPaymentQueue.canMakePayments() else { return false }
+    func purchase(_ product: SKProduct) {
+        guard isAuthorizedForPayments else { return }
         
         let payment = SKPayment(product: product)
         SKPaymentQueue.default().add(payment)
-        return true
     }
+    
+    func restorePurchases() {
+        isRestoringPurchases = true
+        SKPaymentQueue.default().restoreCompletedTransactions()
+    }
+    
+    #if DEBUG
+    func removePurchased(id: String) {
+        purchased.remove(id)
+    }
+    #endif
     
     //MARK: Products
     
@@ -85,16 +102,20 @@ extension StoreController: SKPaymentTransactionObserver {
             
             switch transaction.transactionState {
             case .purchasing:
-                break
+                withAnimation {
+                    _ = purchasing.insert(productID)
+                }
             case .purchased, .restored:
                 print("Purchased \(productID)!")
                 UserDefaults.standard.set(true, forKey: productID)
                 withAnimation {
-                    _ = purchased.insert(productID)
+                    purchasing.remove(productID)
+                    purchased.insert(productID)
                 }
                 
                 queue.finishTransaction(transaction)
             case .failed, .deferred:
+                purchasing.remove(productID)
                 if let error = transaction.error {
                     print("Purchase of \(productID) failed: \(error)")
                 } else {
@@ -105,6 +126,29 @@ extension StoreController: SKPaymentTransactionObserver {
             @unknown default:
                 break
             }
+        }
+        
+        if isRestoringPurchases {
+            let restoredProducts = transactions
+                .filter { $0.transactionState == .restored }
+                .compactMap { transaction in products.first(where: { $0.productIdentifier == transaction.payment.productIdentifier }) }
+            if !restoredProducts.isEmpty {
+                let alertBody = restoredProducts
+                    .map { $0.localizedTitle }
+                    .joined(separator: ", ")
+                restored = AlertItem(title: "Purchases restored!", message: alertBody)
+                isRestoringPurchases = false
+            }
+        }
+    }
+    
+    func paymentQueueRestoreCompletedTransactionsFinished(_ queue: SKPaymentQueue) {
+        // If there were purchases that were restored, isRestoringPurchases,
+        // would be set to false in paymentQueue(_:, updatedTransactions:), so
+        // if it's still true here, that means there were no purchases to restore.
+        if isRestoringPurchases {
+            restored = AlertItem(title: "No purchases to restore")
+            isRestoringPurchases = false
         }
     }
 }
