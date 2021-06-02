@@ -103,6 +103,10 @@ struct ContentView: View {
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
             trackController.scheduleSave(now: true)
         }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
+            print("willEnterForeground")
+            trackController.checkForNewDay()
+        }
         .onAppear {
             groupController.trackController = trackController
             

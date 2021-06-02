@@ -36,11 +36,7 @@ class TrackController: NSObject, ObservableObject {
             Defaults.relativeDates.rawValue: true
         ])
         
-        if UserDefaults.standard.bool(forKey: Defaults.customDayStart.rawValue) {
-            date = Date() - UserDefaults.standard.integer(forKey: Defaults.customDayStartMinutes.rawValue).minutes
-        } else {
-            date = Date()
-        }
+        date = Date() - TrackController.dayOffset
         weekday = date.in(region: .current).weekday
         
         weekStartDay = UserDefaults.standard.integer(forKey: Defaults.weekStartDay.rawValue)
@@ -67,6 +63,10 @@ class TrackController: NSObject, ObservableObject {
         } catch {
             NSLog("Error performing Tracks fetch: \(error)")
         }
+    }
+    
+    static var dayOffset: DateComponents {
+        (UserDefaults.standard.bool(forKey: Defaults.customDayStart.rawValue) ? UserDefaults.standard.integer(forKey: Defaults.customDayStartMinutes.rawValue) : 0).minutes
     }
     
     //MARK: Date Formatters
@@ -245,6 +245,19 @@ class TrackController: NSObject, ObservableObject {
         }
         self.work = work
         DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: work)
+    }
+    
+    func checkForNewDay() {
+        // The new date check was done differently in setCustomDayStart, but this works
+        // too and I don't know if one ways is necissarily better than the other.
+        let oldDate = TrackController.iso8601.string(from: date)
+        let newDate = TrackController.iso8601.string(from: Date() - TrackController.dayOffset)
+        if oldDate != newDate {
+            objectWillChange.send()
+            date = Date() - TrackController.dayOffset
+            tickControllers.values.forEach { $0.loadTicks() }
+            print("Updated from \(oldDate) to \(newDate)")
+        }
     }
     
 }
