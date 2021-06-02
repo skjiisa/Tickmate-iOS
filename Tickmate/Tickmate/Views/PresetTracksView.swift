@@ -9,21 +9,25 @@ import SwiftUI
 
 struct PresetTracksView: View {
     
-    var tracks: [TrackRepresentation]
+    var tracksList: TracksList
     var select: (TrackRepresentation) -> Void
     
-    init(tracks: [TrackRepresentation]? = nil, onSelect: @escaping (TrackRepresentation) -> Void) {
-        self.tracks = tracks ?? PresetTracks
+    init(tracks: TracksList? = nil, onSelect: @escaping (TrackRepresentation) -> Void) {
+        self.tracksList = tracks ?? PresetTracks
         self.select = onSelect
     }
     
     var body: some View {
-        List {
-            ForEach(tracks, id: \.self) { track in
-                Button {
-                    select(track)
-                } label: {
-                    TrackRepresentationCell(trackRepresentation: track)
+        Form {
+            ForEach(tracksList, id: \.title) { list in
+                Section(header: Text(list.title)) {
+                    ForEach(list.tracks, id: \.self) { track in
+                        Button {
+                            select(track)
+                        } label: {
+                            TrackRepresentationCell(trackRepresentation: track)
+                        }
+                    }
                 }
             }
         }
@@ -50,7 +54,8 @@ struct TrackRepresentationCell: View {
                     .background(trackRepresentation.color.cornerRadius(8))
                     .foregroundColor(trackRepresentation.lightText ? .white : .black)
             }
-            TextWithCaption(text: trackRepresentation.name, caption: caption)
+            TextWithCaption(trackRepresentation.name, caption: caption)
+                .foregroundColor(.primary)
         }
     }
 }

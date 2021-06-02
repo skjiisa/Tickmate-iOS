@@ -98,7 +98,7 @@ struct OnboardingView: View {
 
 struct LogoView: View {
     
-    let colors = [PresetTracks[1].color, PresetTracks[3].color, PresetTracks[7].color]
+    let colors = [PresetTracks[0].tracks[1].color, PresetTracks[0].tracks[3].color, PresetTracks[0].tracks[7].color]
     
     let ticked = [
         [true, false, true],
