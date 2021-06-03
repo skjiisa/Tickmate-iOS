@@ -10,6 +10,12 @@ import StoreKit
 
 class StoreController: NSObject, ObservableObject {
     
+    // For some reason, using an @AppStorage property on ContentView for
+    // groups would cause lag when changing page. Even if the property wasn't
+    // read dirctly, but instead updated a @State property with an .onChange,
+    // it would still cause the lag, even if that .onChange was never called.
+    @Published private(set) var groupsUnlocked: Bool
+    
     @Published private(set) var products = [SKProduct]()
     
     @Published private(set) var purchased = Set<String>()
@@ -23,6 +29,7 @@ class StoreController: NSObject, ObservableObject {
     }
     
     override init() {
+        groupsUnlocked = UserDefaults.standard.bool(forKey: Products.groups.rawValue)
         super.init()
         SKPaymentQueue.default().add(self)
     }
@@ -54,7 +61,11 @@ class StoreController: NSObject, ObservableObject {
     
     #if DEBUG
     func removePurchased(id: String) {
+        UserDefaults.standard.set(false, forKey: id)
         purchased.remove(id)
+        if id == StoreController.Products.groups.rawValue {
+            groupsUnlocked = false
+        }
     }
     #endif
     
@@ -111,6 +122,9 @@ extension StoreController: SKPaymentTransactionObserver {
                 withAnimation {
                     purchasing.remove(productID)
                     purchased.insert(productID)
+                    if productID == StoreController.Products.groups.rawValue {
+                        groupsUnlocked = true
+                    }
                 }
                 
                 queue.finishTransaction(transaction)
