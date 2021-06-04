@@ -27,7 +27,7 @@ let PresetTracks: TracksList = [
         .init(name: "Changed towels in bathroom", red: 214, green: 149, blue: 247, multiple: false, reversed: false, systemImage: "map"),
         .init(name: "Changed sheets", red: 251, green: 246, blue: 219, multiple: false, reversed: false, systemImage: "bed.double"),
         .init(name: "Washed hair", red: 52, green: 199, blue: 89, multiple: false, reversed: false, systemImage: "wand.and.stars.inverse"),
-        .init(name: "Wash water bottle", red: 89, green: 196, blue: 246, multiple: false, reversed: false, systemImage: "drop.fill"),
+        .init(name: "Washed water bottle", red: 89, green: 196, blue: 246, multiple: false, reversed: false, systemImage: "drop.fill"),
         .init(name: "Backed up files", red: 255, green: 59, blue: 48, multiple: false, reversed: false, systemImage: "externaldrive.fill.badge.timemachine")
     ])
 ]
