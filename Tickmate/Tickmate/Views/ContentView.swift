@@ -28,7 +28,6 @@ struct ContentView: View {
     @AppStorage(Defaults.showUngroupedTracks.rawValue) private var showUngroupedTracks = false
     @AppStorage(Defaults.onboardingComplete.rawValue) private var onboardingComplete: Bool = false
     @AppStorage(Defaults.groupPage.rawValue) private var page = 0
-    @AppStorage(StoreController.Products.groups.rawValue) private var groupsUnlocked: Bool = false
     
     @StateObject private var trackController = TrackController()
     @StateObject private var groupController = GroupController()
@@ -41,15 +40,15 @@ struct ContentView: View {
     @State private var showingOnboarding = false
     
     private var showingAllTracks: Bool {
-        showAllTracks || groups.count == 0 || !groupsUnlocked
+        showAllTracks || groups.count == 0 || !storeController.groupsUnlocked
     }
     
     private var showingUngroupedTracks: Bool {
-        showUngroupedTracks && ungroupedTracksFetchRequest.wrappedValue.count > 0 && groupsUnlocked
+        showUngroupedTracks && ungroupedTracksFetchRequest.wrappedValue.count > 0 && storeController.groupsUnlocked
     }
     
     private var pageCount: Int {
-        groupsUnlocked
+        storeController.groupsUnlocked
             ? groups.count + showAllTracks.int + showingUngroupedTracks.int
             : 1
     }
@@ -65,7 +64,7 @@ struct ContentView: View {
                     TicksView(fetchRequest: ungroupedTracksFetchRequest, scrollToBottomToggle: scrollToBottomToggle)
                 }
                 
-                if groupsUnlocked {
+                if storeController.groupsUnlocked {
                     ForEach(groups) { group in
                         TicksView(group: group, scrollToBottomToggle: scrollToBottomToggle)
                     }

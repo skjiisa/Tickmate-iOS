@@ -77,7 +77,7 @@ class PersistenceController {
                 startDate: dateString,
                 index: Int16(i),
                 context: viewContext)
-            PresetTracks[i].save(to: track)
+            PresetTracks[0].tracks[i].save(to: track)
             track.startDate = dateString
             
             for (j, tick) in ticks.enumerated() where tick {
@@ -92,7 +92,7 @@ class PersistenceController {
             startDate: dateString,
             index: 4,
             context: viewContext)
-        PresetTracks[5].save(to: disabledTrack)
+        PresetTracks[0].tracks[5].save(to: disabledTrack)
         disabledTrack.enabled = false
         
         save()
