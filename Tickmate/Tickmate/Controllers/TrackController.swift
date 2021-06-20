@@ -254,6 +254,7 @@ class TrackController: NSObject, ObservableObject {
         if oldDate != newDate {
             objectWillChange.send()
             date = Date() - TrackController.dayOffset
+            weekday = date.in(region: .current).weekday
             tickControllers.values.forEach { $0.loadTicks() }
             print("Updated from \(oldDate) to \(newDate)")
         }
