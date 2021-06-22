@@ -18,6 +18,8 @@ You can track anything from habits you wish to build or break to how often you w
 + You can use the "allow multiple" feature to be able to tick a single day multiple times.
 + With iCloud sync, all your data will be securely synced across all devices.
 
+[Changelog](Changelog.md)
+
 ### Inspiration
 
 Tickmate for iOS was designed after [lordi/tickmate](https://github.com/lordi/tickmate) for Android.
