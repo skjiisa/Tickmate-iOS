@@ -128,18 +128,17 @@ class TrackController: NSObject, ObservableObject {
     }
     
     func weekend(day: Int) -> Bool {
-        weekday - day % 7 + 1 == weekStartDay
+        // The Swift % operator doesn't calculate
+        // the modulo from negative numbers,
+        // so we're adding 7 and %ing again.
+        (weekday - day % 7 + 7) % 7 + 1 == weekStartDay
     }
     
     func insets(day: Int) -> Edge.Set? {
-        switch weekday - day % 7 + 1 {
-        case weekStartDay:
-            return .bottom
-        case (weekStartDay + 1) % 7:
-            return .top
-        default:
-            return nil
-        }
+        weekend(day: day)
+            ? .bottom
+            : (weekday - day % 7 + 6) % 7 + 1 == weekStartDay
+            ? .top : nil
     }
     
     //MARK: Track CRUD
@@ -255,6 +254,7 @@ class TrackController: NSObject, ObservableObject {
         if oldDate != newDate {
             objectWillChange.send()
             date = Date() - TrackController.dayOffset
+            weekday = date.in(region: .current).weekday
             tickControllers.values.forEach { $0.loadTicks() }
             print("Updated from \(oldDate) to \(newDate)")
         }

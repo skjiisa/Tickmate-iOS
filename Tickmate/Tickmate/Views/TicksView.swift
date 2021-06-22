@@ -174,7 +174,7 @@ struct DayRow: View {
                     TickView(day: day, track: track, tickController: trackController.tickController(for: track))
                 }
             }
-            if spaces && day > 0 && trackController.insets(day: day) == .bottom {
+            if spaces && trackController.insets(day: day) == .bottom {
                 Rectangle()
                     // Make up for the height of the separator line if present
                     .frame(height: lines ? 4 : 0)

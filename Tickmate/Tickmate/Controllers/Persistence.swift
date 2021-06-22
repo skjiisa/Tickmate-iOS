@@ -51,9 +51,11 @@ class PersistenceController {
         return result
     }()
     
+    #if DEBUG
     func loadDemo() -> PersistenceController {
         let viewContext = container.viewContext
         
+        // Only create demo data if there is not already data
         let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
         fetchRequest.fetchLimit = 1
         guard (try? viewContext.fetch(fetchRequest))?.isEmpty ?? false else { return self }
@@ -62,14 +64,26 @@ class PersistenceController {
         let startDateOffset = 14
         let dateString = TrackController.iso8601.string(from: Date() - startDateOffset.days)
         
-        let demoTracks = [
+        // Demo Groups
+        
+        // Unlock the groups in-app-purchase
+        UserDefaults.standard.set(true, forKey: StoreController.Products.groups.rawValue)
+        let daily = TrackGroup(name: "Daily", index: 0, context: viewContext)
+        let occasional = TrackGroup(name: "Occasional", index: 1, context: viewContext)
+        let group3 = TrackGroup(name: "Group 3", index: 2, context: viewContext)
+        
+        UserDefaults.standard.set(false, forKey: Defaults.showAllTracks.rawValue)
+        
+        // Daily Tracks
+        
+        let dailyTracks = [
             [true, true, true, false, true, true, true, true, true, true, false, true, false, true, true, true, true, false, false, false, false, true, true, false],
             [false, true, true, true, true, true, true, true, true, true, true, false, true, false, true, true, true, false, true, true, true, true, true, false],
             [true, true, true, false, true, false, false, true, false, true, false, true, false, true, false].map { !$0 },   // This one is reversed
             [true, true, true, true, true, false, true, true, false, true, false, true, true, true, true, true, false, true, true, true, true, true, true, true]
         ]
         
-        for (i, ticks) in demoTracks.enumerated() {
+        for (i, ticks) in dailyTracks.enumerated() {
             let track = Track(
                 name: String(UUID().uuidString.dropLast(28)),
                 multiple: i > 0,
@@ -79,11 +93,18 @@ class PersistenceController {
                 context: viewContext)
             PresetTracks[0].tracks[i].save(to: track)
             track.startDate = dateString
+            track.addToGroups(daily)
+            
+            if i == 0 {
+                track.addToGroups(group3)
+            }
             
             for (j, tick) in ticks.enumerated() where tick {
                 Tick(track: track, dayOffset: Int16(startDateOffset - j), context: viewContext)
             }
         }
+        
+        // Disabled Track
         
         let disabledTrack = Track(
             name: String(UUID().uuidString.dropLast(28)),
@@ -95,9 +116,44 @@ class PersistenceController {
         PresetTracks[0].tracks[5].save(to: disabledTrack)
         disabledTrack.enabled = false
         
+        // Occasional Tracks
+        
+        let occasionalTracks = [
+            (0, [1, 8, 15, 22, 29]),
+            (3, [0, 2, 3, 5, 7, 9, 10, 12, 14, 16, 17, 19, 21, 23, 24, 26, 28]),
+            (1, [7, 14, 21, 28]),
+            (4, [14])
+        ]
+        
+        for (i, (index, ticks)) in occasionalTracks.enumerated() {
+            let track = Track(
+                name: "",
+                startDate: dateString,
+                index: Int16(i + dailyTracks.count),
+                context: viewContext)
+            PresetTracks[1].tracks[index].save(to: track)
+            track.startDate = dateString
+            track.addToGroups(occasional)
+            
+            if index == 3 {
+                let reference = PresetTracks[1].tracks[2]
+                track.name = reference.name
+                track.systemImage = reference.systemImage
+            }
+            
+            if index > 2 {
+                track.addToGroups(group3)
+            }
+            
+            for tick in ticks {
+                Tick(track: track, dayOffset: Int16(startDateOffset - tick), context: viewContext)
+            }
+        }
+        
         save()
         return self
     }
+    #endif
     
     //MARK: Properties
 
