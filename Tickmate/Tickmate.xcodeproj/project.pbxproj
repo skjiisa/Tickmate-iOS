@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5901D4CD2684281A00A5BE86 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5901D4CC2684281A00A5BE86 /* WidgetKit.framework */; };
+		5901D4CF2684281A00A5BE86 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5901D4CE2684281A00A5BE86 /* SwiftUI.framework */; };
+		5901D4D22684281A00A5BE86 /* TicksWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5901D4D12684281A00A5BE86 /* TicksWidget.swift */; };
+		5901D4D52684281C00A5BE86 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5901D4D42684281C00A5BE86 /* Assets.xcassets */; };
+		5901D4D72684281C00A5BE86 /* TicksWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 5901D4D32684281A00A5BE86 /* TicksWidget.intentdefinition */; };
+		5901D4D82684281C00A5BE86 /* TicksWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 5901D4D32684281A00A5BE86 /* TicksWidget.intentdefinition */; };
+		5901D4DB2684281C00A5BE86 /* TicksWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 5901D4CB2684281A00A5BE86 /* TicksWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		5904EAAF2657111300B2D0A0 /* Binding+onChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5904EAAE2657111300B2D0A0 /* Binding+onChange.swift */; };
 		592850F2265EF54B00E682F5 /* GroupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592850F1265EF54B00E682F5 /* GroupController.swift */; };
 		592CE888264F19B400668684 /* View+Centered.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592CE887264F19B400668684 /* View+Centered.swift */; };
@@ -50,7 +57,38 @@
 		59FBCF2D25E07BD8007B114F /* Tickmate.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 59FBCF2B25E07BD8007B114F /* Tickmate.xcdatamodeld */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		5901D4D92684281C00A5BE86 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 59FBCF1525E07BD5007B114F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5901D4CA2684281A00A5BE86;
+			remoteInfo = TicksWidgetExtension;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		5901D4DC2684281C00A5BE86 /* Embed App Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				5901D4DB2684281C00A5BE86 /* TicksWidgetExtension.appex in Embed App Extensions */,
+			);
+			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		5901D4CB2684281A00A5BE86 /* TicksWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TicksWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		5901D4CC2684281A00A5BE86 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		5901D4CE2684281A00A5BE86 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		5901D4D12684281A00A5BE86 /* TicksWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TicksWidget.swift; sourceTree = "<group>"; };
+		5901D4D32684281A00A5BE86 /* TicksWidget.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = TicksWidget.intentdefinition; sourceTree = "<group>"; };
+		5901D4D42684281C00A5BE86 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		5901D4D62684281C00A5BE86 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5904EAAE2657111300B2D0A0 /* Binding+onChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Binding+onChange.swift"; sourceTree = "<group>"; };
 		592850F1265EF54B00E682F5 /* GroupController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupController.swift; sourceTree = "<group>"; };
 		592CE887264F19B400668684 /* View+Centered.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Centered.swift"; sourceTree = "<group>"; };
@@ -97,6 +135,15 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		5901D4C82684281A00A5BE86 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5901D4CF2684281A00A5BE86 /* SwiftUI.framework in Frameworks */,
+				5901D4CD2684281A00A5BE86 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		59FBCF1A25E07BD5007B114F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -110,10 +157,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5901D4D02684281A00A5BE86 /* TicksWidget */ = {
+			isa = PBXGroup;
+			children = (
+				5901D4D12684281A00A5BE86 /* TicksWidget.swift */,
+				5901D4D32684281A00A5BE86 /* TicksWidget.intentdefinition */,
+				5901D4D42684281C00A5BE86 /* Assets.xcassets */,
+				5901D4D62684281C00A5BE86 /* Info.plist */,
+			);
+			path = TicksWidget;
+			sourceTree = "<group>";
+		};
 		5964545025E987C9004FE184 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				5964545125E987C9004FE184 /* CloudKit.framework */,
+				5901D4CC2684281A00A5BE86 /* WidgetKit.framework */,
+				5901D4CE2684281A00A5BE86 /* SwiftUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -149,6 +209,7 @@
 			isa = PBXGroup;
 			children = (
 				59FBCF1F25E07BD5007B114F /* Tickmate */,
+				5901D4D02684281A00A5BE86 /* TicksWidget */,
 				59FBCF1E25E07BD5007B114F /* Products */,
 				5964545025E987C9004FE184 /* Frameworks */,
 			);
@@ -158,6 +219,7 @@
 			isa = PBXGroup;
 			children = (
 				59FBCF1D25E07BD5007B114F /* Tickmate.app */,
+				5901D4CB2684281A00A5BE86 /* TicksWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -234,6 +296,23 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		5901D4CA2684281A00A5BE86 /* TicksWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5901D4DF2684281C00A5BE86 /* Build configuration list for PBXNativeTarget "TicksWidgetExtension" */;
+			buildPhases = (
+				5901D4C72684281A00A5BE86 /* Sources */,
+				5901D4C82684281A00A5BE86 /* Frameworks */,
+				5901D4C92684281A00A5BE86 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TicksWidgetExtension;
+			productName = TicksWidgetExtension;
+			productReference = 5901D4CB2684281A00A5BE86 /* TicksWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		59FBCF1C25E07BD5007B114F /* Tickmate */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 59FBCF3125E07BD8007B114F /* Build configuration list for PBXNativeTarget "Tickmate" */;
@@ -241,10 +320,12 @@
 				59FBCF1925E07BD5007B114F /* Sources */,
 				59FBCF1A25E07BD5007B114F /* Frameworks */,
 				59FBCF1B25E07BD5007B114F /* Resources */,
+				5901D4DC2684281C00A5BE86 /* Embed App Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				5901D4DA2684281C00A5BE86 /* PBXTargetDependency */,
 			);
 			name = Tickmate;
 			packageProductDependencies = (
@@ -261,9 +342,12 @@
 		59FBCF1525E07BD5007B114F /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1240;
+				LastSwiftUpdateCheck = 1250;
 				LastUpgradeCheck = 1240;
 				TargetAttributes = {
+					5901D4CA2684281A00A5BE86 = {
+						CreatedOnToolsVersion = 12.5;
+					};
 					59FBCF1C25E07BD5007B114F = {
 						CreatedOnToolsVersion = 12.4;
 					};
@@ -287,11 +371,20 @@
 			projectRoot = "";
 			targets = (
 				59FBCF1C25E07BD5007B114F /* Tickmate */,
+				5901D4CA2684281A00A5BE86 /* TicksWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		5901D4C92684281A00A5BE86 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5901D4D52684281C00A5BE86 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		59FBCF1B25E07BD5007B114F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -304,12 +397,22 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		5901D4C72684281A00A5BE86 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5901D4D22684281A00A5BE86 /* TicksWidget.swift in Sources */,
+				5901D4D72684281C00A5BE86 /* TicksWidget.intentdefinition in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		59FBCF1925E07BD5007B114F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				59F3EDC225FC4F270009CDEC /* ViewControllerContainer.swift in Sources */,
 				59FBCF2A25E07BD8007B114F /* Persistence.swift in Sources */,
+				5901D4D82684281C00A5BE86 /* TicksWidget.intentdefinition in Sources */,
 				592CE890264F337000668684 /* Tickmate+Wrapping.swift in Sources */,
 				592CE88A264F1CA800668684 /* GroupView.swift in Sources */,
 				592CE888264F19B400668684 /* View+Centered.swift in Sources */,
@@ -349,7 +452,59 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		5901D4DA2684281C00A5BE86 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5901D4CA2684281A00A5BE86 /* TicksWidgetExtension */;
+			targetProxy = 5901D4D92684281C00A5BE86 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		5901D4DD2684281C00A5BE86 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = A4525544Q4;
+				INFOPLIST_FILE = TicksWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = vc.isv.Tickmate.TicksWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		5901D4DE2684281C00A5BE86 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = A4525544Q4;
+				INFOPLIST_FILE = TicksWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = vc.isv.Tickmate.TicksWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		59FBCF2F25E07BD8007B114F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -469,6 +624,7 @@
 		59FBCF3225E07BD8007B114F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Tickmate/Tickmate.entitlements;
@@ -494,6 +650,7 @@
 		59FBCF3325E07BD8007B114F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Tickmate/Tickmate.entitlements;
@@ -519,6 +676,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		5901D4DF2684281C00A5BE86 /* Build configuration list for PBXNativeTarget "TicksWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5901D4DD2684281C00A5BE86 /* Debug */,
+				5901D4DE2684281C00A5BE86 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		59FBCF1825E07BD5007B114F /* Build configuration list for PBXProject "Tickmate" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
