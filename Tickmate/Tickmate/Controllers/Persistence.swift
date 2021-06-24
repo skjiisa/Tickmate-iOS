@@ -183,6 +183,13 @@ class PersistenceController {
             let oldURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?.appendingPathComponent("Tickmate.sqlite")
             UserDefaults.standard.register(defaults: [Defaults.appGroupDatabaseMigration.rawValue: false])
             var needsMigration = !UserDefaults.standard.bool(forKey: Defaults.appGroupDatabaseMigration.rawValue)
+            if needsMigration,
+               let oldURL = oldURL,
+               !FileManager.default.fileExists(atPath: oldURL.path) {
+                print("New app install. No persistent store migration required.")
+                UserDefaults.standard.set(true, forKey: Defaults.appGroupDatabaseMigration.rawValue)
+                needsMigration = false
+            }
             
             // Load the current persistent store
             if !needsMigration {
