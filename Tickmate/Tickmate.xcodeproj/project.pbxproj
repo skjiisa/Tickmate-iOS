@@ -20,6 +20,21 @@
 		592CE88A264F1CA800668684 /* GroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592CE889264F1CA800668684 /* GroupView.swift */; };
 		592CE890264F337000668684 /* Tickmate+Wrapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592CE88F264F337000668684 /* Tickmate+Wrapping.swift */; };
 		59303A512665D00900EB900E /* TrackGroups.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59303A502665D00900EB900E /* TrackGroups.swift */; };
+		5931642D26853FFB005DDA1A /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59FBCF2925E07BD8007B114F /* Persistence.swift */; };
+		5931642E26854006005DDA1A /* SymbolsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C23A6625E70D7000AFBC4B /* SymbolsList.swift */; };
+		5931642F26854009005DDA1A /* Defaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E6E15025F8837E008A74A9 /* Defaults.swift */; };
+		5931643026854014005DDA1A /* Tickmate.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 59FBCF2B25E07BD8007B114F /* Tickmate.xcdatamodeld */; };
+		593164312685401C005DDA1A /* TrackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F6EAA625E36D680069DF40 /* TrackController.swift */; };
+		593164322685401E005DDA1A /* TickController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F6EAA325E36D510069DF40 /* TickController.swift */; };
+		5931643326854028005DDA1A /* Tickmate+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F6EA9C25E369830069DF40 /* Tickmate+Convenience.swift */; };
+		593164342685402F005DDA1A /* Color+RGB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 597DF5AF25E5E90800DC8D28 /* Color+RGB.swift */; };
+		593164352685404D005DDA1A /* TextWithCaption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59EF633625E5DC93003E7259 /* TextWithCaption.swift */; };
+		5931643626854056005DDA1A /* TrackRepresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59EF632C25E5CF24003E7259 /* TrackRepresentation.swift */; };
+		593164372685405F005DDA1A /* StoreController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59603D442666C85A001482C6 /* StoreController.swift */; };
+		5931643826854061005DDA1A /* PresetTracks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5991969125F817F7003215CC /* PresetTracks.swift */; };
+		593164392685406A005DDA1A /* AlertItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F6170826671C2100CC78E1 /* AlertItem.swift */; };
+		5931643B2685409F005DDA1A /* SwiftDate in Frameworks */ = {isa = PBXBuildFile; productRef = 5931643A2685409F005DDA1A /* SwiftDate */; };
+		5931643C26854153005DDA1A /* Tickmate+Wrapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592CE88F264F337000668684 /* Tickmate+Wrapping.swift */; };
 		59342E1C2603F3DF007E9F64 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59342E1B2603F3DF007E9F64 /* OnboardingView.swift */; };
 		5939239C2654CE050085DABD /* PageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5939239B2654CE050085DABD /* PageView.swift */; };
 		5939239E2655B6C90085DABD /* Animation+Push.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5939239D2655B6C90085DABD /* Animation+Push.swift */; };
@@ -141,6 +156,7 @@
 			files = (
 				5901D4CF2684281A00A5BE86 /* SwiftUI.framework in Frameworks */,
 				5901D4CD2684281A00A5BE86 /* WidgetKit.framework in Frameworks */,
+				5931643B2685409F005DDA1A /* SwiftDate in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -309,6 +325,9 @@
 			dependencies = (
 			);
 			name = TicksWidgetExtension;
+			packageProductDependencies = (
+				5931643A2685409F005DDA1A /* SwiftDate */,
+			);
 			productName = TicksWidgetExtension;
 			productReference = 5901D4CB2684281A00A5BE86 /* TicksWidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -401,8 +420,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5931643626854056005DDA1A /* TrackRepresentation.swift in Sources */,
+				5931642D26853FFB005DDA1A /* Persistence.swift in Sources */,
+				5931643026854014005DDA1A /* Tickmate.xcdatamodeld in Sources */,
+				5931642E26854006005DDA1A /* SymbolsList.swift in Sources */,
+				5931642F26854009005DDA1A /* Defaults.swift in Sources */,
+				593164312685401C005DDA1A /* TrackController.swift in Sources */,
 				5901D4D22684281A00A5BE86 /* TicksWidget.swift in Sources */,
+				5931643C26854153005DDA1A /* Tickmate+Wrapping.swift in Sources */,
+				593164322685401E005DDA1A /* TickController.swift in Sources */,
 				5901D4D72684281C00A5BE86 /* TicksWidget.intentdefinition in Sources */,
+				5931643326854028005DDA1A /* Tickmate+Convenience.swift in Sources */,
+				5931643826854061005DDA1A /* PresetTracks.swift in Sources */,
+				593164342685402F005DDA1A /* Color+RGB.swift in Sources */,
+				593164372685405F005DDA1A /* StoreController.swift in Sources */,
+				593164392685406A005DDA1A /* AlertItem.swift in Sources */,
+				593164352685404D005DDA1A /* TextWithCaption.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -467,6 +500,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = A4525544Q4;
 				INFOPLIST_FILE = TicksWidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
@@ -475,6 +509,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = vc.isv.Tickmate.TicksWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -489,6 +524,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = A4525544Q4;
 				INFOPLIST_FILE = TicksWidget/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
@@ -497,6 +533,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = vc.isv.Tickmate.TicksWidget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -725,6 +762,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		5931643A2685409F005DDA1A /* SwiftDate */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 59F6EAAC25E377E40069DF40 /* XCRemoteSwiftPackageReference "SwiftDate" */;
+			productName = SwiftDate;
+		};
 		59F3EDBA25FC46770009CDEC /* Introspect */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 59F3EDB925FC46770009CDEC /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;

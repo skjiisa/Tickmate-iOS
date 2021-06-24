@@ -51,6 +51,8 @@ class PersistenceController {
         return result
     }()
     
+    //MARK: Demo
+    
     #if DEBUG
     func loadDemo() -> PersistenceController {
         let viewContext = container.viewContext
