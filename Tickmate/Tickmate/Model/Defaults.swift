@@ -18,4 +18,5 @@ enum Defaults: String {
     case showAllTracks              // Bool
     case showUngroupedTracks        // Bool
     case groupPage                  // Int
+    case appGroupDatabaseMigration  // Bool
 }
