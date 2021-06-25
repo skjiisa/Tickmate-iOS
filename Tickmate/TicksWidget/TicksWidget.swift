@@ -61,11 +61,12 @@ struct TracksEntry: TimelineEntry {
 
 struct TicksWidgetEntryView : View {
     var entry: Provider.Entry
-    let numDays = 5
+    var numDays: Int {
+        entry.configuration.numDays?.intValue ?? 5
+    }
 
     var body: some View {
         VStack(spacing: 4) {
-            Text(entry.date, style: .date)
             ForEach(0..<numDays) { dayComplement in
                 DayRow(numDays - 1 - dayComplement, tracks: entry.tracks, spaces: false, lines: false, compact: true)
             }
@@ -84,8 +85,8 @@ struct TicksWidget: Widget {
             TicksWidgetEntryView(entry: entry)
                 .environmentObject(trackController)
         }
-        .configurationDisplayName("My Widget")
-        .description("This is an example widget.")
+        .configurationDisplayName("Ticks Widget")
+        .description("Display the past few days of your favorite tracks.")
         
     }
 }
