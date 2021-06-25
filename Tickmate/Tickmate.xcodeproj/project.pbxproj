@@ -35,6 +35,8 @@
 		593164392685406A005DDA1A /* AlertItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F6170826671C2100CC78E1 /* AlertItem.swift */; };
 		5931643B2685409F005DDA1A /* SwiftDate in Frameworks */ = {isa = PBXBuildFile; productRef = 5931643A2685409F005DDA1A /* SwiftDate */; };
 		5931643C26854153005DDA1A /* Tickmate+Wrapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592CE88F264F337000668684 /* Tickmate+Wrapping.swift */; };
+		5931643F26855EB8005DDA1A /* TickView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5931643E26855EB8005DDA1A /* TickView.swift */; };
+		5931644026855EDF005DDA1A /* TickView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5931643E26855EB8005DDA1A /* TickView.swift */; };
 		59342E1C2603F3DF007E9F64 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59342E1B2603F3DF007E9F64 /* OnboardingView.swift */; };
 		5939239C2654CE050085DABD /* PageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5939239B2654CE050085DABD /* PageView.swift */; };
 		5939239E2655B6C90085DABD /* Animation+Push.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5939239D2655B6C90085DABD /* Animation+Push.swift */; };
@@ -110,6 +112,7 @@
 		592CE889264F1CA800668684 /* GroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupView.swift; sourceTree = "<group>"; };
 		592CE88F264F337000668684 /* Tickmate+Wrapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Tickmate+Wrapping.swift"; sourceTree = "<group>"; };
 		59303A502665D00900EB900E /* TrackGroups.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackGroups.swift; sourceTree = "<group>"; };
+		5931643E26855EB8005DDA1A /* TickView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TickView.swift; sourceTree = "<group>"; };
 		59342E1B2603F3DF007E9F64 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		5939239B2654CE050085DABD /* PageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageView.swift; sourceTree = "<group>"; };
 		5939239D2655B6C90085DABD /* Animation+Push.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Animation+Push.swift"; sourceTree = "<group>"; };
@@ -283,6 +286,7 @@
 			children = (
 				59FBCF2225E07BD5007B114F /* ContentView.swift */,
 				59F0980125E081CC00667971 /* TicksView.swift */,
+				5931643E26855EB8005DDA1A /* TickView.swift */,
 				59EF632825E5CD4B003E7259 /* TrackView.swift */,
 				59C23A6B25E70E1A00AFBC4B /* SymbolPicker.swift */,
 				599D9F5125EC5A4900DF3795 /* TracksView.swift */,
@@ -425,6 +429,7 @@
 				5931643026854014005DDA1A /* Tickmate.xcdatamodeld in Sources */,
 				5931642E26854006005DDA1A /* SymbolsList.swift in Sources */,
 				5931642F26854009005DDA1A /* Defaults.swift in Sources */,
+				5931644026855EDF005DDA1A /* TickView.swift in Sources */,
 				593164312685401C005DDA1A /* TrackController.swift in Sources */,
 				5901D4D22684281A00A5BE86 /* TicksWidget.swift in Sources */,
 				5931643C26854153005DDA1A /* Tickmate+Wrapping.swift in Sources */,
@@ -480,6 +485,7 @@
 				59342E1C2603F3DF007E9F64 /* OnboardingView.swift in Sources */,
 				597A7FDD25F6E1C900256268 /* StateEditButton.swift in Sources */,
 				59E6E14E25F88177008A74A9 /* SettingsView.swift in Sources */,
+				5931643F26855EB8005DDA1A /* TickView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -22,12 +22,14 @@ class TrackController: NSObject, ObservableObject {
     @Published var weekStartDay: Int
     @Published var relativeDates: Bool
     
+    private var observeChanges: Bool
     private var preview: Bool
     private var work: DispatchWorkItem?
     
     var fetchedResultsController: NSFetchedResultsController<Track>
     
-    init(preview: Bool = false) {
+    init(observeChanges: Bool = false, preview: Bool = false) {
+        self.observeChanges = observeChanges
         self.preview = preview
         
         UserDefaults.standard.register(defaults: [
@@ -56,7 +58,9 @@ class TrackController: NSObject, ObservableObject {
         
         super.init()
         
-        fetchedResultsController.delegate = self
+        if observeChanges {
+            fetchedResultsController.delegate = self
+        }
         
         do {
             try fetchedResultsController.performFetch()
@@ -97,13 +101,13 @@ class TrackController: NSObject, ObservableObject {
         if let tickController = tickControllers[track] {
             tickController.loadTicks()
         } else {
-            tickControllers[track] = TickController(track: track, trackController: self, preview: preview)
+            tickControllers[track] = TickController(track: track, trackController: self, observeChanges: observeChanges, preview: preview)
         }
     }
     
     func tickController(for track: Track) -> TickController {
         tickControllers[track] ?? {
-            let tickController = TickController(track: track, trackController: self, preview: preview)
+            let tickController = TickController(track: track, trackController: self, observeChanges: observeChanges, preview: preview)
             tickControllers[track] = tickController
             return tickController
         }()
@@ -111,20 +115,21 @@ class TrackController: NSObject, ObservableObject {
     
     //MARK: Labels
     
-    func dayLabel(day: Int) -> TextWithCaption {
+    func dayLabel(day: Int, compact: Bool) -> (text: String, caption: String) {
         let date = self.date - day.days
         
         let weekday: String
         switch day {
-        case 0 where relativeDates:
+        case 0 where !compact && relativeDates:
             weekday = "Today"
-        case 1 where relativeDates:
+        case 1 where !compact && relativeDates:
             weekday = "Yesterday"
         default:
             weekday = TrackController.weekdayFormatter.string(from: date)
         }
         
-        return TextWithCaption(text: weekday, caption: dateFormatter.string(from: date))
+//        return TextWithCaption(text: weekday, caption: dateFormatter.string(from: date))
+        return (weekday, dateFormatter.string(from: date))
     }
     
     func weekend(day: Int) -> Bool {

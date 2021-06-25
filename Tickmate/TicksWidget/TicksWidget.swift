@@ -38,9 +38,10 @@ struct Provider: IntentTimelineProvider {
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Track.index, ascending: true)]
         fetchRequest.fetchLimit = 4
         
-        let name = (try? context.fetch(fetchRequest).compactMap { $0.name }.joined(separator: ", ")) ??? "Timeline"
+        let tracks = try? context.fetch(fetchRequest)
+        let name = tracks?.compactMap { $0.name }.joined(separator: ", ") ??? "Timeline"
         
-        entries.append(Entry(date: Date(), configuration: configuration, test: name))
+        entries.append(Entry(date: Date(), configuration: configuration, test: name, tracks: tracks ?? []))
 
         let timeline = Timeline(entries: entries, policy: .atEnd)
         completion(timeline)
@@ -51,29 +52,44 @@ struct SimpleEntry: TimelineEntry {
     let date: Date
     let configuration: ConfigurationIntent
     let test: String
+    let tracks: [Track]
+    
+    internal init(date: Date, configuration: ConfigurationIntent, test: String, tracks: [Track] = []) {
+        self.date = date
+        self.configuration = configuration
+        self.test = test
+        self.tracks = tracks
+    }
 }
 
 struct TicksWidgetEntryView : View {
     var entry: Provider.Entry
+    let numDays = 5
 
     var body: some View {
-        VStack {
-            Text(entry.date, style: .time)
-            Text(entry.test)
+        VStack(spacing: 4) {
+            Text(entry.date, style: .date)
+            ForEach(0..<numDays) { dayComplement in
+                DayRow(numDays - 1 - dayComplement, tracks: entry.tracks, spaces: false, lines: false, compact: true)
+            }
         }
+        .padding()
     }
 }
 
 @main
 struct TicksWidget: Widget {
     let kind: String = "TicksWidget"
+    let trackController = TrackController(observeChanges: false)
 
     var body: some WidgetConfiguration {
         IntentConfiguration(kind: kind, intent: ConfigurationIntent.self, provider: Provider()) { entry in
             TicksWidgetEntryView(entry: entry)
+                .environmentObject(trackController)
         }
         .configurationDisplayName("My Widget")
         .description("This is an example widget.")
+        
     }
 }
 

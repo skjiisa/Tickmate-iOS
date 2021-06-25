@@ -18,7 +18,7 @@ class TickController: NSObject, ObservableObject {
     weak var trackController: TrackController?
     var todayOffset: Int?
     
-    init(track: Track, trackController: TrackController, preview: Bool) {
+    init(track: Track, trackController: TrackController, observeChanges: Bool = true, preview: Bool) {
         self.track = track
         self.trackController = trackController
         
@@ -38,7 +38,9 @@ class TickController: NSObject, ObservableObject {
         
         super.init()
         
-        fetchedResultsController.delegate = self
+        if observeChanges {
+            fetchedResultsController.delegate = self
+        }
         
         do {
             try fetchedResultsController.performFetch()
