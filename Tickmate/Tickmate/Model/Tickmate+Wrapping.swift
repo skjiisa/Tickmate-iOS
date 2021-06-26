@@ -25,12 +25,19 @@ extension Bool {
 }
 
 infix operator ???: NilCoalescingPrecedence
-extension Collection {
-    static func ??? (lhs: Self?, rhs: Self) -> Self {
-        if let lhs = lhs,
-           !lhs.isEmpty {
-            return lhs
-        }
-        return rhs
+
+func ??? <C: Collection>(optional: C?, defaultValue: @autoclosure () throws -> C) rethrows -> C {
+    if let value = optional,
+       !value.isEmpty {
+        return value
     }
+    return try defaultValue()
+}
+
+func ??? <C: Collection>(optional: C?, defaultValue: @autoclosure () throws -> C?) rethrows -> C? {
+    if let value = optional,
+       !value.isEmpty {
+        return value
+    }
+    return try defaultValue()
 }
