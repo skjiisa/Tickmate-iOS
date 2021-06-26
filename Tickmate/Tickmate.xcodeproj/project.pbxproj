@@ -37,6 +37,24 @@
 		5931643C26854153005DDA1A /* Tickmate+Wrapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592CE88F264F337000668684 /* Tickmate+Wrapping.swift */; };
 		5931643F26855EB8005DDA1A /* TickView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5931643E26855EB8005DDA1A /* TickView.swift */; };
 		5931644026855EDF005DDA1A /* TickView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5931643E26855EB8005DDA1A /* TickView.swift */; };
+		5931644726857779005DDA1A /* Intents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5931644626857779005DDA1A /* Intents.framework */; };
+		5931644A26857779005DDA1A /* IntentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5931644926857779005DDA1A /* IntentHandler.swift */; };
+		5931644E2685777A005DDA1A /* TicksWidgetIntentsExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 5931644526857779005DDA1A /* TicksWidgetIntentsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		5931645226857805005DDA1A /* TicksWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 5901D4D32684281A00A5BE86 /* TicksWidget.intentdefinition */; };
+		59316453268579FE005DDA1A /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59FBCF2925E07BD8007B114F /* Persistence.swift */; };
+		5931645426857A16005DDA1A /* Tickmate.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 59FBCF2B25E07BD8007B114F /* Tickmate.xcdatamodeld */; };
+		5931645626857A2A005DDA1A /* Tickmate+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F6EA9C25E369830069DF40 /* Tickmate+Convenience.swift */; };
+		5931645726857A3B005DDA1A /* SymbolsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C23A6625E70D7000AFBC4B /* SymbolsList.swift */; };
+		5931645826857A3F005DDA1A /* Color+RGB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 597DF5AF25E5E90800DC8D28 /* Color+RGB.swift */; };
+		5931645926857A5A005DDA1A /* PresetTracks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5991969125F817F7003215CC /* PresetTracks.swift */; };
+		5931645A26857A5E005DDA1A /* StoreController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59603D442666C85A001482C6 /* StoreController.swift */; };
+		5931645B26857A6F005DDA1A /* TrackRepresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59EF632C25E5CF24003E7259 /* TrackRepresentation.swift */; };
+		5931645C26857A81005DDA1A /* AlertItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F6170826671C2100CC78E1 /* AlertItem.swift */; };
+		5931645D26857A85005DDA1A /* Defaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E6E15025F8837E008A74A9 /* Defaults.swift */; };
+		5931645E26857A88005DDA1A /* TrackController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F6EAA625E36D680069DF40 /* TrackController.swift */; };
+		5931645F26857A8A005DDA1A /* TickController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F6EAA325E36D510069DF40 /* TickController.swift */; };
+		5931646126857AA9005DDA1A /* SwiftDate in Frameworks */ = {isa = PBXBuildFile; productRef = 5931646026857AA9005DDA1A /* SwiftDate */; };
+		5931646326857CE9005DDA1A /* Tickmate+Wrapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592CE88F264F337000668684 /* Tickmate+Wrapping.swift */; };
 		59342E1C2603F3DF007E9F64 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59342E1B2603F3DF007E9F64 /* OnboardingView.swift */; };
 		5939239C2654CE050085DABD /* PageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5939239B2654CE050085DABD /* PageView.swift */; };
 		5939239E2655B6C90085DABD /* Animation+Push.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5939239D2655B6C90085DABD /* Animation+Push.swift */; };
@@ -82,6 +100,13 @@
 			remoteGlobalIDString = 5901D4CA2684281A00A5BE86;
 			remoteInfo = TicksWidgetExtension;
 		};
+		5931644C2685777A005DDA1A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 59FBCF1525E07BD5007B114F /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5931644426857779005DDA1A;
+			remoteInfo = TicksWidgetIntentsExtension;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -92,6 +117,7 @@
 			dstSubfolderSpec = 13;
 			files = (
 				5901D4DB2684281C00A5BE86 /* TicksWidgetExtension.appex in Embed App Extensions */,
+				5931644E2685777A005DDA1A /* TicksWidgetIntentsExtension.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -113,6 +139,10 @@
 		592CE88F264F337000668684 /* Tickmate+Wrapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Tickmate+Wrapping.swift"; sourceTree = "<group>"; };
 		59303A502665D00900EB900E /* TrackGroups.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackGroups.swift; sourceTree = "<group>"; };
 		5931643E26855EB8005DDA1A /* TickView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TickView.swift; sourceTree = "<group>"; };
+		5931644526857779005DDA1A /* TicksWidgetIntentsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TicksWidgetIntentsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		5931644626857779005DDA1A /* Intents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Intents.framework; path = System/Library/Frameworks/Intents.framework; sourceTree = SDKROOT; };
+		5931644926857779005DDA1A /* IntentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentHandler.swift; sourceTree = "<group>"; };
+		5931644B26857779005DDA1A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		59342E1B2603F3DF007E9F64 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		5939239B2654CE050085DABD /* PageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageView.swift; sourceTree = "<group>"; };
 		5939239D2655B6C90085DABD /* Animation+Push.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Animation+Push.swift"; sourceTree = "<group>"; };
@@ -163,6 +193,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		5931644226857779005DDA1A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5931646126857AA9005DDA1A /* SwiftDate in Frameworks */,
+				5931644726857779005DDA1A /* Intents.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		59FBCF1A25E07BD5007B114F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -187,12 +226,22 @@
 			path = TicksWidget;
 			sourceTree = "<group>";
 		};
+		5931644826857779005DDA1A /* TicksWidgetIntentsExtension */ = {
+			isa = PBXGroup;
+			children = (
+				5931644926857779005DDA1A /* IntentHandler.swift */,
+				5931644B26857779005DDA1A /* Info.plist */,
+			);
+			path = TicksWidgetIntentsExtension;
+			sourceTree = "<group>";
+		};
 		5964545025E987C9004FE184 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				5964545125E987C9004FE184 /* CloudKit.framework */,
 				5901D4CC2684281A00A5BE86 /* WidgetKit.framework */,
 				5901D4CE2684281A00A5BE86 /* SwiftUI.framework */,
+				5931644626857779005DDA1A /* Intents.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -229,6 +278,7 @@
 			children = (
 				59FBCF1F25E07BD5007B114F /* Tickmate */,
 				5901D4D02684281A00A5BE86 /* TicksWidget */,
+				5931644826857779005DDA1A /* TicksWidgetIntentsExtension */,
 				59FBCF1E25E07BD5007B114F /* Products */,
 				5964545025E987C9004FE184 /* Frameworks */,
 			);
@@ -239,6 +289,7 @@
 			children = (
 				59FBCF1D25E07BD5007B114F /* Tickmate.app */,
 				5901D4CB2684281A00A5BE86 /* TicksWidgetExtension.appex */,
+				5931644526857779005DDA1A /* TicksWidgetIntentsExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -336,6 +387,26 @@
 			productReference = 5901D4CB2684281A00A5BE86 /* TicksWidgetExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		5931644426857779005DDA1A /* TicksWidgetIntentsExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5931644F2685777A005DDA1A /* Build configuration list for PBXNativeTarget "TicksWidgetIntentsExtension" */;
+			buildPhases = (
+				5931644126857779005DDA1A /* Sources */,
+				5931644226857779005DDA1A /* Frameworks */,
+				5931644326857779005DDA1A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TicksWidgetIntentsExtension;
+			packageProductDependencies = (
+				5931646026857AA9005DDA1A /* SwiftDate */,
+			);
+			productName = TicksWidgetIntentsExtension;
+			productReference = 5931644526857779005DDA1A /* TicksWidgetIntentsExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		59FBCF1C25E07BD5007B114F /* Tickmate */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 59FBCF3125E07BD8007B114F /* Build configuration list for PBXNativeTarget "Tickmate" */;
@@ -349,6 +420,7 @@
 			);
 			dependencies = (
 				5901D4DA2684281C00A5BE86 /* PBXTargetDependency */,
+				5931644D2685777A005DDA1A /* PBXTargetDependency */,
 			);
 			name = Tickmate;
 			packageProductDependencies = (
@@ -369,6 +441,9 @@
 				LastUpgradeCheck = 1240;
 				TargetAttributes = {
 					5901D4CA2684281A00A5BE86 = {
+						CreatedOnToolsVersion = 12.5;
+					};
+					5931644426857779005DDA1A = {
 						CreatedOnToolsVersion = 12.5;
 					};
 					59FBCF1C25E07BD5007B114F = {
@@ -395,6 +470,7 @@
 			targets = (
 				59FBCF1C25E07BD5007B114F /* Tickmate */,
 				5901D4CA2684281A00A5BE86 /* TicksWidgetExtension */,
+				5931644426857779005DDA1A /* TicksWidgetIntentsExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -405,6 +481,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				5901D4D52684281C00A5BE86 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5931644326857779005DDA1A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -441,6 +524,28 @@
 				593164372685405F005DDA1A /* StoreController.swift in Sources */,
 				593164392685406A005DDA1A /* AlertItem.swift in Sources */,
 				593164352685404D005DDA1A /* TextWithCaption.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5931644126857779005DDA1A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5931645C26857A81005DDA1A /* AlertItem.swift in Sources */,
+				5931645926857A5A005DDA1A /* PresetTracks.swift in Sources */,
+				5931645F26857A8A005DDA1A /* TickController.swift in Sources */,
+				59316453268579FE005DDA1A /* Persistence.swift in Sources */,
+				5931645726857A3B005DDA1A /* SymbolsList.swift in Sources */,
+				5931644A26857779005DDA1A /* IntentHandler.swift in Sources */,
+				5931645B26857A6F005DDA1A /* TrackRepresentation.swift in Sources */,
+				5931645A26857A5E005DDA1A /* StoreController.swift in Sources */,
+				5931645626857A2A005DDA1A /* Tickmate+Convenience.swift in Sources */,
+				5931645226857805005DDA1A /* TicksWidget.intentdefinition in Sources */,
+				5931645D26857A85005DDA1A /* Defaults.swift in Sources */,
+				5931645426857A16005DDA1A /* Tickmate.xcdatamodeld in Sources */,
+				5931646326857CE9005DDA1A /* Tickmate+Wrapping.swift in Sources */,
+				5931645E26857A88005DDA1A /* TrackController.swift in Sources */,
+				5931645826857A3F005DDA1A /* Color+RGB.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -497,6 +602,11 @@
 			target = 5901D4CA2684281A00A5BE86 /* TicksWidgetExtension */;
 			targetProxy = 5901D4D92684281C00A5BE86 /* PBXContainerItemProxy */;
 		};
+		5931644D2685777A005DDA1A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5931644426857779005DDA1A /* TicksWidgetIntentsExtension */;
+			targetProxy = 5931644C2685777A005DDA1A /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -541,6 +651,50 @@
 				);
 				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = vc.isv.Tickmate.TicksWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		593164502685777A005DDA1A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 9;
+				DEVELOPMENT_TEAM = A4525544Q4;
+				INFOPLIST_FILE = TicksWidgetIntentsExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = vc.isv.Tickmate.TicksWidgetIntentsExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		593164512685777A005DDA1A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 9;
+				DEVELOPMENT_TEAM = A4525544Q4;
+				INFOPLIST_FILE = TicksWidgetIntentsExtension/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.1;
+				PRODUCT_BUNDLE_IDENTIFIER = vc.isv.Tickmate.TicksWidgetIntentsExtension;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -728,6 +882,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		5931644F2685777A005DDA1A /* Build configuration list for PBXNativeTarget "TicksWidgetIntentsExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				593164502685777A005DDA1A /* Debug */,
+				593164512685777A005DDA1A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		59FBCF1825E07BD5007B114F /* Build configuration list for PBXProject "Tickmate" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -769,6 +932,11 @@
 
 /* Begin XCSwiftPackageProductDependency section */
 		5931643A2685409F005DDA1A /* SwiftDate */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 59F6EAAC25E377E40069DF40 /* XCRemoteSwiftPackageReference "SwiftDate" */;
+			productName = SwiftDate;
+		};
+		5931646026857AA9005DDA1A /* SwiftDate */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 59F6EAAC25E377E40069DF40 /* XCRemoteSwiftPackageReference "SwiftDate" */;
 			productName = SwiftDate;
