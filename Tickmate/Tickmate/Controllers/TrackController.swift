@@ -26,7 +26,31 @@ class TrackController: NSObject, ObservableObject {
     private var preview: Bool
     private var work: DispatchWorkItem?
     
-    var fetchedResultsController: NSFetchedResultsController<Track>
+    lazy var fetchedResultsController: NSFetchedResultsController<Track> = {
+        let context = (preview ? PersistenceController.preview : PersistenceController.shared).container.viewContext
+        
+        let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Track.index, ascending: true)]
+        
+        let frc = NSFetchedResultsController<Track>(
+            fetchRequest: fetchRequest,
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil)
+        
+        if observeChanges {
+            frc.delegate = self
+        }
+        
+        do {
+            try frc.performFetch()
+            print("TrackController FRC fetched.")
+        } catch {
+            NSLog("Error performing Tracks fetch: \(error)")
+        }
+        
+        return frc
+    }()
     
     init(observeChanges: Bool = false, preview: Bool = false) {
         self.observeChanges = observeChanges
@@ -44,29 +68,7 @@ class TrackController: NSObject, ObservableObject {
         weekStartDay = UserDefaults.standard.integer(forKey: Defaults.weekStartDay.rawValue)
         relativeDates = UserDefaults.standard.bool(forKey: Defaults.relativeDates.rawValue)
         
-        // FRC
-        let context = (preview ? PersistenceController.preview : PersistenceController.shared).container.viewContext
-        
-        let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Track.index, ascending: true)]
-        
-        fetchedResultsController = NSFetchedResultsController<Track>(
-            fetchRequest: fetchRequest,
-            managedObjectContext: context,
-            sectionNameKeyPath: nil,
-            cacheName: nil)
-        
         super.init()
-        
-        if observeChanges {
-            fetchedResultsController.delegate = self
-        }
-        
-        do {
-            try fetchedResultsController.performFetch()
-        } catch {
-            NSLog("Error performing Tracks fetch: \(error)")
-        }
     }
     
     static var dayOffset: DateComponents {
