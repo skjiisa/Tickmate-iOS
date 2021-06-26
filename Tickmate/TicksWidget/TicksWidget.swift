@@ -34,11 +34,20 @@ struct Provider: IntentTimelineProvider {
         */
         
         let context = PersistenceController.shared.container.viewContext
-        let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Track.index, ascending: true)]
-        fetchRequest.fetchLimit = 4
         
-        let tracks = try? context.fetch(fetchRequest)
+        let tracks: [Track]? = configuration.tracks?.compactMap { trackItem in
+            guard let idString = trackItem.identifier,
+                  let url = URL(string: idString),
+                  let id =
+                    context.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: url)  else { return nil }
+            return context.object(with: id) as? Track
+        } ??? {
+            let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
+            fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Track.index, ascending: true)]
+            fetchRequest.fetchLimit = 4
+            
+            return (try? context.fetch(fetchRequest))
+        }()
         
         entries.append(Entry(date: Date(), configuration: configuration, tracks: tracks ?? []))
 
