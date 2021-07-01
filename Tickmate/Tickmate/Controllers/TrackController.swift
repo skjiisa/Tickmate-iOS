@@ -52,7 +52,7 @@ class TrackController: NSObject, ObservableObject {
         return frc
     }()
     
-    init(observeChanges: Bool = false, preview: Bool = false) {
+    init(observeChanges: Bool = true, preview: Bool = false) {
         self.observeChanges = observeChanges
         self.preview = preview
         
