@@ -14,13 +14,18 @@ class TickController: NSObject, ObservableObject {
     
     let track: Track
     @Published var ticks: [Tick?] = []
+    /// The tick count for a given day as fetche with `loadCKTicks` for new days that aren't already in `ticks`.
+    @Published var ckTicks: [Int: Int] = [:]
     private var fetchedResultsController: NSFetchedResultsController<Tick>
     weak var trackController: TrackController?
     var todayOffset: Int?
     
+    private var preview: Bool
+    
     init(track: Track, trackController: TrackController, observeChanges: Bool = true, preview: Bool) {
         self.track = track
         self.trackController = trackController
+        self.preview = preview
         
         let moc = track.managedObjectContext ?? (preview ? PersistenceController.preview : PersistenceController.shared).container.viewContext
         
@@ -109,6 +114,52 @@ class TickController: NSObject, ObservableObject {
         }
         
         self.ticks = ticks
+        if track.name == "Washed water bottle" {
+            loadCKTicks { }
+        }
+    }
+    
+    /// Fetch `CKRecord`s for the `Tick`s for this `Track` and save them to `ckTicks`.
+    ///
+    /// Enters the tick count for each day into `ckTicks` that doesn't already have a `Tick` in `ticks`.
+    /// For fetching updates while the app runs in the background or in an extension, like the widget extensien.
+    /// - Parameter completion: runs on the main thread after the fetched ticks have been assigned to `ckTicks`.
+    func loadCKTicks(completion: @escaping () -> Void) {
+        let container = (preview ? PersistenceController.preview : PersistenceController.shared).container
+        guard let trackID = container.recordID(for: track.objectID)?.recordName,
+              let todayOffset = todayOffset else { return }
+        
+        let predicate = NSPredicate(format: "CD_track == %@", trackID)
+        let query = CKQuery(recordType: "CD_Tick", predicate: predicate)
+        let operation = CKQueryOperation(query: query)
+        operation.desiredKeys = ["CD_dayOffset", "CD_count"]
+        
+        let ticks = self.ticks
+        var ckTicks = [Int: Int]()
+        
+        operation.recordFetchedBlock = { record in
+            guard let dayOffset = (record["CD_dayOffset"] as? NSNumber)?.intValue,
+                  todayOffset - dayOffset < 365 else { return }
+            let day = todayOffset - dayOffset
+            
+            if ticks[day] == nil {
+                ckTicks[day] = (record["CD_count"] as? NSNumber)?.intValue ?? 1
+            }
+        }
+        
+        operation.queryCompletionBlock = { [weak self] _, error in
+            if let error = error {
+                NSLog("\(error)")
+            }
+            DispatchQueue.main.async {
+                self?.ckTicks = ckTicks
+                print(ckTicks)
+                print("Done fetching CloudKit Ticks for", self?.track.name ?? "track")
+                completion()
+            }
+        }
+        
+        CKContainer.default().privateCloudDatabase.add(operation)
     }
     
     //MARK: Ticking
