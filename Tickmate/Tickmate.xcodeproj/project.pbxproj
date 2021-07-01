@@ -154,6 +154,8 @@
 		597DF5AF25E5E90800DC8D28 /* Color+RGB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+RGB.swift"; sourceTree = "<group>"; };
 		5991968E25F813ED003215CC /* PresetTracksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetTracksView.swift; sourceTree = "<group>"; };
 		5991969125F817F7003215CC /* PresetTracks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetTracks.swift; sourceTree = "<group>"; };
+		5995F873268D77C200A0E3C4 /* TicksWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TicksWidgetExtension.entitlements; sourceTree = "<group>"; };
+		5995F874268D77D300A0E3C4 /* TicksWidgetIntentsExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TicksWidgetIntentsExtension.entitlements; sourceTree = "<group>"; };
 		5996360E264F128A00AAF6CA /* GroupsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupsView.swift; sourceTree = "<group>"; };
 		599D9F5125EC5A4900DF3795 /* TracksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TracksView.swift; sourceTree = "<group>"; };
 		59A0D8922645CF1600E01E61 /* View+DismissKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+DismissKeyboard.swift"; sourceTree = "<group>"; };
@@ -229,6 +231,7 @@
 		5931644826857779005DDA1A /* TicksWidgetIntentsExtension */ = {
 			isa = PBXGroup;
 			children = (
+				5995F874268D77D300A0E3C4 /* TicksWidgetIntentsExtension.entitlements */,
 				5931644926857779005DDA1A /* IntentHandler.swift */,
 				5931644B26857779005DDA1A /* Info.plist */,
 			);
@@ -276,6 +279,7 @@
 		59FBCF1425E07BD5007B114F = {
 			isa = PBXGroup;
 			children = (
+				5995F873268D77C200A0E3C4 /* TicksWidgetExtension.entitlements */,
 				59FBCF1F25E07BD5007B114F /* Tickmate */,
 				5901D4D02684281A00A5BE86 /* TicksWidget */,
 				5931644826857779005DDA1A /* TicksWidgetIntentsExtension */,
@@ -615,11 +619,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = TicksWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = A4525544Q4;
 				INFOPLIST_FILE = TicksWidget/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -639,11 +644,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = TicksWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = A4525544Q4;
 				INFOPLIST_FILE = TicksWidget/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -661,11 +667,12 @@
 		593164502685777A005DDA1A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = TicksWidgetIntentsExtension/TicksWidgetIntentsExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = A4525544Q4;
 				INFOPLIST_FILE = TicksWidgetIntentsExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -683,11 +690,12 @@
 		593164512685777A005DDA1A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = TicksWidgetIntentsExtension/TicksWidgetIntentsExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = A4525544Q4;
 				INFOPLIST_FILE = TicksWidgetIntentsExtension/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 14.5;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
