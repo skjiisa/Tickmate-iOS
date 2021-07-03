@@ -16,39 +16,16 @@ struct Provider: IntentTimelineProvider {
     }
 
     func getSnapshot(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (TracksEntry) -> ()) {
-        let entry = TracksEntry(date: Date(), configuration: configuration)
+        let tracks = tracks(for: configuration, context: PersistenceController.shared.container.viewContext) ?? []
+        let entry = TracksEntry(date: Date(), configuration: configuration, tracks: tracks)
         completion(entry)
     }
 
     func getTimeline(for configuration: ConfigurationIntent, in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
         var entries: [TracksEntry] = []
-
-        // Generate a timeline consisting of five entries an hour apart, starting from the current date.
-        /*
-        let currentDate = Date()
-        for hourOffset in 0 ..< 5 {
-            let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = SimpleEntry(date: entryDate, configuration: configuration)
-            entries.append(entry)
-        }
-        */
-        
-        let context = PersistenceController.shared.container.viewContext
         
         // Fetch Tracks
-        let tracks: [Track] = (configuration.tracksMode != .list ? nil : configuration.tracks?.compactMap { trackItem in
-            guard let idString = trackItem.identifier,
-                  let url = URL(string: idString),
-                  let id =
-                    context.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: url)  else { return nil }
-            return context.object(with: id) as? Track
-        }) ??? {
-            let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
-            fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Track.index, ascending: true)]
-            fetchRequest.fetchLimit = configuration.tracksCount?.intValue ?? 1
-            
-            return (try? context.fetch(fetchRequest))
-        }() ?? []
+        let tracks = tracks(for: configuration, context: PersistenceController.shared.container.viewContext) ?? []
         
         let trackController = TrackController(observeChanges: false)
         
@@ -73,6 +50,22 @@ struct Provider: IntentTimelineProvider {
             _ = dispatchGroup.wait(timeout: .now() + 20)
             completion(timeline)
         }
+    }
+    
+    func tracks(for configuration: ConfigurationIntent, context moc: NSManagedObjectContext) -> [Track]? {
+        (configuration.tracksMode != .list ? nil : configuration.tracks?.compactMap { trackItem in
+            guard let idString = trackItem.identifier,
+                  let url = URL(string: idString),
+                  let id =
+                    moc.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: url)  else { return nil }
+            return moc.object(with: id) as? Track
+        }) ??? {
+            let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
+            fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Track.index, ascending: true)]
+            fetchRequest.fetchLimit = configuration.tracksCount?.intValue ?? 1
+            
+            return (try? moc.fetch(fetchRequest))
+        }()
     }
 }
 
