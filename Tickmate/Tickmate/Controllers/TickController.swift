@@ -287,6 +287,9 @@ extension TickController: NSFetchedResultsControllerDelegate {
             break
         }
         
-//        trackController?.scheduleTimelineRefresh()
+        // This is done here as opposed to in the tick(day:)
+        // function so that the timeline will alse be
+        // refreshed on changes fetched from CloudKit.
+        trackController?.scheduleTimelineRefresh()
     }
 }
