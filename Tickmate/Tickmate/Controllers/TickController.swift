@@ -142,9 +142,11 @@ class TickController: NSObject, ObservableObject {
         
         let predicate = NSPredicate(format: "CD_track == %@", trackID)
         let query = CKQuery(recordType: "CD_Tick", predicate: predicate)
+        query.sortDescriptors = [NSSortDescriptor(key: "CD_dayOffset", ascending: false)]
         
         let operation = CKQueryOperation(query: query)
         operation.desiredKeys = ["CD_dayOffset", "CD_count"]
+        operation.resultsLimit = 20
         
         var ckTicks = [Int16?]()
         
