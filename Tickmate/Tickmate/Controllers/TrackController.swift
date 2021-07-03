@@ -230,19 +230,11 @@ class TrackController: NSObject, ObservableObject {
     /// Schedule a Core Data save on the current view context.
     ///
     /// Call this function when you want to save a small change when other small changes may happen soon after.
-    /// This will delay the save by 3 seconds and only save once if called multiple times.
-    /// - Parameter now: Setting this parameter to `true` will shortcut the schedule, if there is one, and save immediatly.
-    /// If there is no scheduled save, this function will do nothing instead.
-    func scheduleSave(now: Bool = false) {
-        guard !now else {
-            if let work = work {
-                work.perform()
-                work.cancel()
-            }
-            return
-        }
+    /// This will wait 5 seconds before saving, ignoring later calls until the 5 seconds have passed.
+    /// As a result, this will only save up to once every 5 seconds in order to prevent heavy disk usage from frequent calls.
+    func scheduleSave() {
+        guard work == nil else { return }
         
-        work?.cancel()
         let work = DispatchWorkItem { [weak self] in
             self?.work = nil
             guard let context = self?.fetchedResultsController.managedObjectContext else { return }
@@ -250,7 +242,13 @@ class TrackController: NSObject, ObservableObject {
             print("Saved")
         }
         self.work = work
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: work)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: work)
+    }
+    
+    /// This will shortcut the 5-second wait from `scheduleSave()`.
+    /// If no save has been scheduled, it will do nothing.
+    func saveIfScheduled() {
+        work?.perform()
     }
     
     func checkForNewDay() {
@@ -296,7 +294,6 @@ extension TrackController: NSFetchedResultsControllerDelegate {
         if changed {
             scheduleSave()
         }
-        // This will only save if there is one scheduled
-        scheduleSave(now: true)
+        saveIfScheduled()
     }
 }
