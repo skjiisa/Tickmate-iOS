@@ -92,11 +92,31 @@ struct TicksWidgetEntryView : View {
     var body: some View {
         VStack(spacing: 4) {
 //            Text(entry.date, formatter: dateFormatter)
+            if entry.configuration.showTrackIcons?.boolValue ?? true {
+                HStack(spacing: 4) {
+                    Rectangle()
+                        .opacity(0)
+                        .frame(width: 30)
+                    ForEach(entry.tracks) { track in
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 3)
+                                .foregroundColor(Color(.systemFill))
+                            if let systemImage = track.systemImage {
+                                Image(systemName: systemImage)
+                                    .font(.system(size: 8))
+                            }
+                        }
+                    }
+                }
+                
+                Divider()
+            }
+            
             ForEach(0..<numDays) { dayComplement in
                 DayRow(numDays - 1 - dayComplement, tracks: entry.tracks, spaces: false, lines: false, compact: true)
             }
         }
-        .padding()
+        .padding(12)
     }
     
     // You can uncomment this and the above Text for easier debugging

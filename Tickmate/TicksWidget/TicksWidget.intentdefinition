@@ -53,7 +53,7 @@
 	<key>INIntentDefinitionNamespace</key>
 	<string>88xZPY</string>
 	<key>INIntentDefinitionSystemVersion</key>
-	<string>20E232</string>
+	<string>20F71</string>
 	<key>INIntentDefinitionToolsBuildVersion</key>
 	<string>12E507</string>
 	<key>INIntentDefinitionToolsVersion</key>
@@ -70,7 +70,7 @@
 			<key>INIntentIneligibleForSuggestions</key>
 			<true/>
 			<key>INIntentLastParameterTag</key>
-			<integer>9</integer>
+			<integer>11</integer>
 			<key>INIntentName</key>
 			<string>Configuration</string>
 			<key>INIntentParameters</key>
@@ -79,11 +79,55 @@
 					<key>INIntentParameterConfigurable</key>
 					<true/>
 					<key>INIntentParameterDisplayName</key>
+					<string>Show Track Icons</string>
+					<key>INIntentParameterDisplayNameID</key>
+					<string>dqt6E8</string>
+					<key>INIntentParameterDisplayPriority</key>
+					<integer>1</integer>
+					<key>INIntentParameterMetadata</key>
+					<dict>
+						<key>INIntentParameterMetadataDefaultValue</key>
+						<true/>
+						<key>INIntentParameterMetadataFalseDisplayName</key>
+						<string>false</string>
+						<key>INIntentParameterMetadataFalseDisplayNameID</key>
+						<string>a07s9r</string>
+						<key>INIntentParameterMetadataTrueDisplayName</key>
+						<string>true</string>
+						<key>INIntentParameterMetadataTrueDisplayNameID</key>
+						<string>qzVovg</string>
+					</dict>
+					<key>INIntentParameterName</key>
+					<string>showTrackIcons</string>
+					<key>INIntentParameterPromptDialogs</key>
+					<array>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>Configuration</string>
+						</dict>
+						<dict>
+							<key>INIntentParameterPromptDialogCustom</key>
+							<true/>
+							<key>INIntentParameterPromptDialogType</key>
+							<string>Primary</string>
+						</dict>
+					</array>
+					<key>INIntentParameterTag</key>
+					<integer>11</integer>
+					<key>INIntentParameterType</key>
+					<string>Boolean</string>
+				</dict>
+				<dict>
+					<key>INIntentParameterConfigurable</key>
+					<true/>
+					<key>INIntentParameterDisplayName</key>
 					<string>Number of Days</string>
 					<key>INIntentParameterDisplayNameID</key>
 					<string>ZjGrrT</string>
 					<key>INIntentParameterDisplayPriority</key>
-					<integer>1</integer>
+					<integer>2</integer>
 					<key>INIntentParameterMetadata</key>
 					<dict>
 						<key>INIntentParameterMetadataDefaultValue</key>
@@ -125,7 +169,7 @@
 					<key>INIntentParameterDisplayNameID</key>
 					<string>9WcBEw</string>
 					<key>INIntentParameterDisplayPriority</key>
-					<integer>2</integer>
+					<integer>3</integer>
 					<key>INIntentParameterEnumType</key>
 					<string>TracksMode</string>
 					<key>INIntentParameterEnumTypeNamespace</key>
@@ -185,7 +229,7 @@
 					<key>INIntentParameterDisplayNameID</key>
 					<string>tZn7dI</string>
 					<key>INIntentParameterDisplayPriority</key>
-					<integer>3</integer>
+					<integer>4</integer>
 					<key>INIntentParameterName</key>
 					<string>tracks</string>
 					<key>INIntentParameterObjectType</key>
@@ -233,7 +277,7 @@
 					<key>INIntentParameterDisplayNameID</key>
 					<string>rrJ3QX</string>
 					<key>INIntentParameterDisplayPriority</key>
-					<integer>4</integer>
+					<integer>5</integer>
 					<key>INIntentParameterMetadata</key>
 					<dict>
 						<key>INIntentParameterMetadataDefaultValue</key>
