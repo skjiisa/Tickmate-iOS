@@ -180,7 +180,6 @@ class PersistenceController {
             container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
             
             let appGroupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.vc.isv.Tickmate")!.appendingPathComponent("Tickmate.sqlite")
-            let appGroupDescription = NSPersistentStoreDescription(url: appGroupURL)
             
             let oldURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?.appendingPathComponent("Tickmate.sqlite")
             UserDefaults.standard.register(defaults: [Defaults.appGroupDatabaseMigration.rawValue: false])
@@ -195,7 +194,7 @@ class PersistenceController {
             
             // Load the current persistent store
             if !needsMigration {
-                container.persistentStoreDescriptions = [appGroupDescription]
+                container.persistentStoreDescriptions.first?.url = appGroupURL
             }
             
             container.loadPersistentStores { storeDescription, error in
