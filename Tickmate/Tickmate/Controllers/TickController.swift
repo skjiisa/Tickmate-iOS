@@ -55,9 +55,8 @@ class TickController: NSObject, ObservableObject {
             NSLog("Error performing Ticks fetch for \(track.name ?? "track"): \(error)")
         }
         
-        if observeChanges {
-            loadTicks()
-        } else {
+        loadTicks()
+        if !observeChanges {
             loadCKTicks()
         }
     }
@@ -287,5 +286,7 @@ extension TickController: NSFetchedResultsControllerDelegate {
         default:
             break
         }
+        
+//        trackController?.scheduleTimelineRefresh()
     }
 }
