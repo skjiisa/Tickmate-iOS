@@ -84,6 +84,8 @@ struct TracksEntry: TimelineEntry {
 }
 
 struct TicksWidgetEntryView : View {
+    @Environment(\.colorScheme) private var colorScheme
+    
     var entry: Provider.Entry
     var numDays: Int {
         entry.configuration.numDays?.intValue ?? 5
@@ -117,6 +119,7 @@ struct TicksWidgetEntryView : View {
             }
         }
         .padding(12)
+        .background(colorScheme == .dark ? Color(.systemGroupedBackground) : Color(.systemBackground))
     }
     
     // You can uncomment this and the above Text for easier debugging
@@ -146,10 +149,18 @@ struct TicksWidget: Widget {
 
 struct TicksWidget_Previews: PreviewProvider {
     static let trackController = TrackController(observeChanges: false, preview: true)
+    static var tracks: [Track] {
+        Array(trackController.fetchedResultsController.fetchedObjects!.prefix(4))
+    }
     
     static var previews: some View {
-        TicksWidgetEntryView(entry: TracksEntry(date: Date(), configuration: ConfigurationIntent(), controller: trackController, tracks: Array(trackController.fetchedResultsController.fetchedObjects!.prefix(4))))
+        TicksWidgetEntryView(entry: TracksEntry(date: Date(), configuration: ConfigurationIntent(), controller: trackController, tracks: tracks))
             .previewContext(WidgetPreviewContext(family: .systemSmall))
             .environmentObject(trackController)
+        
+        TicksWidgetEntryView(entry: TracksEntry(date: Date(), configuration: ConfigurationIntent(), controller: trackController, tracks: tracks))
+            .previewContext(WidgetPreviewContext(family: .systemSmall))
+            .environmentObject(trackController)
+            .environment(\.colorScheme, .dark)
     }
 }
