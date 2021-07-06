@@ -193,6 +193,7 @@ struct TicksWidgetEntryView : View {
                         }
                     }
                 }
+                .frame(maxHeight: 30)
                 
                 Divider()
             }
@@ -237,7 +238,7 @@ struct TicksWidget_Previews: PreviewProvider {
     static let trackController = TrackController(observeChanges: false, preview: true)
     
     static var previews: some View {
-        ticksWidget(tracksCount: 3, days: 4, family: .systemSmall)
+        ticksWidget(tracksCount: 3, days: 1, family: .systemSmall)
         ticksWidget(tracksCount: 4, days: 5, family: .systemSmall)
             .environment(\.colorScheme, .dark)
         ticksWidget(tracksCount: 5, days: 4, family: .systemMedium)
