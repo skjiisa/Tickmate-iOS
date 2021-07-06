@@ -33,4 +33,20 @@ class IntentHandler: INExtension, ConfigurationIntentHandling {
         }
     }
     
+    func provideGroupOptionsCollection(for intent: ConfigurationIntent, with completion: @escaping (INObjectCollection<GroupItem>?, Error?) -> Void) {
+        let fetchRequest: NSFetchRequest<TrackGroup> = TrackGroup.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \TrackGroup.index, ascending: true)]
+        
+        do {
+            let context = PersistenceController.shared.container.viewContext
+            let groups: [GroupItem] = try context.fetch(fetchRequest).compactMap { group in
+                let id = group.objectID.uriRepresentation().absoluteString
+                return GroupItem(identifier: id, display: group.name ??? "New Group")
+            }
+            completion(INObjectCollection(items: groups), nil)
+        } catch {
+            completion(nil, error)
+        }
+    }
+    
 }
