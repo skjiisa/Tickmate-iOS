@@ -81,7 +81,9 @@ class TrackController: NSObject, ObservableObject {
     //MARK: Static
     
     static var dayOffset: DateComponents {
-        (UserDefaults.standard.bool(forKey: Defaults.customDayStart.rawValue) ? UserDefaults.standard.integer(forKey: Defaults.customDayStartMinutes.rawValue) : 0).minutes
+        (UserDefaults(suiteName: groupID)?.bool(forKey: Defaults.customDayStart.rawValue) ?? false
+            ? UserDefaults(suiteName: groupID)?.integer(forKey: Defaults.customDayStartMinutes.rawValue) ?? 0
+            : 0).minutes
     }
     
     private static func migrateUserDefaultsIfNeeded() {
