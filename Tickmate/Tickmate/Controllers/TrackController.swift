@@ -59,7 +59,6 @@ class TrackController: NSObject, ObservableObject {
         self.preview = preview
         
         UserDefaults.standard.register(defaults: [
-            Defaults.customDayStartMinutes.rawValue: 0,
             Defaults.weekStartDay.rawValue: 2,
             Defaults.relativeDates.rawValue: true
         ])
@@ -71,10 +70,29 @@ class TrackController: NSObject, ObservableObject {
         relativeDates = UserDefaults.standard.bool(forKey: Defaults.relativeDates.rawValue)
         
         super.init()
+        
+        migrateUserDefaultsIfNeeded()
     }
     
     static var dayOffset: DateComponents {
         (UserDefaults.standard.bool(forKey: Defaults.customDayStart.rawValue) ? UserDefaults.standard.integer(forKey: Defaults.customDayStartMinutes.rawValue) : 0).minutes
+    }
+    
+    private func migrateUserDefaultsIfNeeded() {
+        if let userDefaults = UserDefaults(suiteName: groupID),
+           !userDefaults.bool(forKey: Defaults.userDefaultsMigration.rawValue) {
+            let customDayStart = Defaults.customDayStart.rawValue
+            userDefaults.set(UserDefaults.standard.bool(forKey: customDayStart), forKey: customDayStart)
+            
+            let customDayStartMinutes = Defaults.customDayStartMinutes.rawValue
+            userDefaults.set(UserDefaults.standard.integer(forKey: customDayStartMinutes), forKey: customDayStartMinutes)
+            
+            let weekStartDay = Defaults.weekStartDay.rawValue
+            userDefaults.set(UserDefaults.standard.integer(forKey: weekStartDay), forKey: weekStartDay)
+            
+            userDefaults.set(true, forKey: Defaults.userDefaultsMigration.rawValue)
+            print("UserDefaults migrated")
+        }
     }
     
     //MARK: Date Formatters

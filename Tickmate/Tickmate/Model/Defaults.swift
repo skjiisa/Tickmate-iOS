@@ -7,6 +7,8 @@
 
 import Foundation
 
+let groupID = "group.vc.isv.Tickmate"
+
 enum Defaults: String {
     case customDayStart             // Bool
     case customDayStartMinutes      // Int
@@ -19,4 +21,5 @@ enum Defaults: String {
     case showUngroupedTracks        // Bool
     case groupPage                  // Int
     case appGroupDatabaseMigration  // Bool
+    case userDefaultsMigration      // Bool
 }

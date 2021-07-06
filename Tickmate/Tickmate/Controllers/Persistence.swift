@@ -179,7 +179,7 @@ class PersistenceController {
         } else {
             container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
             
-            let appGroupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.vc.isv.Tickmate")!.appendingPathComponent("Tickmate.sqlite")
+            let appGroupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: groupID)!.appendingPathComponent("Tickmate.sqlite")
             
             let oldURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?.appendingPathComponent("Tickmate.sqlite")
             UserDefaults.standard.register(defaults: [Defaults.appGroupDatabaseMigration.rawValue: false])
