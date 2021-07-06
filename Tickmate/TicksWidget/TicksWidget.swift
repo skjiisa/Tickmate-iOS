@@ -134,27 +134,28 @@ struct TicksWidgetEntryView : View {
     
     var entry: Provider.Entry
     
+    var bonusDays: Int {
+        (!(entry.configuration.showTrackIcons?.boolValue ?? true)).int
+    }
+    
     var defaultNumDays: Int {
         switch widgetFamily {
         case .systemSmall:
-            return 5
+            return 5 + bonusDays
         case .systemMedium:
-            return 4
+            return 4 + bonusDays
         default:
-            return 7
+            return 7 + bonusDays
         }
     }
     
     var maxNumDays: Int {
-        let num: Int
         switch widgetFamily {
         case .systemSmall, .systemMedium:
-            num = 6
+            return 6 + bonusDays
         default:
-            num = 9
+            return 9 + bonusDays
         }
-        let bonus = !(entry.configuration.showTrackIcons?.boolValue ?? true)
-        return num + bonus.int
     }
     
     var numDays: Int {
@@ -231,9 +232,19 @@ struct TicksWidgetEntryView : View {
             }
             
             ForEach(0..<numDays) { dayComplement in
-                DayRow(numDays - 1 - dayComplement, tracks: tracks, spaces: false, lines: false, widget: true, compact: compact)
-                if !compact {
-                    Divider()
+                let day = numDays - 1 - dayComplement
+                DayRow(day, tracks: tracks, spaces: false, lines: false, widget: true, compact: compact)
+                
+                if dayComplement < numDays - 1 {
+                    if entry.configuration.weekSeparators?.boolValue ?? true
+                        && entry.trackController.weekend(day: day) {
+                        Capsule()
+                            .foregroundColor(.gray)
+                            .frame(height: 2)
+                            .padding(.vertical, compact ? 0 : 2)
+                    } else if !compact {
+                        Divider()
+                    }
                 }
             }
         }
@@ -274,7 +285,7 @@ struct TicksWidget_Previews: PreviewProvider {
     static let trackController = TrackController(observeChanges: false, preview: true)
     
     static var previews: some View {
-        ticksWidget(tracksCount: 3, days: 1, family: .systemSmall)
+        ticksWidget(tracksCount: 3, days: 2, family: .systemSmall)
         ticksWidget(tracksCount: 4, days: 5, family: .systemSmall)
             .environment(\.colorScheme, .dark)
         ticksWidget(tracksCount: 5, days: 4, family: .systemMedium)
