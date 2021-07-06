@@ -184,9 +184,16 @@ struct TicksWidgetEntryView : View {
     }
     
     var numTracks: Int {
-        entry.configuration.tracksMode == .automatic
-            ? defaultNumTracks
-            : maxNumTracks
+        switch entry.configuration.tracksMode {
+        case .automatic,
+             // If .choose or .group are selected but the user doesn't make
+             // a choice, it falls back to the default fetch request.
+             .choose where entry.configuration.tracks?.isEmpty ?? true,
+             .group where entry.configuration.group == nil:
+            return defaultNumTracks
+        default:
+            return maxNumTracks
+        }
     }
     
     var tracks: Array<Track>.SubSequence {
