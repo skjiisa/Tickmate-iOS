@@ -63,22 +63,26 @@ class TrackController: NSObject, ObservableObject {
             Defaults.relativeDates.rawValue: true
         ])
         
+        TrackController.migrateUserDefaultsIfNeeded()
+        
+        UserDefaults(suiteName: groupID)?.register(defaults: [
+            Defaults.weekStartDay.rawValue: 2
+        ])
+        
         date = Date() - TrackController.dayOffset
         weekday = date.in(region: .current).weekday
         
-        weekStartDay = UserDefaults.standard.integer(forKey: Defaults.weekStartDay.rawValue)
+        weekStartDay = UserDefaults(suiteName: groupID)?.integer(forKey: Defaults.weekStartDay.rawValue) ?? 2
         relativeDates = UserDefaults.standard.bool(forKey: Defaults.relativeDates.rawValue)
         
         super.init()
-        
-        migrateUserDefaultsIfNeeded()
     }
     
     static var dayOffset: DateComponents {
         (UserDefaults.standard.bool(forKey: Defaults.customDayStart.rawValue) ? UserDefaults.standard.integer(forKey: Defaults.customDayStartMinutes.rawValue) : 0).minutes
     }
     
-    private func migrateUserDefaultsIfNeeded() {
+    private static func migrateUserDefaultsIfNeeded() {
         if let userDefaults = UserDefaults(suiteName: groupID),
            !userDefaults.bool(forKey: Defaults.userDefaultsMigration.rawValue) {
             let customDayStart = Defaults.customDayStart.rawValue
@@ -223,9 +227,9 @@ class TrackController: NSObject, ObservableObject {
     
     func setCustomDayStart(minutes givenMinutes: Int) {
         let minutes: Int
-        if UserDefaults.standard.bool(forKey: Defaults.customDayStart.rawValue) {
+        if UserDefaults(suiteName: groupID)?.bool(forKey: Defaults.customDayStart.rawValue) ?? false {
             minutes = givenMinutes
-            UserDefaults.standard.setValue(minutes, forKey: Defaults.customDayStartMinutes.rawValue)
+            UserDefaults(suiteName: groupID)?.setValue(minutes, forKey: Defaults.customDayStartMinutes.rawValue)
         } else {
             // Clear the offset if customDayStart is off
             minutes = 0
