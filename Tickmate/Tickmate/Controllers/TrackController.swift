@@ -8,6 +8,7 @@
 import CoreData
 import SwiftUI
 import SwiftDate
+import WidgetKit
 
 //MARK: TrackController
 
@@ -24,7 +25,8 @@ class TrackController: NSObject, ObservableObject {
     
     private var observeChanges: Bool
     private var preview: Bool
-    private var work: DispatchWorkItem?
+    private var saveWork: DispatchWorkItem?
+    private var refreshWork: DispatchWorkItem?
     
     lazy var fetchedResultsController: NSFetchedResultsController<Track> = {
         let context = (preview ? PersistenceController.preview : PersistenceController.shared).container.viewContext
@@ -230,27 +232,37 @@ class TrackController: NSObject, ObservableObject {
     /// Schedule a Core Data save on the current view context.
     ///
     /// Call this function when you want to save a small change when other small changes may happen soon after.
-    /// This will delay the save by 3 seconds and only save once if called multiple times.
-    /// - Parameter now: Setting this parameter to `true` will shortcut the schedule, if there is one, and save immediatly.
-    /// If there is no scheduled save, this function will do nothing instead.
-    func scheduleSave(now: Bool = false) {
-        guard !now else {
-            if let work = work {
-                work.perform()
-                work.cancel()
-            }
-            return
-        }
+    /// This will wait 5 seconds before saving, ignoring later calls until the 5 seconds have passed.
+    /// As a result, this will only save up to once every 5 seconds in order to prevent heavy disk usage from frequent calls.
+    func scheduleSave() {
+        guard saveWork == nil else { return }
         
-        work?.cancel()
         let work = DispatchWorkItem { [weak self] in
-            self?.work = nil
+            self?.saveWork = nil
             guard let context = self?.fetchedResultsController.managedObjectContext else { return }
             PersistenceController.save(context: context)
             print("Saved")
         }
-        self.work = work
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: work)
+        saveWork = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: work)
+    }
+    
+    func scheduleTimelineRefresh() {
+        guard refreshWork == nil else { return }
+        let work = DispatchWorkItem { [weak self] in
+            self?.refreshWork = nil
+            WidgetCenter.shared.reloadAllTimelines()
+            print("Widget timelines reloaded")
+        }
+        refreshWork = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: work)
+    }
+    
+    /// This will shortcut the 5-second wait from `scheduleSave()`.
+    /// If no save has been scheduled, it will do nothing.
+    func saveIfScheduled() {
+        saveWork?.perform()
+        refreshWork?.perform()
     }
     
     func checkForNewDay() {
@@ -296,7 +308,6 @@ extension TrackController: NSFetchedResultsControllerDelegate {
         if changed {
             scheduleSave()
         }
-        // This will only save if there is one scheduled
-        scheduleSave(now: true)
+        saveIfScheduled()
     }
 }

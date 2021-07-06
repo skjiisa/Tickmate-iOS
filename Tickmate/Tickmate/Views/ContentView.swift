@@ -100,7 +100,7 @@ struct ContentView: View {
         .environmentObject(trackController)
         .environmentObject(groupController)
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
-            trackController.scheduleSave(now: true)
+            trackController.saveIfScheduled()
         }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
             print("willEnterForeground")

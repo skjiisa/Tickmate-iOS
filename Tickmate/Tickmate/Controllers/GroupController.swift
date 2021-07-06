@@ -61,6 +61,6 @@ extension GroupController: NSFetchedResultsControllerDelegate {
         if changed {
             trackController?.scheduleSave()
         }
-        trackController?.scheduleSave(now: true)
+        trackController?.saveIfScheduled()
     }
 }

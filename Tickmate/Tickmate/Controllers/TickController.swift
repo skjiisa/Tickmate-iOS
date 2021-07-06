@@ -55,9 +55,8 @@ class TickController: NSObject, ObservableObject {
             NSLog("Error performing Ticks fetch for \(track.name ?? "track"): \(error)")
         }
         
-        if observeChanges {
-            loadTicks()
-        } else {
+        loadTicks()
+        if !observeChanges {
             loadCKTicks()
         }
     }
@@ -287,5 +286,10 @@ extension TickController: NSFetchedResultsControllerDelegate {
         default:
             break
         }
+        
+        // This is done here as opposed to in the tick(day:)
+        // function so that the timeline will alse be
+        // refreshed on changes fetched from CloudKit.
+        trackController?.scheduleTimelineRefresh()
     }
 }
