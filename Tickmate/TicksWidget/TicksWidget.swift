@@ -107,10 +107,14 @@ struct TracksEntry: TimelineEntry {
 
 struct TicksWidgetEntryView : View {
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.widgetFamily) private var widgetFamily
     
     var entry: Provider.Entry
     var numDays: Int {
         entry.configuration.numDays?.intValue ?? 5
+    }
+    var compact: Bool {
+        [.systemSmall, .systemMedium].contains(widgetFamily)
     }
 
     var body: some View {
@@ -120,14 +124,14 @@ struct TicksWidgetEntryView : View {
                 HStack(spacing: 4) {
                     Rectangle()
                         .opacity(0)
-                        .frame(width: 30)
+                        .frame(width: compact ? 30 : 80)
                     ForEach(entry.tracks) { track in
                         ZStack {
                             RoundedRectangle(cornerRadius: 3)
                                 .foregroundColor(Color(.systemFill))
                             if let systemImage = track.systemImage {
                                 Image(systemName: systemImage)
-                                    .font(.system(size: 8))
+                                    .font(compact ? .system(size: 11) : .body)
                             }
                         }
                     }
@@ -137,7 +141,10 @@ struct TicksWidgetEntryView : View {
             }
             
             ForEach(0..<numDays) { dayComplement in
-                DayRow(numDays - 1 - dayComplement, tracks: entry.tracks, spaces: false, lines: false, compact: true)
+                DayRow(numDays - 1 - dayComplement, tracks: entry.tracks, spaces: false, lines: false, widget: true, compact: compact)
+                if !compact {
+                    Divider()
+                }
             }
         }
         .padding(12)
@@ -171,18 +178,29 @@ struct TicksWidget: Widget {
 
 struct TicksWidget_Previews: PreviewProvider {
     static let trackController = TrackController(observeChanges: false, preview: true)
-    static var tracks: [Track] {
-        Array(trackController.fetchedResultsController.fetchedObjects!.prefix(4))
-    }
     
     static var previews: some View {
-        TicksWidgetEntryView(entry: TracksEntry(date: Date(), configuration: ConfigurationIntent(), controller: trackController, tracks: tracks))
-            .previewContext(WidgetPreviewContext(family: .systemSmall))
-            .environmentObject(trackController)
-        
-        TicksWidgetEntryView(entry: TracksEntry(date: Date(), configuration: ConfigurationIntent(), controller: trackController, tracks: tracks))
-            .previewContext(WidgetPreviewContext(family: .systemSmall))
-            .environmentObject(trackController)
+        ticksWidget(tracksCount: 3, days: 5, family: .systemSmall)
+        ticksWidget(tracksCount: 4, days: 5, family: .systemSmall)
             .environment(\.colorScheme, .dark)
+        ticksWidget(tracksCount: 5, days: 4, family: .systemMedium)
+        ticksWidget(tracksCount: 4, days: 6, family: .systemLarge)
+        ticksWidget(tracksCount: 5, days: 8, family: .systemLarge)
+    }
+    
+    static func tracks(_ count: Int) -> [Track] {
+        Array(trackController.fetchedResultsController.fetchedObjects!.prefix(count))
+    }
+    
+    static func ticksWidget(tracksCount: Int, days: Int, family: WidgetFamily) -> some View {
+        TicksWidgetEntryView(entry: TracksEntry(date: Date(), configuration: config(days: days), controller: trackController, tracks: tracks(tracksCount)))
+            .environmentObject(trackController)
+            .previewContext(WidgetPreviewContext(family: family))
+    }
+    
+    static func config(days: Int) -> ConfigurationIntent {
+        let config = ConfigurationIntent()
+        config.numDays = NSNumber(integerLiteral: days)
+        return config
     }
 }
