@@ -56,9 +56,6 @@ class TickController: NSObject, ObservableObject {
         }
         
         loadTicks()
-        if !observeChanges {
-            loadCKTicks()
-        }
     }
     
     func setTodayOffset() -> Int? {

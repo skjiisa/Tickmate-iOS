@@ -38,21 +38,43 @@ struct Provider: IntentTimelineProvider {
 
         let timeline = Timeline(entries: entries, policy: .atEnd)
         
-        // Download updated data from CloudKit
-        DispatchQueue.global(qos: .background).async {
-            let dispatchGroup = DispatchGroup()
-            
-            tracks.forEach { track in
-                dispatchGroup.enter()
-                trackController.tickController(for: track).loadCKTicks(completion: dispatchGroup.leave)
+        let lastSyncSeconds: Int
+                
+        if let lastUpdateTimeString = UserDefaults(suiteName: groupID)?.string(forKey: Defaults.lastUpdateTime.rawValue),
+           let lastUpdateTime = TrackController.iso8601Full.date(from: lastUpdateTimeString),
+           let difference = Date().difference(in: .second, from: lastUpdateTime) {
+            lastSyncSeconds = difference
+        } else {
+            lastSyncSeconds = 0
+        }
+        
+        print("!!!!!!!!!!!!Difference", lastSyncSeconds)
+        
+        // Refreshes of the widget will only check for changes from CloudKit
+        // if the last update was more than 29 minutes in the past.
+        // You can lower this value during testing to test CloudKit fetches.
+        if lastSyncSeconds > 60 * 29 {
+            // Download updated data from CloudKit
+            DispatchQueue.global(qos: .background).async {
+                let dispatchGroup = DispatchGroup()
+                
+                tracks.forEach { track in
+                    dispatchGroup.enter()
+                    trackController.tickController(for: track).loadCKTicks(completion: dispatchGroup.leave)
+                }
+                
+                _ = dispatchGroup.wait(timeout: .now() + 20)
+                trackController.setLastUpdateTime()
+                completion(timeline)
             }
-            
-            _ = dispatchGroup.wait(timeout: .now() + 20)
+        } else {
+            // The last update was recent enough,
+            // so don't bother checking CloudKit.
             completion(timeline)
         }
     }
     
-    func tracks(for configuration: ConfigurationIntent, context moc: NSManagedObjectContext) -> [Track]? {
+    private func tracks(for configuration: ConfigurationIntent, context moc: NSManagedObjectContext) -> [Track]? {
         (configuration.tracksMode != .list ? nil : configuration.tracks?.compactMap { trackItem in
             guard let idString = trackItem.identifier,
                   let url = URL(string: idString),

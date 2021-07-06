@@ -22,4 +22,5 @@ enum Defaults: String {
     case groupPage                  // Int
     case appGroupDatabaseMigration  // Bool
     case userDefaultsMigration      // Bool
+    case lastUpdateTime             // String
 }

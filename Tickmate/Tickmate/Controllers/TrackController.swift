@@ -78,6 +78,8 @@ class TrackController: NSObject, ObservableObject {
         super.init()
     }
     
+    //MARK: Static
+    
     static var dayOffset: DateComponents {
         (UserDefaults.standard.bool(forKey: Defaults.customDayStart.rawValue) ? UserDefaults.standard.integer(forKey: Defaults.customDayStartMinutes.rawValue) : 0).minutes
     }
@@ -120,6 +122,8 @@ class TrackController: NSObject, ObservableObject {
         formatter.formatOptions = .withFullDate
         return formatter
     }()
+    
+    static let iso8601Full = ISO8601DateFormatter()
     
     //MARK: Ticks
     
@@ -263,6 +267,7 @@ class TrackController: NSObject, ObservableObject {
             self?.saveWork = nil
             guard let context = self?.fetchedResultsController.managedObjectContext else { return }
             PersistenceController.save(context: context)
+            self?.setLastUpdateTime()
             print("Saved")
         }
         saveWork = work
@@ -278,6 +283,10 @@ class TrackController: NSObject, ObservableObject {
         }
         refreshWork = work
         DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: work)
+    }
+    
+    func setLastUpdateTime() {
+        UserDefaults(suiteName: groupID)?.set(TrackController.iso8601Full.string(from: Date()), forKey: Defaults.lastUpdateTime.rawValue)
     }
     
     /// This will shortcut the 5-second wait from `scheduleSave()`.
