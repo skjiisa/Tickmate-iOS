@@ -110,8 +110,40 @@ struct TicksWidgetEntryView : View {
     @Environment(\.widgetFamily) private var widgetFamily
     
     var entry: Provider.Entry
+    
+    var defaultNumDays: Int {
+        switch widgetFamily {
+        case .systemSmall:
+            return 5
+        case .systemMedium:
+            return 4
+        case .systemLarge:
+            return 7
+        @unknown default:
+            return 7
+        }
+    }
+    
+    var maxNumDays: Int {
+        let num: Int
+        switch widgetFamily {
+        case .systemSmall:
+            num = 6
+        case .systemMedium:
+            num = 6
+        case .systemLarge:
+            num = 9
+        @unknown default:
+            num = 9
+        }
+        let bonus = !(entry.configuration.showTrackIcons?.boolValue ?? true)
+        return num + bonus.int
+    }
+    
     var numDays: Int {
-        entry.configuration.numDays?.intValue ?? 5
+        entry.configuration.daysMode == .automatic
+            ? defaultNumDays
+            : min(entry.configuration.numDays?.intValue ?? defaultNumDays, maxNumDays)
     }
     var compact: Bool {
         [.systemSmall, .systemMedium].contains(widgetFamily)
@@ -180,12 +212,12 @@ struct TicksWidget_Previews: PreviewProvider {
     static let trackController = TrackController(observeChanges: false, preview: true)
     
     static var previews: some View {
-        ticksWidget(tracksCount: 3, days: 5, family: .systemSmall)
+        ticksWidget(tracksCount: 3, days: 4, family: .systemSmall)
         ticksWidget(tracksCount: 4, days: 5, family: .systemSmall)
             .environment(\.colorScheme, .dark)
         ticksWidget(tracksCount: 5, days: 4, family: .systemMedium)
-        ticksWidget(tracksCount: 4, days: 6, family: .systemLarge)
-        ticksWidget(tracksCount: 5, days: 8, family: .systemLarge)
+        ticksWidget(tracksCount: 4, days: 7, family: .systemLarge)
+        ticksWidget(tracksCount: 5, days: 10, family: .systemLarge)
     }
     
     static func tracks(_ count: Int) -> [Track] {
