@@ -27,7 +27,7 @@
 				</dict>
 				<dict>
 					<key>INEnumValueDisplayName</key>
-					<string>Automatic</string>
+					<string>Auto</string>
 					<key>INEnumValueDisplayNameID</key>
 					<string>dPNsl6</string>
 					<key>INEnumValueIndex</key>
@@ -80,7 +80,7 @@
 				</dict>
 				<dict>
 					<key>INEnumValueDisplayName</key>
-					<string>Automatic</string>
+					<string>Auto</string>
 					<key>INEnumValueDisplayNameID</key>
 					<string>NSEdvj</string>
 					<key>INEnumValueIndex</key>
@@ -287,7 +287,7 @@
 					<key>INIntentParameterConfigurable</key>
 					<true/>
 					<key>INIntentParameterDisplayName</key>
-					<string>Tracks to Display</string>
+					<string>Tracks</string>
 					<key>INIntentParameterDisplayNameID</key>
 					<string>9WcBEw</string>
 					<key>INIntentParameterDisplayPriority</key>
@@ -347,7 +347,7 @@
 					<key>INIntentParameterConfigurable</key>
 					<true/>
 					<key>INIntentParameterDisplayName</key>
-					<string>Tracks</string>
+					<string>Selection</string>
 					<key>INIntentParameterDisplayNameID</key>
 					<string>tZn7dI</string>
 					<key>INIntentParameterDisplayPriority</key>
@@ -420,26 +420,6 @@
 							<key>INIntentParameterPromptDialogType</key>
 							<string>Primary</string>
 						</dict>
-						<dict>
-							<key>INIntentParameterPromptDialogCustom</key>
-							<true/>
-							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>There are ${count} options matching ‘${group}’.</string>
-							<key>INIntentParameterPromptDialogFormatStringID</key>
-							<string>1UY4sc</string>
-							<key>INIntentParameterPromptDialogType</key>
-							<string>DisambiguationIntroduction</string>
-						</dict>
-						<dict>
-							<key>INIntentParameterPromptDialogCustom</key>
-							<true/>
-							<key>INIntentParameterPromptDialogFormatString</key>
-							<string>Just to confirm, you wanted ‘${group}’?</string>
-							<key>INIntentParameterPromptDialogFormatStringID</key>
-							<string>YFx3QN</string>
-							<key>INIntentParameterPromptDialogType</key>
-							<string>Confirmation</string>
-						</dict>
 					</array>
 					<key>INIntentParameterRelationship</key>
 					<dict>
@@ -450,8 +430,6 @@
 						<key>INIntentParameterRelationshipPredicateValue</key>
 						<string>group</string>
 					</dict>
-					<key>INIntentParameterSupportsDynamicEnumeration</key>
-					<true/>
 					<key>INIntentParameterTag</key>
 					<integer>15</integer>
 					<key>INIntentParameterType</key>
