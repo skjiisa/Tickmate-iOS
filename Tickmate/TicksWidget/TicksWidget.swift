@@ -75,7 +75,7 @@ struct Provider: IntentTimelineProvider {
     }
     
     private func tracks(for configuration: ConfigurationIntent, context moc: NSManagedObjectContext) -> [Track]? {
-        (configuration.tracksMode != .list ? nil : configuration.tracks?.compactMap { trackItem in
+        (configuration.tracksMode != .choose ? nil : configuration.tracks?.prefix(8).compactMap { trackItem in
             guard let idString = trackItem.identifier,
                   let url = URL(string: idString),
                   let id =
@@ -84,7 +84,7 @@ struct Provider: IntentTimelineProvider {
         }) ??? {
             let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
             fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Track.index, ascending: true)]
-            fetchRequest.fetchLimit = configuration.tracksCount?.intValue ?? 1
+            fetchRequest.fetchLimit = 8
             
             return (try? moc.fetch(fetchRequest))
         }()
@@ -117,9 +117,7 @@ struct TicksWidgetEntryView : View {
             return 5
         case .systemMedium:
             return 4
-        case .systemLarge:
-            return 7
-        @unknown default:
+        default:
             return 7
         }
     }
@@ -127,13 +125,9 @@ struct TicksWidgetEntryView : View {
     var maxNumDays: Int {
         let num: Int
         switch widgetFamily {
-        case .systemSmall:
+        case .systemSmall, .systemMedium:
             num = 6
-        case .systemMedium:
-            num = 6
-        case .systemLarge:
-            num = 9
-        @unknown default:
+        default:
             num = 9
         }
         let bonus = !(entry.configuration.showTrackIcons?.boolValue ?? true)
@@ -145,6 +139,37 @@ struct TicksWidgetEntryView : View {
             ? defaultNumDays
             : min(entry.configuration.numDays?.intValue ?? defaultNumDays, maxNumDays)
     }
+    
+    var defaultNumTracks: Int {
+        switch widgetFamily {
+        case .systemSmall:
+            return 4
+        case .systemMedium:
+            return 6
+        default:
+            return 5
+        }
+    }
+    
+    var maxNumTracks: Int {
+        switch widgetFamily {
+        case .systemSmall:
+            return 6
+        default:
+            return 8
+        }
+    }
+    
+    var numTracks: Int {
+        entry.configuration.tracksMode == .automatic
+            ? defaultNumTracks
+            : maxNumTracks
+    }
+    
+    var tracks: Array<Track>.SubSequence {
+        entry.tracks.prefix(numTracks)
+    }
+    
     var compact: Bool {
         [.systemSmall, .systemMedium].contains(widgetFamily)
     }
@@ -157,7 +182,7 @@ struct TicksWidgetEntryView : View {
                     Rectangle()
                         .opacity(0)
                         .frame(width: compact ? 30 : 80)
-                    ForEach(entry.tracks) { track in
+                    ForEach(tracks) { track in
                         ZStack {
                             RoundedRectangle(cornerRadius: 3)
                                 .foregroundColor(Color(.systemFill))
@@ -173,7 +198,7 @@ struct TicksWidgetEntryView : View {
             }
             
             ForEach(0..<numDays) { dayComplement in
-                DayRow(numDays - 1 - dayComplement, tracks: entry.tracks, spaces: false, lines: false, widget: true, compact: compact)
+                DayRow(numDays - 1 - dayComplement, tracks: tracks, spaces: false, lines: false, widget: true, compact: compact)
                 if !compact {
                     Divider()
                 }

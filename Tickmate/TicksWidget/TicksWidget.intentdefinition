@@ -27,23 +27,23 @@
 				</dict>
 				<dict>
 					<key>INEnumValueDisplayName</key>
-					<string>Number</string>
+					<string>Automatic</string>
 					<key>INEnumValueDisplayNameID</key>
 					<string>dPNsl6</string>
 					<key>INEnumValueIndex</key>
 					<integer>1</integer>
 					<key>INEnumValueName</key>
-					<string>number</string>
+					<string>automatic</string>
 				</dict>
 				<dict>
 					<key>INEnumValueDisplayName</key>
-					<string>List</string>
+					<string>Choose</string>
 					<key>INEnumValueDisplayNameID</key>
 					<string>YqewFi</string>
 					<key>INEnumValueIndex</key>
 					<integer>2</integer>
 					<key>INEnumValueName</key>
-					<string>list</string>
+					<string>choose</string>
 				</dict>
 			</array>
 		</dict>
@@ -289,7 +289,7 @@
 					<key>INIntentParameterMetadata</key>
 					<dict>
 						<key>INIntentParameterMetadataDefaultValue</key>
-						<string>number</string>
+						<string>automatic</string>
 					</dict>
 					<key>INIntentParameterName</key>
 					<string>tracksMode</string>
@@ -370,7 +370,7 @@
 						<key>INIntentParameterRelationshipPredicateName</key>
 						<string>EnumHasExactValue</string>
 						<key>INIntentParameterRelationshipPredicateValue</key>
-						<string>list</string>
+						<string>choose</string>
 					</dict>
 					<key>INIntentParameterSupportsDynamicEnumeration</key>
 					<true/>
@@ -380,57 +380,6 @@
 					<integer>5</integer>
 					<key>INIntentParameterType</key>
 					<string>Object</string>
-				</dict>
-				<dict>
-					<key>INIntentParameterConfigurable</key>
-					<true/>
-					<key>INIntentParameterDisplayName</key>
-					<string>Number of Tracks</string>
-					<key>INIntentParameterDisplayNameID</key>
-					<string>rrJ3QX</string>
-					<key>INIntentParameterDisplayPriority</key>
-					<integer>6</integer>
-					<key>INIntentParameterMetadata</key>
-					<dict>
-						<key>INIntentParameterMetadataDefaultValue</key>
-						<integer>4</integer>
-						<key>INIntentParameterMetadataMaximumValue</key>
-						<integer>6</integer>
-						<key>INIntentParameterMetadataMinimumValue</key>
-						<integer>1</integer>
-						<key>INIntentParameterMetadataType</key>
-						<string>Stepper</string>
-					</dict>
-					<key>INIntentParameterName</key>
-					<string>tracksCount</string>
-					<key>INIntentParameterPromptDialogs</key>
-					<array>
-						<dict>
-							<key>INIntentParameterPromptDialogCustom</key>
-							<true/>
-							<key>INIntentParameterPromptDialogType</key>
-							<string>Configuration</string>
-						</dict>
-						<dict>
-							<key>INIntentParameterPromptDialogCustom</key>
-							<true/>
-							<key>INIntentParameterPromptDialogType</key>
-							<string>Primary</string>
-						</dict>
-					</array>
-					<key>INIntentParameterRelationship</key>
-					<dict>
-						<key>INIntentParameterRelationshipParentName</key>
-						<string>tracksMode</string>
-						<key>INIntentParameterRelationshipPredicateName</key>
-						<string>EnumHasExactValue</string>
-						<key>INIntentParameterRelationshipPredicateValue</key>
-						<string>number</string>
-					</dict>
-					<key>INIntentParameterTag</key>
-					<integer>9</integer>
-					<key>INIntentParameterType</key>
-					<string>Integer</string>
 				</dict>
 			</array>
 			<key>INIntentResponse</key>
