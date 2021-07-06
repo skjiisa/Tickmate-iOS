@@ -10,6 +10,8 @@ import SwiftUI
 import Intents
 import CoreData
 
+//MARK: Provider
+
 struct Provider: IntentTimelineProvider {
     func placeholder(in context: Context) -> TracksEntry {
         TracksEntry(date: Date(), configuration: ConfigurationIntent())
@@ -75,21 +77,38 @@ struct Provider: IntentTimelineProvider {
     }
     
     private func tracks(for configuration: ConfigurationIntent, context moc: NSManagedObjectContext) -> [Track]? {
-        (configuration.tracksMode != .choose ? nil : configuration.tracks?.prefix(8).compactMap { trackItem in
-            guard let idString = trackItem.identifier,
-                  let url = URL(string: idString),
-                  let id =
-                    moc.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: url)  else { return nil }
-            return moc.object(with: id) as? Track
-        }) ??? {
-            let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
-            fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Track.index, ascending: true)]
-            fetchRequest.fetchLimit = 8
-            
-            return (try? moc.fetch(fetchRequest))
-        }()
+        // This isn't using a switch statement because chaining ??? operators allows it to fall
+        // back to the default fetch request if the results are nil, OR if they're empty.
+        (configuration.tracksMode == .choose ? configuration.tracks?.prefix(8).compactMap { object(for: $0, context: moc) } : nil)
+        ??? (configuration.tracksMode == .group ? getTracks(for: configuration.group, context: moc) : nil)
+        ??? (try? moc.fetch(tracksFetchRequest()))
+    }
+    
+    private func object<T: NSManagedObject>(for inObject: INObject, context moc: NSManagedObjectContext) -> T? {
+        guard let idString = inObject.identifier,
+              let url = URL(string: idString),
+              let id =
+                moc.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: url)  else { return nil }
+        return moc.object(with: id) as? T
+    }
+    
+    private func tracksFetchRequest() -> NSFetchRequest<Track> {
+        let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "index", ascending: true)]
+        fetchRequest.fetchLimit = 8
+        return fetchRequest
+    }
+    
+    private func getTracks(for groupItem: GroupItem?, context moc: NSManagedObjectContext) -> [Track]? {
+        guard let groupItem = groupItem,
+              let group = object(for: groupItem, context: moc) else { return nil }
+        let fetchRequest = tracksFetchRequest()
+        fetchRequest.predicate = NSPredicate(format: "%@ in groups", group)
+        return (try? moc.fetch(fetchRequest))
     }
 }
+
+//MARK: TracksEntry
 
 struct TracksEntry: TimelineEntry {
     let date: Date
@@ -105,9 +124,13 @@ struct TracksEntry: TimelineEntry {
     }
 }
 
+//MARK: TicksWidgetEntryView
+
 struct TicksWidgetEntryView : View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.widgetFamily) private var widgetFamily
+    
+    //MARK: Properties
     
     var entry: Provider.Entry
     
@@ -173,6 +196,8 @@ struct TicksWidgetEntryView : View {
     var compact: Bool {
         [.systemSmall, .systemMedium].contains(widgetFamily)
     }
+    
+    //MARK: Body
 
     var body: some View {
         VStack(spacing: 4) {
@@ -220,6 +245,8 @@ struct TicksWidgetEntryView : View {
     */
 }
 
+//MARK: TicksWidget
+
 @main
 struct TicksWidget: Widget {
     let kind: String = "TicksWidget"
@@ -233,6 +260,8 @@ struct TicksWidget: Widget {
         .description("Display the past few days of your favorite tracks.")
     }
 }
+
+//MARK: Previews
 
 struct TicksWidget_Previews: PreviewProvider {
     static let trackController = TrackController(observeChanges: false, preview: true)
