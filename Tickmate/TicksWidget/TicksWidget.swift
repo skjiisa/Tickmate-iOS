@@ -214,7 +214,7 @@ struct TicksWidgetEntryView : View {
                 HStack(spacing: 4) {
                     Rectangle()
                         .opacity(0)
-                        .frame(width: compact ? 30 : 80)
+                        .frame(width: compact ? 30 : 50)
                     ForEach(tracks) { track in
                         ZStack {
                             RoundedRectangle(cornerRadius: 3)

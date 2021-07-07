@@ -54,10 +54,10 @@ struct DayRow<C: RandomAccessCollection>: View where C.Element == Track {
                     .opacity(0)
             }
             HStack(spacing: 4) {
-                let label = trackController.dayLabel(day: day, compact: compact)
+                let label = trackController.dayLabel(day: day, compact: widget)
                 TextWithCaption(label.text, caption: widget ? nil : label.caption)
                     .lineLimit(1)
-                    .frame(width: compact ? 30 : 80, alignment: .leading)
+                    .frame(width: compact ? 30 : widget ? 50 : 80, alignment: .leading)
                     .font(compact ? .system(size: 11) : .body)
                 ForEach(tracks) { track in
                     TickView(day: day, widget: widget, compact: compact, track: track, tickController: trackController.tickController(for: track))
