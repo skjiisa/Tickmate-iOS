@@ -209,6 +209,7 @@ class TrackController: NSObject, ObservableObject {
             loadTicks(for: track)
         }
         PersistenceController.save(context: moc)
+        scheduleTimelineRefresh()
     }
     
     func updateTickDateOffsets(for track: Track, oldStartString: String?) {
@@ -254,6 +255,7 @@ class TrackController: NSObject, ObservableObject {
             // actually wouldn't make a difference because it displays its days based on
             // their date relative to today, regardless of the content of the TickControllers.
             tickControllers.values.forEach { $0.loadTicks() }
+            scheduleTimelineRefresh()
         }
     }
     
@@ -308,6 +310,7 @@ class TrackController: NSObject, ObservableObject {
             date = Date() - TrackController.dayOffset
             weekday = date.in(region: .current).weekday
             tickControllers.values.forEach { $0.loadTicks() }
+            scheduleTimelineRefresh()
             print("Updated from \(oldDate) to \(newDate)")
         }
     }
