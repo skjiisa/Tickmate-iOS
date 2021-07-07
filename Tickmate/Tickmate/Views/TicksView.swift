@@ -55,7 +55,7 @@ struct TicksView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
+            HStack(spacing: 4) {
                 Rectangle()
                     .opacity(0)
                     .frame(width: 80, height: 32)
