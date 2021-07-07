@@ -10,17 +10,17 @@ import Foundation
 let groupID = "group.vc.isv.Tickmate"
 
 enum Defaults: String {
-    case customDayStart             // Bool
-    case customDayStartMinutes      // Int
+    case customDayStart             // Bool     App Group
+    case customDayStartMinutes      // Int      App Group
     case weekSeparatorSpaces        // Bool
     case weekSeparatorLines         // Bool
-    case weekStartDay               // Int
+    case weekStartDay               // Int      App Group
     case relativeDates              // Bool
     case onboardingComplete         // Bool
     case showAllTracks              // Bool
     case showUngroupedTracks        // Bool
     case groupPage                  // Int
     case appGroupDatabaseMigration  // Bool
-    case userDefaultsMigration      // Bool
-    case lastUpdateTime             // String
+    case userDefaultsMigration      // Bool     App Group
+    case lastUpdateTime             // String   App Group
 }

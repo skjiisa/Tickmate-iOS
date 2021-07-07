@@ -23,7 +23,7 @@ class PersistenceController {
         result.previewGroup = group
         
         let dateString = TrackController.iso8601.string(from: Date() - 5.days)
-        for i: Int16 in 0..<3 {
+        for i: Int16 in 0..<5 {
             let track = Track(
                 name: String(UUID().uuidString.dropLast(28)),
                 multiple: i > 0,
