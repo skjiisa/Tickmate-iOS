@@ -9,6 +9,7 @@ import WidgetKit
 import SwiftUI
 import Intents
 import CoreData
+import SwiftDate
 
 //MARK: Provider
 
@@ -36,10 +37,25 @@ struct Provider: IntentTimelineProvider {
         // To test refreshes, you can adjust this entry to be much sooner, like 15 seconds.
         // Just make sure you only run the widget connected to the debugger like that and don't
         // leave it on your home screen after you disconnect.
-        entries.append(Entry(date: Calendar.current.date(byAdding: .minute, value: 30, to: Date())!, configuration: configuration, controller: trackController, tracks: tracks))
+        
+        var nextEntryDate = Date() + 30.minutes
+        let offsetEntryDate = nextEntryDate - TrackController.dayOffset
+        
+        let currentDate = TrackController.iso8601.string(from: Date() - TrackController.dayOffset)
+        let newDate = TrackController.iso8601.string(from: offsetEntryDate)
+        if currentDate != newDate {
+            // The new day rollover is less than 30 minutes from now.
+            // Add a new timeline entry right at the new day rollover.
+            nextEntryDate = offsetEntryDate.dateAtStartOf([.day]) + TrackController.dayOffset
+            
+            print(offsetEntryDate.dateAtStartOf([.day]) + TrackController.dayOffset)
+        }
+        
+        entries.append(Entry(date: nextEntryDate, configuration: configuration, controller: trackController, tracks: tracks))
 
         let timeline = Timeline(entries: entries, policy: .atEnd)
         
+        // Check last sync time
         let lastSyncSeconds: Int
                 
         if let lastUpdateTimeString = UserDefaults(suiteName: groupID)?.string(forKey: Defaults.lastUpdateTime.rawValue),
