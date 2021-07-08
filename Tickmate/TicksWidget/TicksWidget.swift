@@ -110,7 +110,8 @@ struct Provider: IntentTimelineProvider {
     
     private func tracksFetchRequest() -> NSFetchRequest<Track> {
         let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "index", ascending: true)]
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Track.index, ascending: true)]
+        fetchRequest.predicate = NSPredicate(format: "enabled == YES")
         fetchRequest.fetchLimit = 8
         return fetchRequest
     }
@@ -119,7 +120,9 @@ struct Provider: IntentTimelineProvider {
         guard let groupItem = groupItem,
               let group = object(for: groupItem, context: moc) else { return nil }
         let fetchRequest = tracksFetchRequest()
-        fetchRequest.predicate = NSPredicate(format: "%@ in groups", group)
+        let groupsPredicate = NSPredicate(format: "%@ in groups", group)
+        let predicates = [fetchRequest.predicate, groupsPredicate].compactMap { $0 }
+        fetchRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
         return (try? moc.fetch(fetchRequest))
     }
 }
