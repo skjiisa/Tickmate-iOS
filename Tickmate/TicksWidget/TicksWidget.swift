@@ -97,7 +97,7 @@ struct Provider: IntentTimelineProvider {
         // back to the default fetch request if the results are nil, OR if they're empty.
         (configuration.tracksMode == .choose ? configuration.tracks?.prefix(8).compactMap { object(for: $0, context: moc) } : nil)
         ??? (configuration.tracksMode == .group ? getTracks(for: configuration.group, context: moc) : nil)
-        ??? (try? moc.fetch(tracksFetchRequest()))
+        ??? automaticFetch(context: moc)
     }
     
     private func object<T: NSManagedObject>(for inObject: INObject, context moc: NSManagedObjectContext) -> T? {
@@ -106,6 +106,21 @@ struct Provider: IntentTimelineProvider {
               let id =
                 moc.persistentStoreCoordinator?.managedObjectID(forURIRepresentation: url)  else { return nil }
         return moc.object(with: id) as? T
+    }
+    
+    private func automaticFetch(context moc: NSManagedObjectContext) -> [Track]? {
+        let groupFetchRequest: NSFetchRequest<TrackGroup> = TrackGroup.fetchRequest()
+        groupFetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \TrackGroup.index, ascending: true)]
+        groupFetchRequest.fetchLimit = 1
+        
+        var tracks: [Track]?
+        
+        // If the user has a group, show tracks from that group
+        if let group = (try? moc.fetch(groupFetchRequest))?.first {
+            tracks = getTracks(for: group, context: moc)
+        }
+        
+        return tracks ??? (try? moc.fetch(tracksFetchRequest()))
     }
     
     private func tracksFetchRequest() -> NSFetchRequest<Track> {
@@ -118,7 +133,11 @@ struct Provider: IntentTimelineProvider {
     
     private func getTracks(for groupItem: GroupItem?, context moc: NSManagedObjectContext) -> [Track]? {
         guard let groupItem = groupItem,
-              let group = object(for: groupItem, context: moc) else { return nil }
+              let group = object(for: groupItem, context: moc) as? TrackGroup else { return nil }
+        return getTracks(for: group, context: moc)
+    }
+    
+    private func getTracks(for group: TrackGroup, context moc: NSManagedObjectContext) -> [Track]? {
         let fetchRequest = tracksFetchRequest()
         let groupsPredicate = NSPredicate(format: "%@ in groups", group)
         let predicates = [fetchRequest.predicate, groupsPredicate].compactMap { $0 }
