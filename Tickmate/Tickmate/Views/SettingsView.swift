@@ -21,6 +21,9 @@ struct SettingsView: View {
     @AppStorage(Defaults.weekSeparatorLines.rawValue) private var weekSeparatorLines: Bool = true
     @AppStorage(Defaults.relativeDates.rawValue) private var relativeDates = true
     
+    let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+    let appBuild = Bundle.main.infoDictionary?["CFBundleVersion"] as? String
+    
     @EnvironmentObject private var trackController: TrackController
     @EnvironmentObject private var storeController: StoreController
     
@@ -118,14 +121,23 @@ struct SettingsView: View {
             }
             
             Section(header: Text("App Information")) {
+                if let version = appVersion,
+                   let build = appBuild {
+                    HStack {
+                        Text("Version")
+                        Spacer()
+                        Text("\(version) (\(build))")
+                            .foregroundColor(.secondary)
+                    }
+                }
+                NavigationLink("Acknowledgements", destination: AcknowledgementsView())
+            }
+            
+            Section {
                 Link("Support Website", destination: URL(string: "https://github.com/Isvvc/Tickmate-iOS/issues")!)
                 Link("Email Support", destination: URL(string: "mailto:lyons@tuta.io")!)
                 Link("Privacy Policy", destination: URL(string: "https://github.com/Isvvc/Tickmate-iOS/blob/main/Privacy%20Policy.txt")!)
                 Link("Source Code", destination: URL(string: "https://github.com/Isvvc/Tickmate-iOS/")!)
-            }
-            
-            Section {
-                NavigationLink("Acknowledgements", destination: AcknowledgementsView())
             }
         }
         .navigationTitle("Settings")
