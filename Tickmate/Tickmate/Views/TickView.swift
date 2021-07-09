@@ -17,13 +17,19 @@ struct DayRow<C: RandomAccessCollection>: View where C.Element == Track {
     var tracks: C
     var spaces: Bool
     var lines: Bool
+    var widget: Bool
     var compact: Bool
     
-    init(_ day: Int, tracks: C, spaces: Bool, lines: Bool, compact: Bool = false) {
+    init(_ day: Int, tracks: C, spaces: Bool, lines: Bool) {
+        self.init(day, tracks: tracks, spaces: spaces, lines: lines, widget: false, compact: false)
+    }
+    
+    init(_ day: Int, tracks: C, spaces: Bool, lines: Bool, widget: Bool, compact: Bool) {
         self.day = day
         self.tracks = tracks
         self.spaces = spaces
         self.lines = lines
+        self.widget = widget
         self.compact = compact
     }
     
@@ -48,13 +54,13 @@ struct DayRow<C: RandomAccessCollection>: View where C.Element == Track {
                     .opacity(0)
             }
             HStack(spacing: 4) {
-                let label = trackController.dayLabel(day: day, compact: compact)
-                TextWithCaption(label.text, caption: compact ? nil : label.caption)
+                let label = trackController.dayLabel(day: day, compact: widget)
+                TextWithCaption(label.text, caption: widget ? nil : label.caption)
                     .lineLimit(1)
-                    .frame(width: compact ? 30 : 80, alignment: .leading)
+                    .frame(width: compact ? 30 : widget ? 50 : 80, alignment: .leading)
                     .font(compact ? .system(size: 11) : .body)
                 ForEach(tracks) { track in
-                    TickView(day: day, compact: compact, track: track, tickController: trackController.tickController(for: track))
+                    TickView(day: day, widget: widget, compact: compact, track: track, tickController: trackController.tickController(for: track))
                 }
             }
             if spaces && trackController.insets(day: day) == .bottom {
@@ -74,6 +80,7 @@ struct DayRow<C: RandomAccessCollection>: View where C.Element == Track {
 struct TickView: View {
     
     let day: Int
+    var widget: Bool
     var compact: Bool
     
     @ObservedObject var track: Track
@@ -82,7 +89,7 @@ struct TickView: View {
     private var color: Color {
         // If the day is ticked, use the track color. Otherwise, use
         // system fill. If the track is reversed, reverse the check.
-        (tickController.getTick(for: day)?.count ?? 0 > 0) != track.reversed ? Color(rgb: Int(track.color)) : Color(.systemFill)
+        (tickController.tickCount(for: day) > 0) != track.reversed ? Color(rgb: Int(track.color)) : Color(.systemFill)
     }
     
     private var validDate: Bool {
@@ -93,18 +100,20 @@ struct TickView: View {
     
     var body: some View {
         ZStack {
-            if compact {
+            if widget {
                 RoundedRectangle(cornerRadius: 3)
                     .foregroundColor(color)
             } else {
                 RoundedRectangle(cornerRadius: 3)
                     .foregroundColor(color)
-                    .frame(height: compact ? 16 : 32)
+                    .frame(height: 32)
             }
-            let count = tickController.getTick(for: day)?.count ?? 0
+            let count = tickController.tickCount(for: day)
             if count > 1 {
                 Text("\(count)")
+                    .lineLimit(1)
                     .foregroundColor(track.lightText ? .white : .black)
+                    .font(compact ? .system(size: 11) : .body)
             }
         }
         .onTapGesture {

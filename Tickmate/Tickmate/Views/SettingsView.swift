@@ -10,11 +10,15 @@ import SwiftDate
 
 struct SettingsView: View {
     
-    @AppStorage(Defaults.customDayStart.rawValue) private var customDayStart: Bool = false
-    @AppStorage(Defaults.customDayStartMinutes.rawValue) private var minutes: Int = 60
+    @AppStorage(Defaults.customDayStart.rawValue, store: UserDefaults(suiteName: groupID))
+    private var customDayStart: Bool = false
+    @AppStorage(Defaults.customDayStartMinutes.rawValue, store: UserDefaults(suiteName: groupID))
+    private var minutes: Int = 60
+    @AppStorage(Defaults.weekStartDay.rawValue, store: UserDefaults(suiteName: groupID))
+    private var weekStartDay = 2
+    
     @AppStorage(Defaults.weekSeparatorSpaces.rawValue) private var weekSeparatorSpaces: Bool = true
     @AppStorage(Defaults.weekSeparatorLines.rawValue) private var weekSeparatorLines: Bool = true
-    @AppStorage(Defaults.weekStartDay.rawValue) private var weekStartDay = 2
     @AppStorage(Defaults.relativeDates.rawValue) private var relativeDates = true
     
     @EnvironmentObject private var trackController: TrackController

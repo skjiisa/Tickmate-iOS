@@ -8,6 +8,7 @@
 import CoreData
 import SwiftUI
 import SwiftDate
+import WidgetKit
 
 //MARK: TrackController
 
@@ -24,7 +25,8 @@ class TrackController: NSObject, ObservableObject {
     
     private var observeChanges: Bool
     private var preview: Bool
-    private var work: DispatchWorkItem?
+    private var saveWork: DispatchWorkItem?
+    private var refreshWork: DispatchWorkItem?
     
     lazy var fetchedResultsController: NSFetchedResultsController<Track> = {
         let context = (preview ? PersistenceController.preview : PersistenceController.shared).container.viewContext
@@ -57,22 +59,48 @@ class TrackController: NSObject, ObservableObject {
         self.preview = preview
         
         UserDefaults.standard.register(defaults: [
-            Defaults.customDayStartMinutes.rawValue: 0,
             Defaults.weekStartDay.rawValue: 2,
             Defaults.relativeDates.rawValue: true
+        ])
+        
+        TrackController.migrateUserDefaultsIfNeeded()
+        
+        UserDefaults(suiteName: groupID)?.register(defaults: [
+            Defaults.weekStartDay.rawValue: 2
         ])
         
         date = Date() - TrackController.dayOffset
         weekday = date.in(region: .current).weekday
         
-        weekStartDay = UserDefaults.standard.integer(forKey: Defaults.weekStartDay.rawValue)
+        weekStartDay = UserDefaults(suiteName: groupID)?.integer(forKey: Defaults.weekStartDay.rawValue) ?? 2
         relativeDates = UserDefaults.standard.bool(forKey: Defaults.relativeDates.rawValue)
         
         super.init()
     }
     
+    //MARK: Static
+    
     static var dayOffset: DateComponents {
-        (UserDefaults.standard.bool(forKey: Defaults.customDayStart.rawValue) ? UserDefaults.standard.integer(forKey: Defaults.customDayStartMinutes.rawValue) : 0).minutes
+        (UserDefaults(suiteName: groupID)?.bool(forKey: Defaults.customDayStart.rawValue) ?? false
+            ? UserDefaults(suiteName: groupID)?.integer(forKey: Defaults.customDayStartMinutes.rawValue) ?? 0
+            : 0).minutes
+    }
+    
+    private static func migrateUserDefaultsIfNeeded() {
+        if let userDefaults = UserDefaults(suiteName: groupID),
+           !userDefaults.bool(forKey: Defaults.userDefaultsMigration.rawValue) {
+            let customDayStart = Defaults.customDayStart.rawValue
+            userDefaults.set(UserDefaults.standard.bool(forKey: customDayStart), forKey: customDayStart)
+            
+            let customDayStartMinutes = Defaults.customDayStartMinutes.rawValue
+            userDefaults.set(UserDefaults.standard.integer(forKey: customDayStartMinutes), forKey: customDayStartMinutes)
+            
+            let weekStartDay = Defaults.weekStartDay.rawValue
+            userDefaults.set(UserDefaults.standard.integer(forKey: weekStartDay), forKey: weekStartDay)
+            
+            userDefaults.set(true, forKey: Defaults.userDefaultsMigration.rawValue)
+            print("UserDefaults migrated")
+        }
     }
     
     //MARK: Date Formatters
@@ -96,6 +124,8 @@ class TrackController: NSObject, ObservableObject {
         formatter.formatOptions = .withFullDate
         return formatter
     }()
+    
+    static let iso8601Full = ISO8601DateFormatter()
     
     //MARK: Ticks
     
@@ -179,6 +209,7 @@ class TrackController: NSObject, ObservableObject {
             loadTicks(for: track)
         }
         PersistenceController.save(context: moc)
+        scheduleTimelineRefresh()
     }
     
     func updateTickDateOffsets(for track: Track, oldStartString: String?) {
@@ -203,9 +234,9 @@ class TrackController: NSObject, ObservableObject {
     
     func setCustomDayStart(minutes givenMinutes: Int) {
         let minutes: Int
-        if UserDefaults.standard.bool(forKey: Defaults.customDayStart.rawValue) {
+        if UserDefaults(suiteName: groupID)?.bool(forKey: Defaults.customDayStart.rawValue) ?? false {
             minutes = givenMinutes
-            UserDefaults.standard.setValue(minutes, forKey: Defaults.customDayStartMinutes.rawValue)
+            UserDefaults(suiteName: groupID)?.setValue(minutes, forKey: Defaults.customDayStartMinutes.rawValue)
         } else {
             // Clear the offset if customDayStart is off
             minutes = 0
@@ -224,33 +255,49 @@ class TrackController: NSObject, ObservableObject {
             // actually wouldn't make a difference because it displays its days based on
             // their date relative to today, regardless of the content of the TickControllers.
             tickControllers.values.forEach { $0.loadTicks() }
+            scheduleTimelineRefresh()
         }
     }
     
     /// Schedule a Core Data save on the current view context.
     ///
     /// Call this function when you want to save a small change when other small changes may happen soon after.
-    /// This will delay the save by 3 seconds and only save once if called multiple times.
-    /// - Parameter now: Setting this parameter to `true` will shortcut the schedule, if there is one, and save immediatly.
-    /// If there is no scheduled save, this function will do nothing instead.
-    func scheduleSave(now: Bool = false) {
-        guard !now else {
-            if let work = work {
-                work.perform()
-                work.cancel()
-            }
-            return
-        }
+    /// This will wait 5 seconds before saving, ignoring later calls until the 5 seconds have passed.
+    /// As a result, this will only save up to once every 5 seconds in order to prevent heavy disk usage from frequent calls.
+    func scheduleSave() {
+        guard saveWork == nil else { return }
         
-        work?.cancel()
         let work = DispatchWorkItem { [weak self] in
-            self?.work = nil
+            self?.saveWork = nil
             guard let context = self?.fetchedResultsController.managedObjectContext else { return }
             PersistenceController.save(context: context)
+            self?.setLastUpdateTime()
             print("Saved")
         }
-        self.work = work
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3, execute: work)
+        saveWork = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: work)
+    }
+    
+    func scheduleTimelineRefresh() {
+        guard refreshWork == nil else { return }
+        let work = DispatchWorkItem { [weak self] in
+            self?.refreshWork = nil
+            WidgetCenter.shared.reloadAllTimelines()
+            print("Widget timelines reloaded")
+        }
+        refreshWork = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5, execute: work)
+    }
+    
+    func setLastUpdateTime() {
+        UserDefaults(suiteName: groupID)?.set(TrackController.iso8601Full.string(from: Date()), forKey: Defaults.lastUpdateTime.rawValue)
+    }
+    
+    /// This will shortcut the 5-second wait from `scheduleSave()`.
+    /// If no save has been scheduled, it will do nothing.
+    func saveIfScheduled() {
+        saveWork?.perform()
+        refreshWork?.perform()
     }
     
     func checkForNewDay() {
@@ -263,6 +310,7 @@ class TrackController: NSObject, ObservableObject {
             date = Date() - TrackController.dayOffset
             weekday = date.in(region: .current).weekday
             tickControllers.values.forEach { $0.loadTicks() }
+            scheduleTimelineRefresh()
             print("Updated from \(oldDate) to \(newDate)")
         }
     }
@@ -296,7 +344,6 @@ extension TrackController: NSFetchedResultsControllerDelegate {
         if changed {
             scheduleSave()
         }
-        // This will only save if there is one scheduled
-        scheduleSave(now: true)
+        saveIfScheduled()
     }
 }

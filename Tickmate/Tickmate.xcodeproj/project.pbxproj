@@ -58,6 +58,8 @@
 		59342E1C2603F3DF007E9F64 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59342E1B2603F3DF007E9F64 /* OnboardingView.swift */; };
 		5939239C2654CE050085DABD /* PageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5939239B2654CE050085DABD /* PageView.swift */; };
 		5939239E2655B6C90085DABD /* Animation+Push.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5939239D2655B6C90085DABD /* Animation+Push.swift */; };
+		5956ACC4268EA0DA0005B5CC /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5964545125E987C9004FE184 /* CloudKit.framework */; };
+		5956ACC5268EA3440005B5CC /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5964545125E987C9004FE184 /* CloudKit.framework */; };
 		59603D452666C85A001482C6 /* StoreController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59603D442666C85A001482C6 /* StoreController.swift */; };
 		5964545225E987C9004FE184 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5964545125E987C9004FE184 /* CloudKit.framework */; };
 		597A7FDD25F6E1C900256268 /* StateEditButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 597A7FDC25F6E1C900256268 /* StateEditButton.swift */; };
@@ -190,6 +192,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5901D4CF2684281A00A5BE86 /* SwiftUI.framework in Frameworks */,
+				5956ACC4268EA0DA0005B5CC /* CloudKit.framework in Frameworks */,
 				5901D4CD2684281A00A5BE86 /* WidgetKit.framework in Frameworks */,
 				5931643B2685409F005DDA1A /* SwiftDate in Frameworks */,
 			);
@@ -199,6 +202,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5956ACC5268EA3440005B5CC /* CloudKit.framework in Frameworks */,
 				5931646126857AA9005DDA1A /* SwiftDate in Frameworks */,
 				5931644726857779005DDA1A /* Intents.framework in Frameworks */,
 			);

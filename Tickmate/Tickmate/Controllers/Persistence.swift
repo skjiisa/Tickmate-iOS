@@ -23,7 +23,7 @@ class PersistenceController {
         result.previewGroup = group
         
         let dateString = TrackController.iso8601.string(from: Date() - 5.days)
-        for i: Int16 in 0..<3 {
+        for i: Int16 in 0..<5 {
             let track = Track(
                 name: String(UUID().uuidString.dropLast(28)),
                 multiple: i > 0,
@@ -179,8 +179,7 @@ class PersistenceController {
         } else {
             container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
             
-            let appGroupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.vc.isv.Tickmate")!.appendingPathComponent("Tickmate.sqlite")
-            let appGroupDescription = NSPersistentStoreDescription(url: appGroupURL)
+            let appGroupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: groupID)!.appendingPathComponent("Tickmate.sqlite")
             
             let oldURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?.appendingPathComponent("Tickmate.sqlite")
             UserDefaults.standard.register(defaults: [Defaults.appGroupDatabaseMigration.rawValue: false])
@@ -195,7 +194,7 @@ class PersistenceController {
             
             // Load the current persistent store
             if !needsMigration {
-                container.persistentStoreDescriptions = [appGroupDescription]
+                container.persistentStoreDescriptions.first?.url = appGroupURL
             }
             
             container.loadPersistentStores { storeDescription, error in
