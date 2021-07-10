@@ -11,6 +11,7 @@ struct PageView<Content: View>: View {
     
     var pageCount: Int
     @Binding var currentIndex: Int
+    @Binding var offset: CGFloat
     @ViewBuilder var content: Content
     
     @GestureState private var translation: CGFloat = 0
@@ -27,10 +28,12 @@ struct PageView<Content: View>: View {
             .gesture(
                 DragGesture().updating($translation) { value, state, _ in
                     dragging = true
-                    state = (currentIndex == 0 && value.translation.width > 0)
+                    let width = (currentIndex == 0 && value.translation.width > 0)
                         || (currentIndex == pageCount - 1 && value.translation.width < 0)
                         ? value.translation.width / 3
                         : value.translation.width
+                    state = width
+                    offset = width
                 }
                 .onEnded { value in
                     let offset = value.predictedEndTranslation.width / geo.size.width
@@ -41,7 +44,13 @@ struct PageView<Content: View>: View {
                         ? max(newIndex, currentIndex - 1)
                         : currentIndex
                     dragging = false
+                    let oldIndex = currentIndex
                     currentIndex = min(max(adjacentIndex, 0), pageCount - 1)
+                    if oldIndex == currentIndex {
+                        withAnimation(.push) {
+                            self.offset = 0
+                        }
+                    }
                 }
             )
             .onChange(of: pageCount) { _ in updatePage() }
@@ -58,11 +67,11 @@ struct PageView<Content: View>: View {
     }
 }
 
-struct PageView_Previews: PreviewProvider {
-    static var previews: some View {
-        PageView(pageCount: 2, currentIndex: .constant(0)) {
-            Text("One")
-            Text("Two")
-        }
-    }
-}
+//struct PageView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        PageView(pageCount: 2, currentIndex: .constant(0)) {
+//            Text("One")
+//            Text("Two")
+//        }
+//    }
+//}
