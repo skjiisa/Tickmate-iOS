@@ -67,11 +67,11 @@ struct PageView<Content: View>: View {
     }
 }
 
-//struct PageView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        PageView(pageCount: 2, currentIndex: .constant(0)) {
-//            Text("One")
-//            Text("Two")
-//        }
-//    }
-//}
+struct PageView_Previews: PreviewProvider {
+    static var previews: some View {
+        PageView(pageCount: 2, currentIndex: .constant(0), offset: .constant(0)) {
+            Text("One")
+            Text("Two")
+        }
+    }
+}
