@@ -69,7 +69,7 @@ struct TicksView: View {
                                 .foregroundColor(Color(.systemFill))
                                 .frame(height: 32)
                             if let systemImage = track.systemImage {
-                                Image(systemName: systemImage)
+                                Text("\(Image(systemName: systemImage))")
                             }
                         }
                     }
