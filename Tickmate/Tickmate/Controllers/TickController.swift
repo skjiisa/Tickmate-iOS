@@ -264,10 +264,6 @@ class TickController: NSObject, ObservableObject {
 //MARK: Fetched Results Controller Delegate
 
 extension TickController: NSFetchedResultsControllerDelegate {
-    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        objectWillChange.send()
-    }
-    
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>,
                     didChange anObject: Any,
                     at indexPath: IndexPath?,
