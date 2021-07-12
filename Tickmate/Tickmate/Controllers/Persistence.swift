@@ -23,7 +23,7 @@ class PersistenceController {
         result.previewGroup = group
         
         let dateString = TrackController.iso8601.string(from: Date() - 5.days)
-        for i: Int16 in 0..<3 {
+        for i: Int16 in 0..<5 {
             let track = Track(
                 name: String(UUID().uuidString.dropLast(28)),
                 multiple: i > 0,
@@ -50,6 +50,8 @@ class PersistenceController {
         result.save()
         return result
     }()
+    
+    //MARK: Demo
     
     #if DEBUG
     func loadDemo() -> PersistenceController {
@@ -163,29 +165,65 @@ class PersistenceController {
     var previewGroup: TrackGroup?
 
     init(inMemory: Bool = false) {
-        container = NSPersistentCloudKitContainer(name: "Tickmate")
+        let container = NSPersistentCloudKitContainer(name: "Tickmate")
+        
         container.viewContext.automaticallyMergesChangesFromParent = true
+        
         if inMemory {
             container.persistentStoreDescriptions.first!.url = URL(fileURLWithPath: "/dev/null")
+            container.loadPersistentStores { storeDescription, error in
+                if error != nil {
+                    fatalError()
+                }
+            }
         } else {
             container.viewContext.mergePolicy = NSMergeByPropertyObjectTrumpMergePolicy
-        }
-        container.loadPersistentStores(completionHandler: { (storeDescription, error) in
-            if let error = error as NSError? {
-                // Replace this implementation with code to handle the error appropriately.
-                // fatalError() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-
-                /*
-                Typical reasons for an error here include:
-                * The parent directory does not exist, cannot be created, or disallows writing.
-                * The persistent store is not accessible, due to permissions or data protection when the device is locked.
-                * The device is out of space.
-                * The store could not be migrated to the current model version.
-                Check the error message to determine what the actual problem was.
-                */
-                fatalError("Unresolved error \(error), \(error.userInfo)")
+            
+            let appGroupURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: groupID)!.appendingPathComponent("Tickmate.sqlite")
+            
+            let oldURL = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask).first?.appendingPathComponent("Tickmate.sqlite")
+            UserDefaults.standard.register(defaults: [Defaults.appGroupDatabaseMigration.rawValue: false])
+            var needsMigration = !UserDefaults.standard.bool(forKey: Defaults.appGroupDatabaseMigration.rawValue)
+            if needsMigration,
+               let oldURL = oldURL,
+               !FileManager.default.fileExists(atPath: oldURL.path) {
+                print("New app install. No persistent store migration required.")
+                UserDefaults.standard.set(true, forKey: Defaults.appGroupDatabaseMigration.rawValue)
+                needsMigration = false
             }
-        })
+            
+            // Load the current persistent store
+            if !needsMigration {
+                container.persistentStoreDescriptions.first?.url = appGroupURL
+            }
+            
+            container.loadPersistentStores { storeDescription, error in
+                if let error = error {
+                    fatalError("Unresolved error \(error)")
+                }
+                print("Loaded persistent store", storeDescription)
+                
+                if needsMigration {
+                    // Perform the migration on the main thread
+                    DispatchQueue.main.async {
+                        do {
+                            let coordinator = container.persistentStoreCoordinator
+                            if let oldURL = oldURL,
+                               let oldStore = coordinator.persistentStore(for: oldURL) {
+                                print("Attemping to migrate persistent store from", oldURL, "to", appGroupURL)
+                                try coordinator.migratePersistentStore(oldStore, to: appGroupURL, options: nil, withType: NSSQLiteStoreType)
+                            }
+                            
+                            print("Migration complete.")
+                            UserDefaults.standard.set(true, forKey: Defaults.appGroupDatabaseMigration.rawValue)
+                        } catch {
+                            NSLog("Unable to migrate persistent store: \(error)")
+                        }
+                    }
+                }
+            }
+        }
+        self.container = container
     }
     
     //MARK: Saving

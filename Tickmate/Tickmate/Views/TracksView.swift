@@ -104,6 +104,7 @@ struct TracksView: View {
             trackController.delete(track: $0, context: moc)
         }
         trackController.scheduleSave()
+        trackController.scheduleTimelineRefresh()
     }
     
     private func move(_ indices: IndexSet, newOffset: Int) {
@@ -114,6 +115,7 @@ struct TracksView: View {
         }.forEach { $0.index = $1 }
         
         PersistenceController.save(context: moc)
+        trackController.scheduleTimelineRefresh()
     }
     
     private func select(track: Track, delay: Double) {
