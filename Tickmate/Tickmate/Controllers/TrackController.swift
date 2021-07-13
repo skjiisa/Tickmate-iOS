@@ -320,12 +320,6 @@ class TrackController: NSObject, ObservableObject {
 //MARK: Fetched Results Controller Delegate
 
 extension TrackController: NSFetchedResultsControllerDelegate {
-    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
-        withAnimation {
-            objectWillChange.send()
-        }
-    }
-    
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         guard [.delete, .insert].contains(type) else { return }
         

@@ -254,14 +254,14 @@ struct TicksWidgetEntryView : View {
                         .opacity(0)
                         .frame(width: compact ? 30 : 50)
                     ForEach(tracks) { track in
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 3)
-                                .foregroundColor(Color(.systemFill))
-                            if let systemImage = track.systemImage {
-                                Image(systemName: systemImage)
-                                    .font(compact ? .system(size: 11) : .body)
-                            }
-                        }
+                        RoundedRectangle(cornerRadius: 3)
+                            .foregroundColor(Color(.systemFill))
+                            .overlay(Group {
+                                if let systemImage = track.systemImage {
+                                    Image(systemName: systemImage)
+                                        .font(compact ? .system(size: 11) : .body)
+                                }
+                            })
                     }
                 }
                 .frame(maxHeight: 30)
