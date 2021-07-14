@@ -41,7 +41,7 @@ class IntentHandler: INExtension, ConfigurationIntentHandling {
             let context = PersistenceController.shared.container.viewContext
             let groups: [GroupItem] = try context.fetch(fetchRequest).compactMap { group in
                 let id = group.objectID.uriRepresentation().absoluteString
-                return GroupItem(identifier: id, display: group.name ??? "New Group")
+                return GroupItem(identifier: id, display: group.displayName)
             }
             completion(INObjectCollection(items: groups), nil)
         } catch {

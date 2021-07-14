@@ -476,6 +476,8 @@
 						<key>INIntentParameterRelationshipPredicateValue</key>
 						<string>group</string>
 					</dict>
+					<key>INIntentParameterSupportsDynamicEnumeration</key>
+					<true/>
 					<key>INIntentParameterTag</key>
 					<integer>15</integer>
 					<key>INIntentParameterType</key>
