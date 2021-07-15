@@ -1,6 +1,33 @@
 # Tickmate Changelog
 
+## v1.2
+
+### Major features
+
++ Widgets!
+([#51](https://github.com/Isvvc/Tickmate-iOS/pull/51))
+  + There are now 3 sizes of customizable widgets for your Home Screen or Today View.
++ Fix laggy ticking
+([#50](https://github.com/Isvvc/Tickmate-iOS/issues/50))
+  + Ticking days should now happen immediately when tapped
+
+### Minor improvements
+
++ Fix text wrap issue on "Yesterday" text on larger Dynamic Type sizes
+([#48](https://github.com/Isvvc/Tickmate-iOS/issues/48))
++ Add a basic launch screen
+([#49](https://github.com/Isvvc/Tickmate-iOS/issues/49))
++ Add version and build numbers in settings
+([#52](https://github.com/Isvvc/Tickmate-iOS/issues/52))
++ Fix layout of tracks row when large number of tracks exist
+([#54](https://github.com/Isvvc/Tickmate-iOS/issues/54))
+
 ## v1.1
+
+Released
+
++ 2021/06/23 on GitHub
++ 2021/07/09 on the App Store
 
 ### Major features
 
