@@ -305,12 +305,23 @@ struct TicksWidgetEntryView : View {
 
 @main
 struct TicksWidget: Widget {
+    @Environment(\.colorScheme) private var colorScheme
     let kind: String = "TicksWidget"
 
     var body: some WidgetConfiguration {
         IntentConfiguration(kind: kind, intent: ConfigurationIntent.self, provider: Provider()) { entry in
-            TicksWidgetEntryView(entry: entry)
-                .environmentObject(entry.trackController)
+            // I feel like there should be a more elegant way to add manual appearance
+            // control that doesn't involve two extra layers of indentation.
+            Group {
+                if [.light, .dark].contains(entry.configuration.appearance) {
+                    TicksWidgetEntryView(entry: entry)
+                        .environmentObject(entry.trackController)
+                        .environment(\.colorScheme, entry.configuration.appearance == .light ? .light : .dark)
+                } else {
+                    TicksWidgetEntryView(entry: entry)
+                        .environmentObject(entry.trackController)
+                }
+            }
         }
         .configurationDisplayName("Tickmate")
         .description("Display the past few days of your favorite tracks.")
