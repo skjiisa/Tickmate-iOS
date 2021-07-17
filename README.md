@@ -6,7 +6,7 @@
 
 ### Screenshots
 
-<img src="Images/Screenshots/iPhone 11 Pro Max 1.jpeg" height=400 /> <img src="Images/Screenshots/iPhone 11 Pro Max 2 - Tracks.jpeg" height=400 /> <img src="Images/Screenshots/iPhone 11 Pro Max 3 - Track.jpeg" height=400 />
+<img src="Images/Screenshots/iPhone 11 Pro Max - Tickmate.jpeg" height=400 /> <img src="Images/Screenshots/iPhone 11 Pro Max - Tracks.jpeg" height=400 /> <img src="Images/Screenshots/iPhone 11 Pro Max - Track.jpeg" height=400 />
 
 ## Description
 
