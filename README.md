@@ -6,7 +6,7 @@
 
 ### Screenshots
 
-<img src="Images/Screenshots/iPhone 11 Pro Max - Tickmate.jpeg" height=400 /> <img src="Images/Screenshots/iPhone 11 Pro Max - Tracks.jpeg" height=400 /> <img src="Images/Screenshots/iPhone 11 Pro Max - Track.jpeg" height=400 />
+<img src="Images/Screenshots/iPhone 11 Pro Max - Tickmate.jpeg" height=400 /> <img src="Images/Screenshots/iPhone 11 Pro Max - Tracks.jpeg" height=400 /> <img src="Images/Screenshots/iPhone 11 Pro Max - Widget.jpg" height=400 /> <img src="Images/Screenshots/iPhone 11 Pro Max - iCloud.jpeg" height=400 />
 
 ## Description
 
@@ -17,6 +17,7 @@ You can track anything from habits you wish to build or break to how often you w
 + Use a "reversed" track for occurrences you don't want to happen, so they're automatically ticked unless you untick them.
 + You can use the "allow multiple" feature to be able to tick a single day multiple times.
 + With iCloud sync, all your data will be securely synced across all devices.
++ Add customizable widgets for your Home Screen or Today View.
 
 [Changelog](Changelog.md)
 
