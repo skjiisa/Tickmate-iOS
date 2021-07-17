@@ -160,7 +160,6 @@ class TrackController: NSObject, ObservableObject {
             weekday = TrackController.weekdayFormatter.string(from: date)
         }
         
-//        return TextWithCaption(text: weekday, caption: dateFormatter.string(from: date))
         return (weekday, dateFormatter.string(from: date))
     }
     
@@ -181,11 +180,13 @@ class TrackController: NSObject, ObservableObject {
     //MARK: Track CRUD
     
     func newTrack(index: Int16, context moc: NSManagedObjectContext) -> Track {
-        Track(name: "New Track", startDate: TrackController.iso8601.string(from: date.in(region: .current).date), index: index, context: moc)
+        objectWillChange.send()
+        return Track(name: "New Track", startDate: TrackController.iso8601.string(from: date.in(region: .current).date), index: index, context: moc)
     }
     
     @discardableResult
     func newTrack(from representation: TrackRepresentation, index: Int16, context moc: NSManagedObjectContext) -> Track {
+        objectWillChange.send()
         let track = Track(name: "", startDate: TrackController.iso8601.string(from: date.in(region: .current).date), index: index, context: moc)
         representation.save(to: track)
         PersistenceController.save(context: moc)
@@ -193,6 +194,8 @@ class TrackController: NSObject, ObservableObject {
     }
     
     func delete(track: Track, context moc: NSManagedObjectContext) {
+        // When deleting a track programmatically, call trackController.objectWillChange.send()
+        // before calling this. If deleting a track from a List, don't call that.
         tickControllers.removeValue(forKey: track)
         if let ticks = track.ticks as? Set<NSManagedObject> {
             ticks.forEach(moc.delete)

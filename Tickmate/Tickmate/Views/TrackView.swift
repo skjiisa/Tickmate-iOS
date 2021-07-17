@@ -208,8 +208,14 @@ struct TrackView: View {
     
     private func delete() {
         selection = nil
-        trackController.delete(track: track, context: moc)
-        PersistenceController.save(context: moc)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+            withAnimation {
+                trackController.objectWillChange.send()
+                trackController.delete(track: track, context: moc)
+                PersistenceController.save(context: moc)
+            }
+        }
     }
 }
 
