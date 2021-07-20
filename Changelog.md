@@ -1,5 +1,11 @@
 # Tickmate Changelog
 
+## v1.2.1
+
+Released on the App Store 2021/07/17
+
+Fix issue with new tracks not showing in the tracks list.
+
 ## v1.2
 
 ### Major features
