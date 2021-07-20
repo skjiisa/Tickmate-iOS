@@ -139,6 +139,30 @@ struct SettingsView: View {
                 Link("Privacy Policy", destination: URL(string: "https://github.com/Isvvc/Tickmate-iOS/blob/main/Privacy%20Policy.txt")!)
                 Link("Source Code", destination: URL(string: "https://github.com/Isvvc/Tickmate-iOS/")!)
             }
+            
+            #if DEBUG
+            Button("Activity") {
+                HealthController.shared.readActivity { stand, exercise, energy in
+                    if stand {
+                        print("Stand!")
+                    } else {
+                        print("No stand :(")
+                    }
+                    
+                    if exercise {
+                        print("Exercise!")
+                    } else {
+                        print("No exercise :(")
+                    }
+                    
+                    if energy {
+                        print("Move!")
+                    } else {
+                        print("No move :(")
+                    }
+                }
+            }
+            #endif
         }
         .navigationTitle("Settings")
         .toolbar {

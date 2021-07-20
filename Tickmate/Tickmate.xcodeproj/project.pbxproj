@@ -64,6 +64,8 @@
 		5964545225E987C9004FE184 /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5964545125E987C9004FE184 /* CloudKit.framework */; };
 		597A7FDD25F6E1C900256268 /* StateEditButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 597A7FDC25F6E1C900256268 /* StateEditButton.swift */; };
 		597DF5B025E5E90800DC8D28 /* Color+RGB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 597DF5AF25E5E90800DC8D28 /* Color+RGB.swift */; };
+		598514E826A66F7B002E6AFF /* HealthController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598514E726A66F7B002E6AFF /* HealthController.swift */; };
+		598514EA26A67334002E6AFF /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 598514E926A67334002E6AFF /* HealthKit.framework */; };
 		5985C7F42698F3F800413FF2 /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 5985C7F32698F3F800413FF2 /* Launch Screen.storyboard */; };
 		5991968F25F813ED003215CC /* PresetTracksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5991968E25F813ED003215CC /* PresetTracksView.swift */; };
 		5991969225F817F7003215CC /* PresetTracks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5991969125F817F7003215CC /* PresetTracks.swift */; };
@@ -155,6 +157,8 @@
 		5964545125E987C9004FE184 /* CloudKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CloudKit.framework; path = System/Library/Frameworks/CloudKit.framework; sourceTree = SDKROOT; };
 		597A7FDC25F6E1C900256268 /* StateEditButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateEditButton.swift; sourceTree = "<group>"; };
 		597DF5AF25E5E90800DC8D28 /* Color+RGB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+RGB.swift"; sourceTree = "<group>"; };
+		598514E726A66F7B002E6AFF /* HealthController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthController.swift; sourceTree = "<group>"; };
+		598514E926A67334002E6AFF /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		5985C7F32698F3F800413FF2 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
 		5991968E25F813ED003215CC /* PresetTracksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetTracksView.swift; sourceTree = "<group>"; };
 		5991969125F817F7003215CC /* PresetTracks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetTracks.swift; sourceTree = "<group>"; };
@@ -215,6 +219,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				59F6EAAE25E377E40069DF40 /* SwiftDate in Frameworks */,
+				598514EA26A67334002E6AFF /* HealthKit.framework in Frameworks */,
 				59F3EDBB25FC46770009CDEC /* Introspect in Frameworks */,
 				5964545225E987C9004FE184 /* CloudKit.framework in Frameworks */,
 			);
@@ -247,6 +252,7 @@
 		5964545025E987C9004FE184 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				598514E926A67334002E6AFF /* HealthKit.framework */,
 				5964545125E987C9004FE184 /* CloudKit.framework */,
 				5901D4CC2684281A00A5BE86 /* WidgetKit.framework */,
 				5901D4CE2684281A00A5BE86 /* SwiftUI.framework */,
@@ -371,6 +377,7 @@
 				592850F1265EF54B00E682F5 /* GroupController.swift */,
 				59F3EDC125FC4F270009CDEC /* ViewControllerContainer.swift */,
 				59603D442666C85A001482C6 /* StoreController.swift */,
+				598514E726A66F7B002E6AFF /* HealthController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -590,6 +597,7 @@
 				59FBCF2D25E07BD8007B114F /* Tickmate.xcdatamodeld in Sources */,
 				59603D452666C85A001482C6 /* StoreController.swift in Sources */,
 				5991969225F817F7003215CC /* PresetTracks.swift in Sources */,
+				598514E826A66F7B002E6AFF /* HealthController.swift in Sources */,
 				599D9F5225EC5A4900DF3795 /* TracksView.swift in Sources */,
 				59F6170926671C2100CC78E1 /* AlertItem.swift in Sources */,
 				59F6EA9D25E369830069DF40 /* Tickmate+Convenience.swift in Sources */,
