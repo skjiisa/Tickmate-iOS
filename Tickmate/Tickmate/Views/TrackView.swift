@@ -269,7 +269,7 @@ struct GroupsPicker: View {
 struct TrackView_Previews: PreviewProvider {
         
     static var track: Track = {
-        try! PersistenceController.preview.container.viewContext.fetch(Track.fetchRequest()).first as! Track
+        try! PersistenceController.preview.container.viewContext.fetch(Track.fetchRequest()).first!
     }()
     
     static var previews: some View {
