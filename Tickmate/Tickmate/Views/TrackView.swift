@@ -30,6 +30,7 @@ struct TrackView: View {
     @State private var initialized = false
     @State private var showingSymbolPicker = false
     @State private var showDelete = false
+    @State private var fixTextField = false
     
     private var groupsFooter: some View {
         groupsUnlocked
@@ -70,6 +71,11 @@ struct TrackView: View {
                         }
                         vcContainer.textFieldShouldEnableEditMode = true
                         textField.delegate = vcContainer
+                    }
+                    .id(fixTextField)
+                    .onAppear {
+                        // iOS 15 doesn't seem to like actually loading the text field's text on appear
+                        fixTextField.toggle()
                     }
             }
             

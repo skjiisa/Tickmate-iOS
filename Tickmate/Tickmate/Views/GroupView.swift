@@ -22,27 +22,34 @@ struct GroupView: View {
     
     @State private var name = ""
     @State private var selectedTracks = Set<Track>()
+    @State private var fixTextField = false
     
     //MARK: Body
     
     var body: some View {
         Form {
             Section(header: Text("Name")) {
-                TextField("Name", text: $name).introspectTextField { textField in
-                    textField.returnKeyType = .done
-                    vcContainer.textField = textField
-                    vcContainer.shouldReturn = {
-                        if let correctedText = textField.text {
-                            name = correctedText
-                            group.name = correctedText
-                            print(correctedText)
+                TextField("Name", text: $name)
+                    .introspectTextField { textField in
+                        textField.returnKeyType = .done
+                        vcContainer.textField = textField
+                        vcContainer.shouldReturn = {
+                            if let correctedText = textField.text {
+                                name = correctedText
+                                group.name = correctedText
+                                print(correctedText)
+                            }
+                            dismissKeyboard()
+                            return false
                         }
-                        dismissKeyboard()
-                        return false
+                        vcContainer.textFieldShouldEnableEditMode = false
+                        textField.delegate = vcContainer
                     }
-                    vcContainer.textFieldShouldEnableEditMode = false
-                    textField.delegate = vcContainer
-                }
+                    .id(fixTextField)
+                    .onAppear {
+                        // iOS 15 doesn't seem to like actually loading the text field's text on appear
+                        fixTextField.toggle()
+                    }
             }
             
             Section(header: Text("Tracks")) {
