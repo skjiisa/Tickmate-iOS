@@ -95,7 +95,11 @@ struct Provider: IntentTimelineProvider {
     private func tracks(for configuration: ConfigurationIntent, context moc: NSManagedObjectContext) -> [Track]? {
         // This isn't using a switch statement because chaining ??? operators allows it to fall
         // back to the default fetch request if the results are nil, OR if they're empty.
-        (configuration.tracksMode == .choose ? configuration.tracks?.prefix(8).compactMap { object(for: $0, context: moc) } : nil)
+        (configuration.tracksMode == .choose
+         ? configuration.tracks?.prefix(8)
+            .compactMap { object(for: $0, context: moc) }
+            .sorted(by: { $0.index < $1.index })
+         : nil)
         ??? (configuration.tracksMode == .group ? getTracks(for: configuration.group, context: moc) : nil)
         ??? automaticFetch(context: moc)
     }

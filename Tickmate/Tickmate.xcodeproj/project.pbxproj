@@ -72,6 +72,7 @@
 		59A0D8932645CF1600E01E61 /* View+DismissKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A0D8922645CF1600E01E61 /* View+DismissKeyboard.swift */; };
 		59C23A6725E70D7000AFBC4B /* SymbolsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C23A6625E70D7000AFBC4B /* SymbolsList.swift */; };
 		59C23A6C25E70E1A00AFBC4B /* SymbolPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C23A6B25E70E1A00AFBC4B /* SymbolPicker.swift */; };
+		59D483C027057E3300CB30C0 /* View+Conditional.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D483BF27057E3300CB30C0 /* View+Conditional.swift */; };
 		59E6E14E25F88177008A74A9 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E6E14D25F88177008A74A9 /* SettingsView.swift */; };
 		59E6E15125F8837E008A74A9 /* Defaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E6E15025F8837E008A74A9 /* Defaults.swift */; };
 		59E9397225F98ACD002FD8CD /* AcknowledgementsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59E9397125F98ACD002FD8CD /* AcknowledgementsView.swift */; };
@@ -165,6 +166,7 @@
 		59A0D8922645CF1600E01E61 /* View+DismissKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+DismissKeyboard.swift"; sourceTree = "<group>"; };
 		59C23A6625E70D7000AFBC4B /* SymbolsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolsList.swift; sourceTree = "<group>"; };
 		59C23A6B25E70E1A00AFBC4B /* SymbolPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolPicker.swift; sourceTree = "<group>"; };
+		59D483BF27057E3300CB30C0 /* View+Conditional.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Conditional.swift"; sourceTree = "<group>"; };
 		59E6E14D25F88177008A74A9 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		59E6E15025F8837E008A74A9 /* Defaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Defaults.swift; sourceTree = "<group>"; };
 		59E9397125F98ACD002FD8CD /* AcknowledgementsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcknowledgementsView.swift; sourceTree = "<group>"; };
@@ -276,6 +278,7 @@
 				59E9397425F98BCB002FD8CD /* AcknowledgementLink.swift */,
 				59A0D8922645CF1600E01E61 /* View+DismissKeyboard.swift */,
 				592CE887264F19B400668684 /* View+Centered.swift */,
+				59D483BF27057E3300CB30C0 /* View+Conditional.swift */,
 				5939239B2654CE050085DABD /* PageView.swift */,
 				5939239D2655B6C90085DABD /* Animation+Push.swift */,
 				59F6170826671C2100CC78E1 /* AlertItem.swift */,
@@ -582,6 +585,7 @@
 				59EF632925E5CD4B003E7259 /* TrackView.swift in Sources */,
 				59C23A6725E70D7000AFBC4B /* SymbolsList.swift in Sources */,
 				5991968F25F813ED003215CC /* PresetTracksView.swift in Sources */,
+				59D483C027057E3300CB30C0 /* View+Conditional.swift in Sources */,
 				59E9397525F98BCB002FD8CD /* AcknowledgementLink.swift in Sources */,
 				5939239E2655B6C90085DABD /* Animation+Push.swift in Sources */,
 				59FBCF2325E07BD5007B114F /* ContentView.swift in Sources */,
@@ -842,7 +846,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Tickmate/Tickmate.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 15;
 				DEVELOPMENT_ASSET_PATHS = "\"Tickmate/Preview Content\"";
 				DEVELOPMENT_TEAM = A4525544Q4;
 				ENABLE_PREVIEWS = YES;
@@ -852,7 +856,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.1;
+				MARKETING_VERSION = 1.2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = vc.isv.Tickmate;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -868,7 +872,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Tickmate/Tickmate.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 15;
 				DEVELOPMENT_ASSET_PATHS = "\"Tickmate/Preview Content\"";
 				DEVELOPMENT_TEAM = A4525544Q4;
 				ENABLE_PREVIEWS = YES;
@@ -878,7 +882,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.1;
+				MARKETING_VERSION = 1.2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = vc.isv.Tickmate;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;

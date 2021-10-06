@@ -1,10 +1,27 @@
 # Tickmate Changelog
 
+## v1.2.2
+
+Released on the App Store 2021/10/04
+
+### Minor improvements
+
++ Sort tracks in the widget by the in-app sort order as opposed to the order they are selected in
+([3fda8c7](https://github.com/Isvvc/Tickmate-iOS/pull/74/commits/3fda8c79826095acf8986522dc9612e6eb054362))
+
+#### iOS 15 fixes
+
++ Fix not being able to open sheets
+([319eb0d](https://github.com/Isvvc/Tickmate-iOS/pull/74/commits/319eb0d880b28e81bba60f5c00ea3ac090ea637a))
++ Fix text fields being empty
+([9bac4d9](https://github.com/Isvvc/Tickmate-iOS/pull/74/commits/9bac4d9c6bf52af7bcdbca208722c0c37ee1ffdc))
+
 ## v1.2.1
 
 Released on the App Store 2021/07/17
 
-Fix issue with new tracks not showing in the tracks list.
++ Fix issue with new tracks not showing in the tracks list
+([e381324](https://github.com/Isvvc/Tickmate-iOS/commit/e3813249cd457132fe258c3df918759bcb10bae0))
 
 ## v1.2
 
