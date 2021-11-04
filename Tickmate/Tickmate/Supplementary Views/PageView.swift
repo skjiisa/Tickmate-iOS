@@ -23,7 +23,7 @@ struct PageView<Content: View>: View {
             }
             .frame(width: geo.size.width, alignment: .leading)
             .offset(x: -CGFloat(currentIndex) * geo.size.width + translation)
-            .animation(dragging ? .none : .push)
+            .animation(dragging ? .easeOut(duration: 0.05) : .push)
             .gesture(
                 DragGesture().updating($translation) { value, state, _ in
                     dragging = true
