@@ -1,5 +1,12 @@
 # Tickmate Changelog
 
+## v1.2.3
+
+Released on the App Store 2021/11/04
+
++ Fix laggy swiping between track groups
+([f7711aa](https://github.com/Isvvc/Tickmate-iOS/commit/f7711aa2aa063f74c441e3e0f0b2abf5dc9fed00))
+
 ## v1.2.2
 
 Released on the App Store 2021/10/04
