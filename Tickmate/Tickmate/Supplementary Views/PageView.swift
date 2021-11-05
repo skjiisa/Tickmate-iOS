@@ -33,7 +33,9 @@ struct PageView<Content: View>: View {
                         ? value.translation.width / 3
                         : value.translation.width
                     state = width
-                    offset = width
+                    withAnimation(.easeOut(duration: 0.05)) {
+                        offset = width
+                    }
                 }
                 .onEnded { value in
                     let offset = value.predictedEndTranslation.width / geo.size.width
