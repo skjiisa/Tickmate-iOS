@@ -15,6 +15,10 @@ struct TitleView: View {
     
     @State private var oldPage = 0
     
+    private var mask: some View {
+        Rectangle().fill(LinearGradient(gradient: Gradient(colors: [.clear, .black, .black, .black, .clear]), startPoint: .leading, endPoint: .trailing))
+    }
+    
     var body: some View {
         GeometryReader { geo in
             VStack {
@@ -45,12 +49,12 @@ struct TitleView: View {
                 }
                 .font(.title3)
                 .padding(.top, 10)
-                .mask(
-                    Rectangle().fill(LinearGradient(gradient: Gradient(colors: [.clear, .black, .black, .black, .clear]), startPoint: .leading, endPoint: .trailing))
-                        .padding(.horizontal, 50)
-                )
+                .mask(mask)
+                // Uncomment the below line to visualize the mask
+                //.overlay(mask.border(Color.red, width: 2))
                 Spacer()
             }
+            .padding(.horizontal, 50)
             .onAppear {
                 oldPage = page
             }
