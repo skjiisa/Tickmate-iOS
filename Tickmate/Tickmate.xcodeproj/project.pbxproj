@@ -15,6 +15,7 @@
 		5901D4D82684281C00A5BE86 /* TicksWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 5901D4D32684281A00A5BE86 /* TicksWidget.intentdefinition */; };
 		5901D4DB2684281C00A5BE86 /* TicksWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 5901D4CB2684281A00A5BE86 /* TicksWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		5904EAAF2657111300B2D0A0 /* Binding+onChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5904EAAE2657111300B2D0A0 /* Binding+onChange.swift */; };
+		590B44C026995A4000E15C5F /* TitleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 590B44BF26995A4000E15C5F /* TitleView.swift */; };
 		592850F2265EF54B00E682F5 /* GroupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592850F1265EF54B00E682F5 /* GroupController.swift */; };
 		592CE888264F19B400668684 /* View+Centered.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592CE887264F19B400668684 /* View+Centered.swift */; };
 		592CE88A264F1CA800668684 /* GroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592CE889264F1CA800668684 /* GroupView.swift */; };
@@ -137,6 +138,7 @@
 		5901D4D42684281C00A5BE86 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5901D4D62684281C00A5BE86 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5904EAAE2657111300B2D0A0 /* Binding+onChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Binding+onChange.swift"; sourceTree = "<group>"; };
+		590B44BF26995A4000E15C5F /* TitleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleView.swift; sourceTree = "<group>"; };
 		592850F1265EF54B00E682F5 /* GroupController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupController.swift; sourceTree = "<group>"; };
 		592CE887264F19B400668684 /* View+Centered.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Centered.swift"; sourceTree = "<group>"; };
 		592CE889264F1CA800668684 /* GroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupView.swift; sourceTree = "<group>"; };
@@ -282,6 +284,7 @@
 				5939239B2654CE050085DABD /* PageView.swift */,
 				5939239D2655B6C90085DABD /* Animation+Push.swift */,
 				59F6170826671C2100CC78E1 /* AlertItem.swift */,
+				590B44BF26995A4000E15C5F /* TitleView.swift */,
 			);
 			path = "Supplementary Views";
 			sourceTree = "<group>";
@@ -579,6 +582,7 @@
 				59F6EAA725E36D680069DF40 /* TrackController.swift in Sources */,
 				59F0980225E081CC00667971 /* TicksView.swift in Sources */,
 				59F6EAA425E36D510069DF40 /* TickController.swift in Sources */,
+				590B44C026995A4000E15C5F /* TitleView.swift in Sources */,
 				59E9397225F98ACD002FD8CD /* AcknowledgementsView.swift in Sources */,
 				59EF632D25E5CF24003E7259 /* TrackRepresentation.swift in Sources */,
 				592850F2265EF54B00E682F5 /* GroupController.swift in Sources */,

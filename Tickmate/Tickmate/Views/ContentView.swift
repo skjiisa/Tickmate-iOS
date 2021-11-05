@@ -39,6 +39,9 @@ struct ContentView: View {
     @State private var scrollToBottomToggle = false
     @State private var showingOnboarding = false
     
+    @State private var translation: CGFloat = 0.0
+    @State private var pageChange = 0
+    
     private var showingAllTracks: Bool {
         showAllTracks || groups.count == 0 || !storeController.groupsUnlocked
     }
@@ -53,6 +56,14 @@ struct ContentView: View {
             : 1
     }
     
+    private var titles: [String] {
+        [
+            showingAllTracks ? "Tickmate" : nil,
+            showingUngroupedTracks ? "Ungrouped" : nil,
+        ].compactMap { $0 }
+        + groups.map { $0.displayName }
+    }
+    
     private var sheetsOnMainView: Bool {
         guard #available(iOS 15, *) else { return false }
         return true
@@ -60,7 +71,7 @@ struct ContentView: View {
     
     var body: some View {
         NavigationView {
-            PageView(pageCount: pageCount, currentIndex: $page) {
+            PageView(pageCount: pageCount, currentIndex: $page, offset: $translation) {
                 if showingAllTracks {
                     TicksView(scrollToBottomToggle: scrollToBottomToggle)
                 }
@@ -75,7 +86,7 @@ struct ContentView: View {
                     }
                 }
             }
-            .navigationBarTitle("Tickmate", displayMode: .inline)
+            .navigationBarTitle("", displayMode: .inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
@@ -101,6 +112,7 @@ struct ContentView: View {
                 updatePage(pageInserted: value)
             }
         }
+        .overlay(TitleView(offset: $translation, page: $page, titles: titles))
         .navigationViewStyle(StackNavigationViewStyle())
         .environmentObject(trackController)
         .environmentObject(groupController)
