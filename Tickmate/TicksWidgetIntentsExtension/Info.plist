@@ -31,7 +31,6 @@
 			<key>IntentsSupported</key>
 			<array>
 				<string>ConfigurationIntent</string>
-				<string>SelectTracksIntent</string>
 			</array>
 		</dict>
 		<key>NSExtensionPointIdentifier</key>

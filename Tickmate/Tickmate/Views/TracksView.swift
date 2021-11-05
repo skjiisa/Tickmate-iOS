@@ -51,8 +51,10 @@ struct TracksView: View {
             
             Section {
                 Button("Create new track") {
-                    let newTrack = trackController.newTrack(index: (tracks.last?.index ?? -1) + 1, context: moc)
-                    select(track: newTrack, delay: 0.25)
+                    withAnimation {
+                        let newTrack = trackController.newTrack(index: (tracks.last?.index ?? -1) + 1, context: moc)
+                        select(track: newTrack, delay: 0.25)
+                    }
                 }
                 .centered()
                 .foregroundColor(.accentColor)
@@ -82,8 +84,12 @@ struct TracksView: View {
             NavigationView {
                 PresetTracksView { trackRepresentation in
                     showingPresets = false
-                    let newTrack = trackController.newTrack(from: trackRepresentation, index: (tracks.last?.index ?? -1) + 1, context: moc)
-                    select(track: newTrack, delay: 0.5)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+                        withAnimation {
+                            let newTrack = trackController.newTrack(from: trackRepresentation, index: (tracks.last?.index ?? -1) + 1, context: moc)
+                            select(track: newTrack, delay: 0.25)
+                        }
+                    }
                 }
                 .toolbar {
                     ToolbarItem(placement: .cancellationAction) {

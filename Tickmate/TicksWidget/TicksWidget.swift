@@ -95,7 +95,11 @@ struct Provider: IntentTimelineProvider {
     private func tracks(for configuration: ConfigurationIntent, context moc: NSManagedObjectContext) -> [Track]? {
         // This isn't using a switch statement because chaining ??? operators allows it to fall
         // back to the default fetch request if the results are nil, OR if they're empty.
-        (configuration.tracksMode == .choose ? configuration.tracks?.prefix(8).compactMap { object(for: $0, context: moc) } : nil)
+        (configuration.tracksMode == .choose
+         ? configuration.tracks?.prefix(8)
+            .compactMap { object(for: $0, context: moc) }
+            .sorted(by: { $0.index < $1.index })
+         : nil)
         ??? (configuration.tracksMode == .group ? getTracks(for: configuration.group, context: moc) : nil)
         ??? automaticFetch(context: moc)
     }
@@ -254,14 +258,14 @@ struct TicksWidgetEntryView : View {
                         .opacity(0)
                         .frame(width: compact ? 30 : 50)
                     ForEach(tracks) { track in
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 3)
-                                .foregroundColor(Color(.systemFill))
-                            if let systemImage = track.systemImage {
-                                Image(systemName: systemImage)
-                                    .font(compact ? .system(size: 11) : .body)
-                            }
-                        }
+                        RoundedRectangle(cornerRadius: 3)
+                            .foregroundColor(Color(.systemFill))
+                            .overlay(Group {
+                                if let systemImage = track.systemImage {
+                                    Image(systemName: systemImage)
+                                        .font(compact ? .system(size: 11) : .body)
+                                }
+                            })
                     }
                 }
                 .frame(maxHeight: 30)
@@ -305,12 +309,23 @@ struct TicksWidgetEntryView : View {
 
 @main
 struct TicksWidget: Widget {
+    @Environment(\.colorScheme) private var colorScheme
     let kind: String = "TicksWidget"
 
     var body: some WidgetConfiguration {
         IntentConfiguration(kind: kind, intent: ConfigurationIntent.self, provider: Provider()) { entry in
-            TicksWidgetEntryView(entry: entry)
-                .environmentObject(entry.trackController)
+            // I feel like there should be a more elegant way to add manual appearance
+            // control that doesn't involve two extra layers of indentation.
+            Group {
+                if [.light, .dark].contains(entry.configuration.appearance) {
+                    TicksWidgetEntryView(entry: entry)
+                        .environmentObject(entry.trackController)
+                        .environment(\.colorScheme, entry.configuration.appearance == .light ? .light : .dark)
+                } else {
+                    TicksWidgetEntryView(entry: entry)
+                        .environmentObject(entry.trackController)
+                }
+            }
         }
         .configurationDisplayName("Tickmate")
         .description("Display the past few days of your favorite tracks.")

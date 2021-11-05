@@ -64,6 +64,11 @@ struct ContentView: View {
         + groups.map { $0.displayName }
     }
     
+    private var sheetsOnMainView: Bool {
+        guard #available(iOS 15, *) else { return false }
+        return true
+    }
+    
     var body: some View {
         NavigationView {
             PageView(pageCount: pageCount, currentIndex: $page, offset: $translation) {
@@ -134,11 +139,11 @@ struct ContentView: View {
                 }
             }
         }
-        
-        // See https://write.as/angelo/stupid-swiftui-tricks-debugging-sheet-dismissal
-        // for why the sheets are attached to EmptyViews
-        EmptyView()
-            .sheet(isPresented: $showingTracks) {
+        // Maybe this is more of an SDK thing and not an iOS 15 thing and
+        // this can be used instead of the EmptyViews in iOS 14 too.
+        // More testing needed.
+        .if(sheetsOnMainView) { view in
+            view.sheet(isPresented: $showingTracks) {
                 vcContainer.deactivateEditMode()
             } content: {
                 NavigationView {
@@ -152,8 +157,6 @@ struct ContentView: View {
                     vc.presentationController?.delegate = vcContainer
                 }
             }
-        
-        EmptyView()
             .sheet(isPresented: $showingSettings) {
                 scrollToBottomToggle.toggle()
             } content: {
@@ -163,13 +166,47 @@ struct ContentView: View {
                 .environmentObject(trackController)
                 .environmentObject(storeController)
             }
-        
-        EmptyView()
             .sheet(isPresented: $showingOnboarding) {
                 OnboardingView(showing: $showingOnboarding)
                     .environment(\.managedObjectContext, moc)
                     .environmentObject(trackController)
             }
+        }
+        
+        if .iOS14 {
+            // See https://write.as/angelo/stupid-swiftui-tricks-debugging-sheet-dismissal
+            // for why the sheets are attached to EmptyViews
+            EmptyView().sheet(isPresented: $showingTracks) {
+                vcContainer.deactivateEditMode()
+            } content: {
+                NavigationView {
+                    TracksView(showing: $showingTracks)
+                }
+                .environment(\.managedObjectContext, moc)
+                .environmentObject(trackController)
+                .environmentObject(groupController)
+                .environmentObject(vcContainer)
+                .introspectViewController { vc in
+                    vc.presentationController?.delegate = vcContainer
+                }
+            }
+            
+            EmptyView().sheet(isPresented: $showingSettings) {
+                scrollToBottomToggle.toggle()
+            } content: {
+                NavigationView {
+                    SettingsView(showing: $showingSettings)
+                }
+                .environmentObject(trackController)
+                .environmentObject(storeController)
+            }
+            
+            EmptyView().sheet(isPresented: $showingOnboarding) {
+                OnboardingView(showing: $showingOnboarding)
+                    .environment(\.managedObjectContext, moc)
+                    .environmentObject(trackController)
+            }
+        }
     }
     
     private func updatePage(pageInserted: Bool) {

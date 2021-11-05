@@ -30,6 +30,7 @@ struct TrackView: View {
     @State private var initialized = false
     @State private var showingSymbolPicker = false
     @State private var showDelete = false
+    @State private var fixTextField = false
     
     private var groupsFooter: some View {
         groupsUnlocked
@@ -70,6 +71,11 @@ struct TrackView: View {
                         }
                         vcContainer.textFieldShouldEnableEditMode = true
                         textField.delegate = vcContainer
+                    }
+                    .id(fixTextField)
+                    .onAppear {
+                        // iOS 15 doesn't seem to like actually loading the text field's text on appear
+                        fixTextField.toggle()
                     }
             }
             
@@ -208,8 +214,14 @@ struct TrackView: View {
     
     private func delete() {
         selection = nil
-        trackController.delete(track: track, context: moc)
-        PersistenceController.save(context: moc)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
+            withAnimation {
+                trackController.objectWillChange.send()
+                trackController.delete(track: track, context: moc)
+                PersistenceController.save(context: moc)
+            }
+        }
     }
 }
 
@@ -263,7 +275,7 @@ struct GroupsPicker: View {
 struct TrackView_Previews: PreviewProvider {
         
     static var track: Track = {
-        try! PersistenceController.preview.container.viewContext.fetch(Track.fetchRequest()).first as! Track
+        try! PersistenceController.preview.container.viewContext.fetch(Track.fetchRequest()).first!
     }()
     
     static var previews: some View {
