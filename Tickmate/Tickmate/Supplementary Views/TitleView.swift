@@ -60,10 +60,8 @@ struct TitleView: View {
             }
             .onChange(of: page) { value in
                 if value - oldPage > 0 {
-                    print("Right")
                     offset = offset + geo.size.width
                 } else {
-                    print("Left")
                     offset = offset - geo.size.width
                 }
                 withAnimation(.push) {
