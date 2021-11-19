@@ -9,6 +9,15 @@ import SwiftUI
 
 struct PagingView: View {
     
+    @EnvironmentObject private var trackController: TrackController
+    
+    @FetchRequest(
+        entity: Track.entity(),
+        sortDescriptors: [NSSortDescriptor(keyPath: \Track.index, ascending: true)],
+        predicate: NSPredicate(format: "enabled == YES"),
+        animation: .default)
+    private var tracks: FetchedResults<Track>
+    
     @StateObject private var pagingController = PagingController()
     
     private var title: some View {
@@ -41,27 +50,34 @@ struct PagingView: View {
     
     var body: some View {
         GeometryReader { geo in
-            ScrollView(.horizontal, showsIndicators: false) {
-                List {
-                    LazyHStack(spacing: 0) {
-                        Text("Today")
+            // This is the main vertical ScrollView whose scroll bar stays on the right of the screen
+            ScrollView(.vertical, showsIndicators: true) {
+                // This is the tab view, using scrollView.isPagingEnabled = true in PagingController
+                ScrollView(.horizontal, showsIndicators: false) {
+                    // Non-lazy HStack so that the width can be calculated even when device is rotated.
+                    // If it was lazy, the columns off-screen wouldn't be updated and would still have
+                    // the same width as before the rotation, so the pages would get offset.
+                    HStack(spacing: 0) {
+                        ForEach(tracks) { track in
+                            // This LazyHStack doesn't actually stack anything. It exists entirely
+                            // for its laziness. It sets its width whenever the screen width
+                            // changes while the content inside it is loaded lazily.
+                            LazyHStack {
+                                Column(tickController: trackController.tickController(for: track))
+                                    .padding(.leading, 88)
+                                    .padding(.trailing)
+                                    .frame(width: geo.size.width)
+                            }
                             .frame(width: geo.size.width)
-                            .border(Color.orange, width: 2)
-                        Text("Today")
-                            .frame(width: geo.size.width)
-                            .border(Color.blue, width: 2)
-                        Text("Today")
-                            .frame(width: geo.size.width)
-                            .border(Color.red, width: 2)
+                        }
                     }
                 }
-                .listStyle(.plain)
-                .border(Color.green, width: 2)
-                .frame(width: geo.size.width * 3, alignment: .leading)
-                //.overlay(bar)
-            }
-            .introspectScrollView { scrollView in
-                pagingController.load(scrollView: scrollView)
+                .introspectScrollView { scrollView in
+                    pagingController.load(scrollView: scrollView)
+                }
+                .frame(width: geo.size.width, alignment: .leading)
+                //.border(Color.green, width: 2)
+                .overlay(bar)
             }
             //.overlay(title)
         }

@@ -8,6 +8,7 @@
 import CoreData
 import CloudKit
 import SwiftDate
+import SwiftUI
 
 class TickController: NSObject, ObservableObject {
     
@@ -21,12 +22,17 @@ class TickController: NSObject, ObservableObject {
     weak var trackController: TrackController?
     var todayOffset: Int?
     
+    @Published var color: Color
+    
     private var preview: Bool
     private var observeChanges: Bool
     
     init(track: Track, trackController: TrackController, observeChanges: Bool = true, preview: Bool) {
         self.track = track
         self.trackController = trackController
+        
+        color = Color(rgb: Int(track.color))
+        
         self.preview = preview
         self.observeChanges = observeChanges
         

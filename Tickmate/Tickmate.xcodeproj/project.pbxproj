@@ -61,6 +61,7 @@
 		5939239E2655B6C90085DABD /* Animation+Push.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5939239D2655B6C90085DABD /* Animation+Push.swift */; };
 		593B5C8027474506001EE67F /* PagingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593B5C7F27474506001EE67F /* PagingController.swift */; };
 		593B5C822747461E001EE67F /* PagingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593B5C812747461E001EE67F /* PagingView.swift */; };
+		593B5C8427474C54001EE67F /* Column.swift in Sources */ = {isa = PBXBuildFile; fileRef = 593B5C8327474C54001EE67F /* Column.swift */; };
 		5956ACC4268EA0DA0005B5CC /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5964545125E987C9004FE184 /* CloudKit.framework */; };
 		5956ACC5268EA3440005B5CC /* CloudKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5964545125E987C9004FE184 /* CloudKit.framework */; };
 		59603D452666C85A001482C6 /* StoreController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59603D442666C85A001482C6 /* StoreController.swift */; };
@@ -156,6 +157,7 @@
 		5939239D2655B6C90085DABD /* Animation+Push.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Animation+Push.swift"; sourceTree = "<group>"; };
 		593B5C7F27474506001EE67F /* PagingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PagingController.swift; sourceTree = "<group>"; };
 		593B5C812747461E001EE67F /* PagingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PagingView.swift; sourceTree = "<group>"; };
+		593B5C8327474C54001EE67F /* Column.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Column.swift; sourceTree = "<group>"; };
 		59603D442666C85A001482C6 /* StoreController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreController.swift; sourceTree = "<group>"; };
 		59603D462666CA98001482C6 /* Configuration.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Configuration.storekit; sourceTree = "<group>"; };
 		5964544E25E987C6004FE184 /* Tickmate.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Tickmate.entitlements; sourceTree = "<group>"; };
@@ -256,6 +258,7 @@
 			isa = PBXGroup;
 			children = (
 				593B5C812747461E001EE67F /* PagingView.swift */,
+				593B5C8327474C54001EE67F /* Column.swift */,
 			);
 			path = Ticks;
 			sourceTree = "<group>";
@@ -599,6 +602,7 @@
 				590B44C026995A4000E15C5F /* TitleView.swift in Sources */,
 				59E9397225F98ACD002FD8CD /* AcknowledgementsView.swift in Sources */,
 				593B5C822747461E001EE67F /* PagingView.swift in Sources */,
+				593B5C8427474C54001EE67F /* Column.swift in Sources */,
 				59EF632D25E5CF24003E7259 /* TrackRepresentation.swift in Sources */,
 				592850F2265EF54B00E682F5 /* GroupController.swift in Sources */,
 				59EF632925E5CD4B003E7259 /* TrackView.swift in Sources */,
