@@ -2,7 +2,7 @@
 //  Column.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 11/18/21.
+//  Created by Elaine Lyons on 11/18/21.
 //
 
 import SwiftUI
@@ -10,12 +10,13 @@ import SwiftUI
 struct Column: View {
     @ObservedObject var tickController: TickController
     
-    private let days = 100
+    var days: Int
     
     static let untickedColor = Color(.systemFill)
     
     var body: some View {
-        LazyVStack(spacing: 20) {
+        // For some reason this is MORE laggy with LazyVStack than VStack.
+        VStack {
             ForEach(0..<days) { day in
                 RoundedRectangle(cornerRadius: 3)
                     .foregroundColor((tickController.tickCount(for: day) > 0) != tickController.track.reversed ? tickController.color : Self.untickedColor)

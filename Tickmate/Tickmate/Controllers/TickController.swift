@@ -2,7 +2,7 @@
 //  TickController.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 2/21/21.
+//  Created by Elaine Lyons on 2/21/21.
 //
 
 import CoreData

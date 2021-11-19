@@ -2,7 +2,7 @@
 //  PagingController.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 11/18/21.
+//  Created by Elaine Lyons on 11/18/21.
 //
 
 import SwiftUI
@@ -15,6 +15,7 @@ class PagingController: NSObject, ObservableObject {
     @Published private(set) var page: Int = 0
     @Published var offset: CGFloat = 0
     @Published var moving = false
+//    var x: CGFloat = 0
     
     weak var scrollView: UIScrollView?
     
@@ -32,9 +33,12 @@ class PagingController: NSObject, ObservableObject {
 //MARK: UIScrollViewDelegate
 
 extension PagingController: UIScrollViewDelegate {
+    /*
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        offset = scrollView.contentOffset.x
+//        offset = scrollView.contentOffset.x
+//        x = scrollView.contentOffset.x
     }
+     */
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         drop?.cancel()
