@@ -26,10 +26,19 @@ struct Column: View {
     }
 }
 
-/*
 struct Row_Previews: PreviewProvider {
+    static var track: Track = {
+        try! PersistenceController.preview.container.viewContext.fetch(Track.fetchRequest())[0]
+    }()
+    
+    static let trackController = TrackController()
+    
     static var previews: some View {
-        Column()
+        ScrollView {
+            Column(tickController: trackController.tickController(for: track), days: 133)
+                .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+                .environmentObject(trackController)
+                .padding()
+        }
     }
 }
- */

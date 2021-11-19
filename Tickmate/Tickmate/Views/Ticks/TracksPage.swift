@@ -50,6 +50,11 @@ struct TracksPage: View {
 
 struct TracksPage_Previews: PreviewProvider {
     static var previews: some View {
-        TracksPage(days: 133)
+        ScrollView {
+            TracksPage(days: 133)
+                .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+                .environmentObject(TrackController())
+                .padding()
+        }
     }
 }
