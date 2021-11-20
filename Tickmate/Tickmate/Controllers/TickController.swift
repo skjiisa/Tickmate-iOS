@@ -23,6 +23,7 @@ class TickController: NSObject, ObservableObject {
     var todayOffset: Int?
     
     @Published var color: Color
+    @Published var lightText: Bool
     
     private var preview: Bool
     private var observeChanges: Bool
@@ -32,6 +33,7 @@ class TickController: NSObject, ObservableObject {
         self.trackController = trackController
         
         color = Color(rgb: Int(track.color))
+        lightText = track.lightText
         
         self.preview = preview
         self.observeChanges = observeChanges
