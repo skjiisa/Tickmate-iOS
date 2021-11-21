@@ -260,8 +260,8 @@
 			isa = PBXGroup;
 			children = (
 				593B5C812747461E001EE67F /* PagingView.swift */,
-				593B5C8327474C54001EE67F /* Column.swift */,
 				593B5C8527475499001EE67F /* TracksPage.swift */,
+				593B5C8327474C54001EE67F /* Column.swift */,
 			);
 			path = Ticks;
 			sourceTree = "<group>";
@@ -275,6 +275,44 @@
 				5931644626857779005DDA1A /* Intents.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		59B288582749D06400143970 /* Old Ticks */ = {
+			isa = PBXGroup;
+			children = (
+				59F0980125E081CC00667971 /* TicksView.swift */,
+				5931643E26855EB8005DDA1A /* TickView.swift */,
+			);
+			path = "Old Ticks";
+			sourceTree = "<group>";
+		};
+		59B288592749D07200143970 /* Tracks */ = {
+			isa = PBXGroup;
+			children = (
+				599D9F5125EC5A4900DF3795 /* TracksView.swift */,
+				59EF632825E5CD4B003E7259 /* TrackView.swift */,
+				59C23A6B25E70E1A00AFBC4B /* SymbolPicker.swift */,
+				5991968E25F813ED003215CC /* PresetTracksView.swift */,
+			);
+			path = Tracks;
+			sourceTree = "<group>";
+		};
+		59B2885A2749D08300143970 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				59E6E14D25F88177008A74A9 /* SettingsView.swift */,
+				59E9397125F98ACD002FD8CD /* AcknowledgementsView.swift */,
+			);
+			path = Settings;
+			sourceTree = "<group>";
+		};
+		59B2885B2749D08E00143970 /* Groups */ = {
+			isa = PBXGroup;
+			children = (
+				5996360E264F128A00AAF6CA /* GroupsView.swift */,
+				592CE889264F1CA800668684 /* GroupView.swift */,
+			);
+			path = Groups;
 			sourceTree = "<group>";
 		};
 		59C23A6925E70D7900AFBC4B /* Resources */ = {
@@ -370,19 +408,13 @@
 		59FBCF3D25E07E05007B114F /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				593B5C7E27474410001EE67F /* Ticks */,
 				59FBCF2225E07BD5007B114F /* ContentView.swift */,
-				59F0980125E081CC00667971 /* TicksView.swift */,
-				5931643E26855EB8005DDA1A /* TickView.swift */,
-				59EF632825E5CD4B003E7259 /* TrackView.swift */,
-				59C23A6B25E70E1A00AFBC4B /* SymbolPicker.swift */,
-				599D9F5125EC5A4900DF3795 /* TracksView.swift */,
-				5991968E25F813ED003215CC /* PresetTracksView.swift */,
-				59E6E14D25F88177008A74A9 /* SettingsView.swift */,
-				59E9397125F98ACD002FD8CD /* AcknowledgementsView.swift */,
+				593B5C7E27474410001EE67F /* Ticks */,
+				59B288582749D06400143970 /* Old Ticks */,
+				59B288592749D07200143970 /* Tracks */,
+				59B2885A2749D08300143970 /* Settings */,
+				59B2885B2749D08E00143970 /* Groups */,
 				59342E1B2603F3DF007E9F64 /* OnboardingView.swift */,
-				5996360E264F128A00AAF6CA /* GroupsView.swift */,
-				592CE889264F1CA800668684 /* GroupView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
