@@ -14,8 +14,7 @@ struct TickmateApp: App {
 
     var body: some Scene {
         WindowGroup {
-//            ContentView()
-            PagingView()
+            ContentView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
                 .environmentObject(trackController)
         }

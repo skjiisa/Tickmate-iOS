@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PagingView: View {
-    
+    /*
     @EnvironmentObject private var trackController: TrackController
     
     @FetchRequest(
@@ -17,25 +17,16 @@ struct PagingView: View {
         predicate: NSPredicate(format: "enabled == YES"),
         animation: .default)
     private var tracks: FetchedResults<Track>
-    
+    */
     @FetchRequest(
         entity: TrackGroup.entity(),
         sortDescriptors: [NSSortDescriptor(keyPath: \TrackGroup.index, ascending: true)],
         predicate: NSPredicate(format: "tracks.@count > 0"))
     private var groups: FetchedResults<TrackGroup>
     
-    @StateObject private var pagingController = PagingController()
+    @ObservedObject var pagingController: PagingController
     
     private let days = 133
-    
-    private var title: some View {
-        VStack {
-            Text("PagedVerticalScroll")
-                .font(.title3)
-                .offset(x: -pagingController.offset)
-            Spacer()
-        }
-    }
     
     private var bar: some View {
         HStack(spacing: 0) {
@@ -83,6 +74,7 @@ struct PagingView: View {
                             .frame(width: geo.size.width)
                         }
                         */
+                        //TODO: Add All and Ungrouped
                         ForEach(groups) { group in
                             TracksPage(group: group, days: days)
                                 .padding(.leading, 88)
@@ -95,17 +87,14 @@ struct PagingView: View {
                     pagingController.load(scrollView: scrollView)
                 }
                 .frame(width: geo.size.width, alignment: .leading)
-                //.border(Color.green, width: 2)
                 .overlay(bar)
             }
-            //.overlay(title)
         }
-        .navigationTitle("PagedVerticalScroll")
     }
 }
 
 struct PagingView_Previews: PreviewProvider {
     static var previews: some View {
-        PagingView()
+        PagingView(pagingController: PagingController())
     }
 }

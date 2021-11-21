@@ -2,7 +2,7 @@
 //  View+Conditional.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 9/29/21.
+//  Created by Elaine Lyons on 9/29/21.
 //
 
 import SwiftUI
