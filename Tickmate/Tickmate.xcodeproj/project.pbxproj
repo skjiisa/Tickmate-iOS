@@ -75,6 +75,7 @@
 		5996360F264F128A00AAF6CA /* GroupsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5996360E264F128A00AAF6CA /* GroupsView.swift */; };
 		599D9F5225EC5A4900DF3795 /* TracksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599D9F5125EC5A4900DF3795 /* TracksView.swift */; };
 		59A0D8932645CF1600E01E61 /* View+DismissKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A0D8922645CF1600E01E61 /* View+DismissKeyboard.swift */; };
+		59B2885D2749D15600143970 /* TracksRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59B2885C2749D15600143970 /* TracksRow.swift */; };
 		59C23A6725E70D7000AFBC4B /* SymbolsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C23A6625E70D7000AFBC4B /* SymbolsList.swift */; };
 		59C23A6C25E70E1A00AFBC4B /* SymbolPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C23A6B25E70E1A00AFBC4B /* SymbolPicker.swift */; };
 		59D483C027057E3300CB30C0 /* View+Conditional.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D483BF27057E3300CB30C0 /* View+Conditional.swift */; };
@@ -174,6 +175,7 @@
 		5996360E264F128A00AAF6CA /* GroupsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupsView.swift; sourceTree = "<group>"; };
 		599D9F5125EC5A4900DF3795 /* TracksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TracksView.swift; sourceTree = "<group>"; };
 		59A0D8922645CF1600E01E61 /* View+DismissKeyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+DismissKeyboard.swift"; sourceTree = "<group>"; };
+		59B2885C2749D15600143970 /* TracksRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TracksRow.swift; sourceTree = "<group>"; };
 		59C23A6625E70D7000AFBC4B /* SymbolsList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolsList.swift; sourceTree = "<group>"; };
 		59C23A6B25E70E1A00AFBC4B /* SymbolPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymbolPicker.swift; sourceTree = "<group>"; };
 		59D483BF27057E3300CB30C0 /* View+Conditional.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Conditional.swift"; sourceTree = "<group>"; };
@@ -260,6 +262,7 @@
 			isa = PBXGroup;
 			children = (
 				593B5C812747461E001EE67F /* PagingView.swift */,
+				59B2885C2749D15600143970 /* TracksRow.swift */,
 				593B5C8527475499001EE67F /* TracksPage.swift */,
 				593B5C8327474C54001EE67F /* Column.swift */,
 			);
@@ -658,6 +661,7 @@
 				59F6170926671C2100CC78E1 /* AlertItem.swift in Sources */,
 				59F6EA9D25E369830069DF40 /* Tickmate+Convenience.swift in Sources */,
 				59A0D8932645CF1600E01E61 /* View+DismissKeyboard.swift in Sources */,
+				59B2885D2749D15600143970 /* TracksRow.swift in Sources */,
 				59EF633725E5DC93003E7259 /* TextWithCaption.swift in Sources */,
 				597DF5B025E5E90800DC8D28 /* Color+RGB.swift in Sources */,
 				5904EAAF2657111300B2D0A0 /* Binding+onChange.swift in Sources */,

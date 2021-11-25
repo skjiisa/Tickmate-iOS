@@ -7,32 +7,32 @@
 
 import SwiftUI
 
-struct PagingView: View {
-    /*
-    @EnvironmentObject private var trackController: TrackController
+struct PagingView<C: RandomAccessCollection>: View where C.Element == TrackGroup {
     
-    @FetchRequest(
-        entity: Track.entity(),
-        sortDescriptors: [NSSortDescriptor(keyPath: \Track.index, ascending: true)],
-        predicate: NSPredicate(format: "enabled == YES"),
-        animation: .default)
-    private var tracks: FetchedResults<Track>
-    */
-    @FetchRequest(
-        entity: TrackGroup.entity(),
-        sortDescriptors: [NSSortDescriptor(keyPath: \TrackGroup.index, ascending: true)],
-        predicate: NSPredicate(format: "tracks.@count > 0"))
-    private var groups: FetchedResults<TrackGroup>
+    var groups: C
     
-    @ObservedObject var pagingController: PagingController
+    @EnvironmentObject var pagingController: PagingController
     
     private let days = 133
     
     private var bar: some View {
         HStack(spacing: 0) {
             LazyVStack {
+                // Spacer views for the sake of the shadow
+                ForEach(0..<4) { _ in
+                    Color.clear
+                        .padding(4)
+                        .frame(height: 32)
+                }
+                
                 ForEach(0..<days) { i in
                     Text("\(i)")
+                        .padding(4)
+                        .frame(height: 32)
+                }
+                
+                ForEach(0..<4) { _ in
+                    Color.clear
                         .padding(4)
                         .frame(height: 32)
                 }
@@ -54,26 +54,11 @@ struct PagingView: View {
             ScrollView(.vertical, showsIndicators: true) {
                 // This is the tab view, using scrollView.isPagingEnabled = true in PagingController
                 ScrollView(.horizontal, showsIndicators: false) {
-                    // Non-lazy HStack so that the width can be calculated even when device is rotated.
-                    // If it was lazy, the columns off-screen wouldn't be updated and would still have
-                    // the same width as before the rotation, so the pages would get offset.
-                    // Update: turns out the lazy loading algorithms are actually more intensive than
-                    // just rendering everything lmao, at least with as many Tracks as I tried.
+                    // Non-lazy HStack as the lazy loading algorithms are actually more intensive than
+                    // just rendering everything, at least with as many Tracks as I tried. Lazy loading
+                    // also causes issues with device rotation as it doesn't recalculated the width of
+                    // the pages off-screen.
                     HStack(spacing: 0) {
-                        /*
-                        ForEach(tracks) { track in
-                            // This LazyHStack doesn't actually stack anything. It exists entirely
-                            // for its laziness. It sets its width whenever the screen width
-                            // changes while the content inside it is loaded lazily.
-                            LazyHStack(spacing: 0) {
-                                Column(tickController: trackController.tickController(for: track))
-                                    .padding(.leading, 88)
-                                    .padding(.trailing)
-                                    .frame(width: geo.size.width)
-                            }
-                            .frame(width: geo.size.width)
-                        }
-                        */
                         //TODO: Add All and Ungrouped
                         ForEach(groups) { group in
                             TracksPage(group: group, days: days)
@@ -88,6 +73,7 @@ struct PagingView: View {
                 }
                 .frame(width: geo.size.width, alignment: .leading)
                 .overlay(bar)
+                .padding(.top, 4)
             }
         }
     }
@@ -95,6 +81,7 @@ struct PagingView: View {
 
 struct PagingView_Previews: PreviewProvider {
     static var previews: some View {
-        PagingView(pagingController: PagingController())
+        PagingView(groups: [PersistenceController.preview.previewGroup!])
+            .environmentObject(PagingController())
     }
 }

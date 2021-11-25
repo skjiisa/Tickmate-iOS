@@ -81,8 +81,11 @@ struct ContentView: View {
     //MARK: Views
     
     private var titleMask: some View {
-        Rectangle().fill(LinearGradient(gradient: Gradient(colors: [.clear, .black, .black, .black, .clear]), startPoint: .leading, endPoint: .trailing))
-            .padding(.horizontal, 50)
+        VStack {
+            Rectangle().fill(LinearGradient(gradient: Gradient(colors: [.clear, .black, .black, .black, .clear]), startPoint: .leading, endPoint: .trailing))
+                .padding(.horizontal, 50)
+            Rectangle().foregroundColor(.black)
+        }
     }
     
     private var titlesView: some View {
@@ -91,10 +94,20 @@ struct ContentView: View {
                 //TODO: Add Tickmate and Ungrouped
                 HStack(spacing: 0) {
                     ForEach(groups) { group in
-                        Text(group.displayName)
-                            .font(.title3)
-                            .fontWeight(.semibold)
-                            .frame(width: geo.size.width)
+                        VStack(spacing: 0) {
+                            Text(group.displayName)
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                            
+                            TracksRow(group: group)
+                                .padding(.leading, 88)
+                                .padding(.trailing)
+                                .padding(.top, 16)
+                                .padding(.bottom, 4)
+                            
+                            Divider()
+                        }
+                        .frame(width: geo.size.width)
                     }
                 }
             }
@@ -128,9 +141,10 @@ struct ContentView: View {
                 }
             }
              */
-            // This Groups is just here so the indentation stays the same as before.
+            // This Group is just here so the indentation stays the same as before.
             Group {
-                PagingView(pagingController: pagingController)
+                PagingView(groups: groups)
+                    .padding(.top, 40)
             }
             .navigationBarTitle("", displayMode: .inline)
             .toolbar {
@@ -162,6 +176,7 @@ struct ContentView: View {
         .navigationViewStyle(StackNavigationViewStyle())
         .environmentObject(trackController)
         .environmentObject(groupController)
+        .environmentObject(pagingController)
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
             trackController.saveIfScheduled()
         }

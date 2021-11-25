@@ -18,7 +18,6 @@ class PagingController: NSObject, ObservableObject {
     
     weak private(set) var scrollView: UIScrollView?
     weak private(set) var titleScrollView: UIScrollView?
-    weak private(set) var tracksScrollView: UIScrollView?
     
     private var drop: DispatchWorkItem?
     private var impact: DispatchWorkItem?
@@ -34,11 +33,6 @@ class PagingController: NSObject, ObservableObject {
         self.titleScrollView = titleScrollView
     }
     
-    func load(tracksScrollView: UIScrollView) {
-        tracksScrollView.isUserInteractionEnabled = false
-        self.tracksScrollView = tracksScrollView
-    }
-    
 }
 
 //MARK: UIScrollViewDelegate
@@ -47,7 +41,6 @@ extension PagingController: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let x = scrollView.contentOffset.x
         titleScrollView?.contentOffset.x = x
-        tracksScrollView?.contentOffset.x = x
     }
     
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
