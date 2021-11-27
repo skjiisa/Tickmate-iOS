@@ -2,13 +2,17 @@
 //  ContentView.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 2/19/21.
+//  Created by Elaine Lyons on 2/19/21.
 //
 
 import SwiftUI
 import Introspect
 
+//MARK: ContenView
+
 struct ContentView: View {
+    
+    //MARK: External Properties
     
     @Environment(\.managedObjectContext) private var moc
     
@@ -29,15 +33,21 @@ struct ContentView: View {
     @AppStorage(Defaults.onboardingComplete.rawValue) private var onboardingComplete: Bool = false
     @AppStorage(Defaults.groupPage.rawValue) private var page = 0
     
+    //MARK: State properties
+    
     @StateObject private var trackController = TrackController()
     @StateObject private var groupController = GroupController()
     @StateObject private var vcContainer = ViewControllerContainer()
     @StateObject private var storeController = StoreController()
+    @StateObject private var pagingController = PagingController()
     
     @State private var showingSettings = false
     @State private var showingTracks = false
     @State private var scrollToBottomToggle = false
     @State private var showingOnboarding = false
+    @State private var showingTrack: Track?
+    
+    //MARK: Computed Properties
     
     private var showingAllTracks: Bool {
         showAllTracks || groups.count == 0 || !storeController.groupsUnlocked
@@ -53,14 +63,67 @@ struct ContentView: View {
             : 1
     }
     
+    private var titles: [String] {
+        [
+            showingAllTracks ? "Tickmate" : nil,
+            showingUngroupedTracks ? "Ungrouped" : nil,
+        ].compactMap { $0 }
+        + groups.map { $0.displayName }
+    }
+    
     private var sheetsOnMainView: Bool {
         guard #available(iOS 15, *) else { return false }
         return true
     }
     
+    //MARK: Views
+    
+    private var titleMask: some View {
+        VStack {
+            Rectangle().fill(LinearGradient(gradient: Gradient(colors: [.clear, .black, .black, .black, .clear]), startPoint: .leading, endPoint: .trailing))
+                .padding(.horizontal, 50)
+            Rectangle().foregroundColor(.black)
+        }
+    }
+    
+    private var titlesView: some View {
+        GeometryReader { geo in
+            ScrollView(.horizontal, showsIndicators: false) {
+                //TODO: Add Tickmate and Ungrouped
+                HStack(spacing: 0) {
+                    ForEach(groups) { group in
+                        VStack(spacing: 0) {
+                            Text(group.displayName)
+                                .font(.title3)
+                                .fontWeight(.semibold)
+                            
+                            TracksRow(group: group, showingTrack: $showingTrack)
+                                .padding(.leading, 88)
+                                .padding(.trailing)
+                                .padding(.top, 16)
+                                .padding(.bottom, 4)
+                            
+                            Divider()
+                        }
+                        .frame(width: geo.size.width)
+                    }
+                }
+            }
+            .introspectScrollView { scrollView in
+                pagingController.load(titleScrollView: scrollView)
+            }
+            .frame(width: geo.size.width)
+            .padding(.top, 10)
+            .mask(titleMask)
+        }
+    }
+    
+    //MARK: Body
+    
     var body: some View {
         NavigationView {
-            PageView(pageCount: pageCount, currentIndex: $page) {
+            /*
+            PageView(pageCount: pageCount, currentIndex: $page, offset: $translation) {
                 if showingAllTracks {
                     TicksView(scrollToBottomToggle: scrollToBottomToggle)
                 }
@@ -75,7 +138,13 @@ struct ContentView: View {
                     }
                 }
             }
-            .navigationBarTitle("Tickmate", displayMode: .inline)
+             */
+            // This Group is just here so the indentation stays the same as before.
+            Group {
+                PagingView(groups: groups)
+                    .padding(.top, 40)
+            }
+            .navigationBarTitle("", displayMode: .inline)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
@@ -101,9 +170,11 @@ struct ContentView: View {
                 updatePage(pageInserted: value)
             }
         }
+        .overlay(titlesView)
         .navigationViewStyle(StackNavigationViewStyle())
         .environmentObject(trackController)
         .environmentObject(groupController)
+        .environmentObject(pagingController)
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willResignActiveNotification)) { _ in
             trackController.saveIfScheduled()
         }
@@ -127,6 +198,9 @@ struct ContentView: View {
                 }
             }
         }
+        
+        //MARK: Sheets
+        
         // Maybe this is more of an SDK thing and not an iOS 15 thing and
         // this can be used instead of the EmptyViews in iOS 14 too.
         // More testing needed.
@@ -158,6 +232,19 @@ struct ContentView: View {
                 OnboardingView(showing: $showingOnboarding)
                     .environment(\.managedObjectContext, moc)
                     .environmentObject(trackController)
+            }
+            .sheet(item: $showingTrack) {
+                vcContainer.deactivateEditMode()
+            } content: { track in
+                NavigationView {
+                    TrackView(track: track, selection: $showingTrack, sheet: true)
+                }
+                .environmentObject(vcContainer)
+                .environmentObject(trackController)
+                .environmentObject(groupController)
+                .introspectViewController { vc in
+                    vc.presentationController?.delegate = vcContainer
+                }
             }
         }
         
@@ -194,8 +281,24 @@ struct ContentView: View {
                     .environment(\.managedObjectContext, moc)
                     .environmentObject(trackController)
             }
+            
+            EmptyView().sheet(item: $showingTrack) {
+                vcContainer.deactivateEditMode()
+            } content: { track in
+                NavigationView {
+                    TrackView(track: track, selection: $showingTrack, sheet: true)
+                }
+                .environmentObject(vcContainer)
+                .environmentObject(trackController)
+                .environmentObject(groupController)
+                .introspectViewController { vc in
+                    vc.presentationController?.delegate = vcContainer
+                }
+            }
         }
     }
+    
+    //MARK: Functions
     
     private func updatePage(pageInserted: Bool) {
         if groups.count > 0 {
@@ -204,6 +307,8 @@ struct ContentView: View {
     }
     
 }
+
+//MARK: Previews
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {

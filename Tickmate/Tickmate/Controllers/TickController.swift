@@ -2,12 +2,13 @@
 //  TickController.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 2/21/21.
+//  Created by Elaine Lyons on 2/21/21.
 //
 
 import CoreData
 import CloudKit
 import SwiftDate
+import SwiftUI
 
 class TickController: NSObject, ObservableObject {
     
@@ -21,12 +22,19 @@ class TickController: NSObject, ObservableObject {
     weak var trackController: TrackController?
     var todayOffset: Int?
     
+    @Published var color: Color
+    @Published var lightText: Bool
+    
     private var preview: Bool
     private var observeChanges: Bool
     
     init(track: Track, trackController: TrackController, observeChanges: Bool = true, preview: Bool) {
         self.track = track
         self.trackController = trackController
+        
+        color = Color(rgb: Int(track.color))
+        lightText = track.lightText
+        
         self.preview = preview
         self.observeChanges = observeChanges
         

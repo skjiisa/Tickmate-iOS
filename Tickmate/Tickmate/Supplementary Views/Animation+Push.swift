@@ -12,7 +12,9 @@ extension Animation {
     // by-frame, counting the distance traveled from the edge of the screen.
     // This was then plotted and a Bezier curve roughly matched onto it by-hand.
     // The coordinates of the control points are the values in the timingCurve.
+    // I then realized the values I computed were actually just approximations
+    // for 1/4 and 1, as is reflected here.
     static var push: Animation {
-        .timingCurve(187/677.5, 1 - 30.5/485.5, 193/677.5, 1 - -3.5/485.5, duration: 0.5)
+        .timingCurve(0.25, 1, 0.25, 1, duration: 0.5)
     }
 }
