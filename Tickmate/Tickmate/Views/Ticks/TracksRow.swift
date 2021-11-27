@@ -16,21 +16,26 @@ struct TracksRow: View {
         fetchRequest.wrappedValue
     }
     
-    init() {
+    @Binding var showingTrack: Track?
+    
+    init(showingTrack: Binding<Track?>) {
+        _showingTrack = showingTrack
         fetchRequest = FetchRequest(
             entity: Track.entity(),
             sortDescriptors: [NSSortDescriptor(keyPath: \Track.index, ascending: true)],
             predicate: NSPredicate(format: "enabled == YES"))
     }
     
-    init(group: TrackGroup) {
+    init(group: TrackGroup, showingTrack: Binding<Track?>) {
+        _showingTrack = showingTrack
         fetchRequest = FetchRequest(
             entity: Track.entity(),
             sortDescriptors: [NSSortDescriptor(keyPath: \Track.index, ascending: true)],
             predicate: NSPredicate(format: "enabled == YES AND %@ IN groups", group))
     }
     
-    init(fetchRequest: FetchRequest<Track>) {
+    init(fetchRequest: FetchRequest<Track>, showingTrack: Binding<Track?>) {
+        _showingTrack = showingTrack
         self.fetchRequest = fetchRequest
     }
     
@@ -38,7 +43,7 @@ struct TracksRow: View {
         HStack {
             ForEach(tracks) { track in
                 Button {
-                    print(track.name)
+                    showingTrack = track
                     UISelectionFeedbackGenerator().selectionChanged()
                 } label: {
                     ZStack {
@@ -58,6 +63,6 @@ struct TracksRow: View {
 
 struct TracksRow_Previews: PreviewProvider {
     static var previews: some View {
-        TracksRow()
+        TracksRow(showingTrack: .constant(nil))
     }
 }

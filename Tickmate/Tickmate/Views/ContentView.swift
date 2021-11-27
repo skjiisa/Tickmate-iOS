@@ -45,9 +45,7 @@ struct ContentView: View {
     @State private var showingTracks = false
     @State private var scrollToBottomToggle = false
     @State private var showingOnboarding = false
-    
-    @State private var translation: CGFloat = 0.0
-    @State private var pageChange = 0
+    @State private var showingTrack: Track?
     
     //MARK: Computed Properties
     
@@ -99,7 +97,7 @@ struct ContentView: View {
                                 .font(.title3)
                                 .fontWeight(.semibold)
                             
-                            TracksRow(group: group)
+                            TracksRow(group: group, showingTrack: $showingTrack)
                                 .padding(.leading, 88)
                                 .padding(.trailing)
                                 .padding(.top, 16)
@@ -235,6 +233,19 @@ struct ContentView: View {
                     .environment(\.managedObjectContext, moc)
                     .environmentObject(trackController)
             }
+            .sheet(item: $showingTrack) {
+                vcContainer.deactivateEditMode()
+            } content: { track in
+                NavigationView {
+                    TrackView(track: track, selection: $showingTrack, sheet: true)
+                }
+                .environmentObject(vcContainer)
+                .environmentObject(trackController)
+                .environmentObject(groupController)
+                .introspectViewController { vc in
+                    vc.presentationController?.delegate = vcContainer
+                }
+            }
         }
         
         if .iOS14 {
@@ -269,6 +280,20 @@ struct ContentView: View {
                 OnboardingView(showing: $showingOnboarding)
                     .environment(\.managedObjectContext, moc)
                     .environmentObject(trackController)
+            }
+            
+            EmptyView().sheet(item: $showingTrack) {
+                vcContainer.deactivateEditMode()
+            } content: { track in
+                NavigationView {
+                    TrackView(track: track, selection: $showingTrack, sheet: true)
+                }
+                .environmentObject(vcContainer)
+                .environmentObject(trackController)
+                .environmentObject(groupController)
+                .introspectViewController { vc in
+                    vc.presentationController?.delegate = vcContainer
+                }
             }
         }
     }
