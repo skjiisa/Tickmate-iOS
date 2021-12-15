@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="19455" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19454"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--Tickmate-->
+        <scene sceneID="ZSF-tt-wsg">
+            <objects>
+                <viewController storyboardIdentifier="TickmateTableVC" title="Tickmate" id="ghH-kw-Ayg" customClass="TickmateViewController" customModule="Tickmate" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="s38-8O-EUI">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" directionalLockEnabled="YES" pagingEnabled="YES" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="qKb-La-T01">
+                                <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                                <subviews>
+                                    <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eaF-OH-M0l">
+                                        <rect key="frame" x="0.0" y="0.0" width="414" height="44"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="44" id="I8U-CP-slU"/>
+                                        </constraints>
+                                    </stackView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="ey3-OV-cO2" firstAttribute="trailing" secondItem="eaF-OH-M0l" secondAttribute="trailing" id="CdC-aS-ss1"/>
+                                    <constraint firstItem="eaF-OH-M0l" firstAttribute="leading" secondItem="ey3-OV-cO2" secondAttribute="leading" id="Mec-i5-0mO"/>
+                                    <constraint firstAttribute="trailing" secondItem="eaF-OH-M0l" secondAttribute="trailing" id="PTo-by-tW4"/>
+                                    <constraint firstAttribute="bottom" secondItem="eaF-OH-M0l" secondAttribute="bottom" id="RVp-HU-Fhu"/>
+                                    <constraint firstItem="eaF-OH-M0l" firstAttribute="top" secondItem="ey3-OV-cO2" secondAttribute="top" id="fMk-bE-DWV"/>
+                                    <constraint firstAttribute="height" constant="44" id="rYP-Yc-3Nr"/>
+                                </constraints>
+                                <viewLayoutGuide key="contentLayoutGuide" id="4aJ-le-a7K"/>
+                                <viewLayoutGuide key="frameLayoutGuide" id="ey3-OV-cO2"/>
+                            </scrollView>
+                            <scrollView multipleTouchEnabled="YES" contentMode="scaleToFill" directionalLockEnabled="YES" pagingEnabled="YES" showsVerticalScrollIndicator="NO" translatesAutoresizingMaskIntoConstraints="NO" id="agq-GJ-8lT">
+                                <rect key="frame" x="0.0" y="88" width="414" height="808"/>
+                                <subviews>
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="Jim-N6-7m2">
+                                        <rect key="frame" x="0.0" y="0.0" width="828" height="808"/>
+                                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                        <prototypes>
+                                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="TestCell" id="5jv-Q2-aR5" customClass="DayTableViewCell" customModule="UIKit_Testing" customModuleProvider="target">
+                                                <rect key="frame" x="0.0" y="44.5" width="828" height="43.5"/>
+                                                <autoresizingMask key="autoresizingMask"/>
+                                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="5jv-Q2-aR5" id="hlD-pI-TLX">
+                                                    <rect key="frame" x="0.0" y="0.0" width="828" height="43.5"/>
+                                                    <autoresizingMask key="autoresizingMask"/>
+                                                </tableViewCellContentView>
+                                            </tableViewCell>
+                                        </prototypes>
+                                        <connections>
+                                            <outlet property="dataSource" destination="ghH-kw-Ayg" id="RKc-dF-xxx"/>
+                                            <outlet property="delegate" destination="ghH-kw-Ayg" id="C3s-pV-vfp"/>
+                                        </connections>
+                                    </tableView>
+                                </subviews>
+                                <constraints>
+                                    <constraint firstItem="Jim-N6-7m2" firstAttribute="width" secondItem="agq-GJ-8lT" secondAttribute="width" multiplier="2" id="6x4-Tg-eeG"/>
+                                    <constraint firstItem="Jim-N6-7m2" firstAttribute="leading" secondItem="agq-GJ-8lT" secondAttribute="leading" id="7pz-TW-jfk"/>
+                                    <constraint firstAttribute="bottom" secondItem="Jim-N6-7m2" secondAttribute="bottom" id="i83-HW-ktM"/>
+                                    <constraint firstItem="Jim-N6-7m2" firstAttribute="top" secondItem="vhV-wb-Nfx" secondAttribute="top" id="jWk-yt-MCj"/>
+                                    <constraint firstAttribute="trailing" secondItem="Jim-N6-7m2" secondAttribute="trailing" id="oab-n4-8FL"/>
+                                    <constraint firstItem="Jim-N6-7m2" firstAttribute="height" secondItem="agq-GJ-8lT" secondAttribute="height" id="q5g-IO-X6G"/>
+                                </constraints>
+                                <viewLayoutGuide key="contentLayoutGuide" id="vhV-wb-Nfx"/>
+                                <viewLayoutGuide key="frameLayoutGuide" id="FFc-Fg-e7T"/>
+                            </scrollView>
+                        </subviews>
+                        <viewLayoutGuide key="safeArea" id="bly-Gw-B0v"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="agq-GJ-8lT" secondAttribute="bottom" id="9XD-83-Hsz"/>
+                            <constraint firstItem="agq-GJ-8lT" firstAttribute="leading" secondItem="bly-Gw-B0v" secondAttribute="leading" id="CDN-oh-Ti6"/>
+                            <constraint firstItem="agq-GJ-8lT" firstAttribute="top" secondItem="qKb-La-T01" secondAttribute="bottom" id="O6g-gq-qbH"/>
+                            <constraint firstItem="agq-GJ-8lT" firstAttribute="trailing" secondItem="bly-Gw-B0v" secondAttribute="trailing" id="PKE-6H-REg"/>
+                            <constraint firstItem="bly-Gw-B0v" firstAttribute="trailing" secondItem="qKb-La-T01" secondAttribute="trailing" id="Vre-sc-vpL"/>
+                            <constraint firstItem="qKb-La-T01" firstAttribute="top" secondItem="bly-Gw-B0v" secondAttribute="top" id="alT-3I-8Wb"/>
+                            <constraint firstItem="qKb-La-T01" firstAttribute="leading" secondItem="bly-Gw-B0v" secondAttribute="leading" id="w7i-fy-Bzx"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" title="Tickmate" id="BFI-5b-rz3"/>
+                    <connections>
+                        <outlet property="pageView" destination="agq-GJ-8lT" id="AAt-fA-nZJ"/>
+                        <outlet property="tableView" destination="Jim-N6-7m2" id="0bn-fv-N5b"/>
+                        <outlet property="tableWidth" destination="6x4-Tg-eeG" id="TRR-vg-YGf"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="fgZ-7e-BPH" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1042.0289855072465" y="115.84821428571428"/>
+        </scene>
+    </scenes>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

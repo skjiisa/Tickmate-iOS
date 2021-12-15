@@ -19,6 +19,9 @@
 		592CE888264F19B400668684 /* View+Centered.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592CE887264F19B400668684 /* View+Centered.swift */; };
 		592CE88A264F1CA800668684 /* GroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592CE889264F1CA800668684 /* GroupView.swift */; };
 		592CE890264F337000668684 /* Tickmate+Wrapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592CE88F264F337000668684 /* Tickmate+Wrapping.swift */; };
+		592DE5202769999F0051103B /* Tickmate.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 592DE51F2769999F0051103B /* Tickmate.storyboard */; };
+		592DE522276999CC0051103B /* TickmateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592DE521276999CC0051103B /* TickmateViewController.swift */; };
+		592DE52427699A250051103B /* DayTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592DE52327699A250051103B /* DayTableViewCell.swift */; };
 		59303A512665D00900EB900E /* TrackGroups.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59303A502665D00900EB900E /* TrackGroups.swift */; };
 		5931642D26853FFB005DDA1A /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59FBCF2925E07BD8007B114F /* Persistence.swift */; };
 		5931642E26854006005DDA1A /* SymbolsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C23A6625E70D7000AFBC4B /* SymbolsList.swift */; };
@@ -141,6 +144,9 @@
 		592CE887264F19B400668684 /* View+Centered.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Centered.swift"; sourceTree = "<group>"; };
 		592CE889264F1CA800668684 /* GroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupView.swift; sourceTree = "<group>"; };
 		592CE88F264F337000668684 /* Tickmate+Wrapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Tickmate+Wrapping.swift"; sourceTree = "<group>"; };
+		592DE51F2769999F0051103B /* Tickmate.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Tickmate.storyboard; sourceTree = "<group>"; };
+		592DE521276999CC0051103B /* TickmateViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TickmateViewController.swift; sourceTree = "<group>"; };
+		592DE52327699A250051103B /* DayTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayTableViewCell.swift; sourceTree = "<group>"; };
 		59303A502665D00900EB900E /* TrackGroups.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackGroups.swift; sourceTree = "<group>"; };
 		5931643E26855EB8005DDA1A /* TickView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TickView.swift; sourceTree = "<group>"; };
 		5931644526857779005DDA1A /* TicksWidgetIntentsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = TicksWidgetIntentsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -236,6 +242,16 @@
 			path = TicksWidget;
 			sourceTree = "<group>";
 		};
+		592DE51E276999810051103B /* UIKit */ = {
+			isa = PBXGroup;
+			children = (
+				592DE51F2769999F0051103B /* Tickmate.storyboard */,
+				592DE521276999CC0051103B /* TickmateViewController.swift */,
+				592DE52327699A250051103B /* DayTableViewCell.swift */,
+			);
+			path = UIKit;
+			sourceTree = "<group>";
+		};
 		5931644826857779005DDA1A /* TicksWidgetIntentsExtension */ = {
 			isa = PBXGroup;
 			children = (
@@ -316,6 +332,7 @@
 				59FBCF3C25E07DF0007B114F /* Model */,
 				59FBCF3D25E07E05007B114F /* Views */,
 				59EF633525E5DC85003E7259 /* Supplementary Views */,
+				592DE51E276999810051103B /* UIKit */,
 				59FBCF3E25E07E0B007B114F /* Controllers */,
 				59C23A6925E70D7900AFBC4B /* Resources */,
 				59FBCF2E25E07BD8007B114F /* Info.plist */,
@@ -509,6 +526,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				592DE5202769999F0051103B /* Tickmate.storyboard in Resources */,
 				5985C7F42698F3F800413FF2 /* Launch Screen.storyboard in Resources */,
 				59FBCF2825E07BD8007B114F /* Preview Assets.xcassets in Resources */,
 				59FBCF2525E07BD8007B114F /* Assets.xcassets in Resources */,
@@ -572,6 +590,7 @@
 				59FBCF2A25E07BD8007B114F /* Persistence.swift in Sources */,
 				5901D4D82684281C00A5BE86 /* TicksWidget.intentdefinition in Sources */,
 				592CE890264F337000668684 /* Tickmate+Wrapping.swift in Sources */,
+				592DE52427699A250051103B /* DayTableViewCell.swift in Sources */,
 				592CE88A264F1CA800668684 /* GroupView.swift in Sources */,
 				592CE888264F19B400668684 /* View+Centered.swift in Sources */,
 				59303A512665D00900EB900E /* TrackGroups.swift in Sources */,
@@ -592,6 +611,7 @@
 				59FBCF2125E07BD5007B114F /* TickmateApp.swift in Sources */,
 				5996360F264F128A00AAF6CA /* GroupsView.swift in Sources */,
 				59FBCF2D25E07BD8007B114F /* Tickmate.xcdatamodeld in Sources */,
+				592DE522276999CC0051103B /* TickmateViewController.swift in Sources */,
 				59603D452666C85A001482C6 /* StoreController.swift in Sources */,
 				5991969225F817F7003215CC /* PresetTracks.swift in Sources */,
 				599D9F5225EC5A4900DF3795 /* TracksView.swift in Sources */,
