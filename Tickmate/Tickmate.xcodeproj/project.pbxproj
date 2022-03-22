@@ -70,11 +70,17 @@
 		598BFD1727E9497900F202D6 /* View+Conditional.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D483BF27057E3300CB30C0 /* View+Conditional.swift */; };
 		598BFD1827E9497900F202D6 /* View+DismissKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A0D8922645CF1600E01E61 /* View+DismissKeyboard.swift */; };
 		598BFD1927E9497900F202D6 /* View+DismissKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A0D8922645CF1600E01E61 /* View+DismissKeyboard.swift */; };
+		598BFD1C27E94BA000F202D6 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598BFD1B27E94BA000F202D6 /* ViewController.swift */; };
+		598BFD1E27E94BDA00F202D6 /* ScrollController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598BFD1D27E94BD900F202D6 /* ScrollController.swift */; };
+		598BFD2027E9545C00F202D6 /* TrackTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598BFD1F27E9545C00F202D6 /* TrackTableViewController.swift */; };
+		598BFD2327E9565500F202D6 /* DayTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598BFD2227E9565500F202D6 /* DayTableViewCell.swift */; };
+		598BFD2527E9577200F202D6 /* PageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598BFD2427E9577200F202D6 /* PageViewController.swift */; };
 		5991968F25F813ED003215CC /* PresetTracksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5991968E25F813ED003215CC /* PresetTracksView.swift */; };
 		5991969225F817F7003215CC /* PresetTracks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5991969125F817F7003215CC /* PresetTracks.swift */; };
 		5996360F264F128A00AAF6CA /* GroupsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5996360E264F128A00AAF6CA /* GroupsView.swift */; };
 		599D9F5225EC5A4900DF3795 /* TracksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 599D9F5125EC5A4900DF3795 /* TracksView.swift */; };
 		59A0D8932645CF1600E01E61 /* View+DismissKeyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59A0D8922645CF1600E01E61 /* View+DismissKeyboard.swift */; };
+		59BDBAF227E95A1C00F58704 /* TickView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5931643E26855EB8005DDA1A /* TickView.swift */; };
 		59C23A6725E70D7000AFBC4B /* SymbolsList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C23A6625E70D7000AFBC4B /* SymbolsList.swift */; };
 		59C23A6C25E70E1A00AFBC4B /* SymbolPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59C23A6B25E70E1A00AFBC4B /* SymbolPicker.swift */; };
 		59D483C027057E3300CB30C0 /* View+Conditional.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59D483BF27057E3300CB30C0 /* View+Conditional.swift */; };
@@ -162,6 +168,11 @@
 		597A7FDC25F6E1C900256268 /* StateEditButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StateEditButton.swift; sourceTree = "<group>"; };
 		597DF5AF25E5E90800DC8D28 /* Color+RGB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+RGB.swift"; sourceTree = "<group>"; };
 		5985C7F32698F3F800413FF2 /* Launch Screen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = "Launch Screen.storyboard"; sourceTree = "<group>"; };
+		598BFD1B27E94BA000F202D6 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		598BFD1D27E94BD900F202D6 /* ScrollController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollController.swift; sourceTree = "<group>"; };
+		598BFD1F27E9545C00F202D6 /* TrackTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackTableViewController.swift; sourceTree = "<group>"; };
+		598BFD2227E9565500F202D6 /* DayTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DayTableViewCell.swift; sourceTree = "<group>"; };
+		598BFD2427E9577200F202D6 /* PageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageViewController.swift; sourceTree = "<group>"; };
 		5991968E25F813ED003215CC /* PresetTracksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetTracksView.swift; sourceTree = "<group>"; };
 		5991969125F817F7003215CC /* PresetTracks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetTracks.swift; sourceTree = "<group>"; };
 		5995F873268D77C200A0E3C4 /* TicksWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TicksWidgetExtension.entitlements; sourceTree = "<group>"; };
@@ -297,6 +308,8 @@
 		598BFD1227E9492500F202D6 /* Main Screen */ = {
 			isa = PBXGroup;
 			children = (
+				598BFD2127E9564E00F202D6 /* Views */,
+				598BFD1A27E94B6700F202D6 /* ViewControllers */,
 				59F0980125E081CC00667971 /* TicksView.swift */,
 				5931643E26855EB8005DDA1A /* TickView.swift */,
 			);
@@ -313,6 +326,24 @@
 				5939239D2655B6C90085DABD /* Animation+Push.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		598BFD1A27E94B6700F202D6 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				598BFD1B27E94BA000F202D6 /* ViewController.swift */,
+				598BFD1F27E9545C00F202D6 /* TrackTableViewController.swift */,
+				598BFD2427E9577200F202D6 /* PageViewController.swift */,
+			);
+			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		598BFD2127E9564E00F202D6 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				598BFD2227E9565500F202D6 /* DayTableViewCell.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		59C23A6925E70D7900AFBC4B /* Resources */ = {
@@ -413,6 +444,7 @@
 		59FBCF3E25E07E0B007B114F /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				598BFD1D27E94BD900F202D6 /* ScrollController.swift */,
 				59FBCF2925E07BD8007B114F /* Persistence.swift */,
 				59F6EAA325E36D510069DF40 /* TickController.swift */,
 				59F6EAA625E36D680069DF40 /* TrackController.swift */,
@@ -570,6 +602,7 @@
 				5931643626854056005DDA1A /* TrackRepresentation.swift in Sources */,
 				5931642D26853FFB005DDA1A /* Persistence.swift in Sources */,
 				5931643026854014005DDA1A /* Tickmate.xcdatamodeld in Sources */,
+				59BDBAF227E95A1C00F58704 /* TickView.swift in Sources */,
 				5931642E26854006005DDA1A /* SymbolsList.swift in Sources */,
 				5931642F26854009005DDA1A /* Defaults.swift in Sources */,
 				598BFD1627E9497900F202D6 /* View+Conditional.swift in Sources */,
@@ -627,6 +660,7 @@
 				59303A512665D00900EB900E /* TrackGroups.swift in Sources */,
 				59C23A6C25E70E1A00AFBC4B /* SymbolPicker.swift in Sources */,
 				59F6EAA725E36D680069DF40 /* TrackController.swift in Sources */,
+				598BFD2027E9545C00F202D6 /* TrackTableViewController.swift in Sources */,
 				59F0980225E081CC00667971 /* TicksView.swift in Sources */,
 				59F6EAA425E36D510069DF40 /* TickController.swift in Sources */,
 				59E9397225F98ACD002FD8CD /* AcknowledgementsView.swift in Sources */,
@@ -648,13 +682,17 @@
 				59F6170926671C2100CC78E1 /* AlertItem.swift in Sources */,
 				59F6EA9D25E369830069DF40 /* Tickmate+Convenience.swift in Sources */,
 				59A0D8932645CF1600E01E61 /* View+DismissKeyboard.swift in Sources */,
+				598BFD1C27E94BA000F202D6 /* ViewController.swift in Sources */,
 				59EF633725E5DC93003E7259 /* TextWithCaption.swift in Sources */,
+				598BFD1E27E94BDA00F202D6 /* ScrollController.swift in Sources */,
 				597DF5B025E5E90800DC8D28 /* Color+RGB.swift in Sources */,
+				598BFD2527E9577200F202D6 /* PageViewController.swift in Sources */,
 				5904EAAF2657111300B2D0A0 /* Binding+onChange.swift in Sources */,
 				5939239C2654CE050085DABD /* PageView.swift in Sources */,
 				59E6E15125F8837E008A74A9 /* Defaults.swift in Sources */,
 				59342E1C2603F3DF007E9F64 /* OnboardingView.swift in Sources */,
 				597A7FDD25F6E1C900256268 /* StateEditButton.swift in Sources */,
+				598BFD2327E9565500F202D6 /* DayTableViewCell.swift in Sources */,
 				59E6E14E25F88177008A74A9 /* SettingsView.swift in Sources */,
 				5931643F26855EB8005DDA1A /* TickView.swift in Sources */,
 			);

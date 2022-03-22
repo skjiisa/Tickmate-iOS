@@ -13,6 +13,8 @@ class TickController: NSObject, ObservableObject {
     
     //MARK: Properties
     
+    static var numDays: Int = 365
+    
     let track: Track
     @Published var ticks: [Tick?] = []
     /// The tick count for a given day as fetche with `loadCKTicks` for new days that aren't already in `ticks`.
@@ -79,7 +81,7 @@ class TickController: NSObject, ObservableObject {
         var i = 0
         var changesToSave = false
         
-        for day in 0..<365 {
+        for day in 0..<Self.numDays {
             let offsetDay = todayOffset - day
             while i < allTicks.count,
                   allTicks[i].dayOffset > offsetDay {
@@ -150,7 +152,7 @@ class TickController: NSObject, ObservableObject {
         operation.recordFetchedBlock = { record in
             guard let dayOffset = (record["CD_dayOffset"] as? NSNumber)?.intValue else { return }
             let day = todayOffset - dayOffset
-            guard day >= 0 && day < 365 else { return }
+            guard day >= 0 && day < Self.numDays else { return }
             
             while ckTicks.count <= day {
                 ckTicks.append(nil)
@@ -238,7 +240,7 @@ class TickController: NSObject, ObservableObject {
         let tick = fetchedResultsController.object(at: indexPath)
         
         guard let day = day(for: tick),
-              day < 365 else { return }
+              day < Self.numDays else { return }
         while ticks.count < day + 1 {
             ticks.append(nil)
         }

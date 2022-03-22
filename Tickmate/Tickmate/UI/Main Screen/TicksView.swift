@@ -103,8 +103,8 @@ struct TicksView: View {
                         proxy.scrollTo(0)
                     }
                     
-                    ForEach(0..<365) { dayComplement in
-                        DayRow(364 - dayComplement, tracks: tracks, spaces: weekSeparatorSpaces, lines: weekSeparatorLines)
+                    ForEach(0..<TickController.numDays) { dayComplement in
+                        DayRow(TickController.numDays - 1 - dayComplement, tracks: tracks, spaces: weekSeparatorSpaces, lines: weekSeparatorLines)
                             .listRowInsets(.init(top: 4, leading: 0, bottom: 4, trailing: 0))
                             .padding(.horizontal)
                     }
