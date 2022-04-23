@@ -14,6 +14,8 @@ import WidgetKit
 
 class TrackController: NSObject, ObservableObject {
     
+    static var shared = TrackController()
+    
     //MARK: Properties
     
     var tickControllers: [Track: TickController] = [:]

@@ -10,11 +10,17 @@ import SwiftUI
 @main
 struct TickmateApp: App {
     let persistenceController = PersistenceController.shared
+    
+    let newUI = false
 
     var body: some Scene {
         WindowGroup {
+            if newUI {
+                NewUI()
+            } else {
             ContentView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
+            }
         }
     }
 }

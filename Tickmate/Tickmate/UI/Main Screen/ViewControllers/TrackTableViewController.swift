@@ -10,17 +10,13 @@ import Combine
 
 class TrackTableViewController: UITableViewController {
     
-    //MARK: Static
-    
-    static let days = 100
-    
     //MARK: Properties
     
     var index = 0
     var scrollController: ScrollController = .shared
     private var initialized = false
     //TODO: Replace
-    private var tracks: [Track] = []
+    var tracks: [Track] = []
     
     private var pagingSubscriber: AnyCancellable?
     
@@ -78,7 +74,7 @@ class TrackTableViewController: UITableViewController {
     }
     
     private func scrollToBottom(animated: Bool = false) {
-        let indexPath = IndexPath(row: Self.days-1, section: 0)
+        let indexPath = IndexPath(row: TickController.numDays-1, section: 0)
         tableView.scrollToRow(at: indexPath, at: .top, animated: animated)
         if initialized {
             scrollController.contentOffset = tableView.contentOffset
@@ -93,7 +89,7 @@ class TrackTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        Self.days
+        TickController.numDays
     }
     
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -103,7 +99,7 @@ class TrackTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "DayCell", for: indexPath)
         if let dayRow = cell as? DayTableViewCell {
-            dayRow.configure(with: tracks)
+            dayRow.configure(with: tracks, day: TickController.numDays - indexPath.row - 1)
         }
 
         scrollToDelegate()
@@ -130,7 +126,7 @@ class TrackTableViewController: UITableViewController {
         guard scrollView.contentOffset != .zero,
               !scrollController.isPaging else { return }
         scrollController.contentOffset = scrollView.contentOffset
-        print(scrollView.contentOffset, "scrollViewDidScroll")
+//        print(scrollView.contentOffset, "scrollViewDidScroll")
     }
     
     override func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {

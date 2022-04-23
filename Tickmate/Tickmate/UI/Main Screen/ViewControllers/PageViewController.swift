@@ -45,6 +45,9 @@ class PageViewController: UIPageViewController {
         
         trackVC.index = index
         
+        let tracks = TrackController.shared.fetchedResultsController.fetchedObjects?.prefix(4)
+        trackVC.tracks = Array(tracks ?? [])
+        
         return trackVC
     }
     

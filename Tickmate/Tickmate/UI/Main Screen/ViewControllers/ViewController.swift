@@ -5,8 +5,17 @@
 //  Created by Elaine Lyons on 2/10/22.
 //
 
-import UIKit
+import SwiftUI
 import Combine
+
+struct NewUI: UIViewControllerRepresentable {
+    func makeUIViewController(context: Context) -> UIViewController {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        return storyboard.instantiateInitialViewController()!
+    }
+    
+    func updateUIViewController(_ uiViewController: UIViewController, context: Context) { }
+}
 
 class ViewController: UIViewController {
     
@@ -56,11 +65,12 @@ class ViewController: UIViewController {
         shadowView.layer.mask = maskLayer
         
         // Sync scroll position
-        let scrollSubscriber = scrollController.$contentOffset.sink { [weak self] contentOffset in
+        scrollController.$contentOffset.sink { [weak self] contentOffset in
             self?.tableView.contentOffset = contentOffset
         }
+        .store(in: &subscribers)
         
-        let pagingSubscriber = scrollController.$isPaging.sink { [weak self] isPaging in
+        scrollController.$isPaging.sink { [weak self] isPaging in
             guard let self = self else { return }
             if isPaging {
                 self.drop?.cancel()
@@ -72,8 +82,7 @@ class ViewController: UIViewController {
                 self.endPaging()
             }
         }
-        
-        subscribers = [scrollSubscriber, pagingSubscriber]
+        .store(in: &subscribers)
     }
     
     //MARK: Private
@@ -108,7 +117,7 @@ extension ViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        nil
+        " "
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

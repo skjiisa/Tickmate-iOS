@@ -10,6 +10,7 @@ import UIKit
 class DayTableViewCell: UITableViewCell {
 
     private var tracks: [Track] = []
+    private var day: Int = 0
     
     private var stackView = UIStackView()
     private var buttons: [Track: UIButton] = [:]
@@ -37,8 +38,9 @@ class DayTableViewCell: UITableViewCell {
         fatalError()
     }
     
-    func configure(with tracks: [Track]) {
+    func configure(with tracks: [Track], day: Int) {
         self.tracks = tracks
+        self.day = day
         
         stackView.arrangedSubviews.forEach { view in
             view.removeConstraints(view.constraints)
@@ -50,7 +52,7 @@ class DayTableViewCell: UITableViewCell {
             button.tag = index
             stackView.addArrangedSubview(button)
             NSLayoutConstraint.activate([
-                // -12 matches the old SwiftUI Tickmate
+                // -12 matches the old SwiftUI implementation
                 button.heightAnchor.constraint(equalTo: stackView.heightAnchor, constant: -10)
             ])
         }
@@ -65,11 +67,12 @@ class DayTableViewCell: UITableViewCell {
         let button = UIButton(primaryAction: UIAction { action in
             print(track.name)
         })
+        let ticks = TrackController.shared.tickController(for: track).ticks(on: day)
         //TODO: Make Track convenience functions for color
-        button.backgroundColor = UIColor(rgb: Int(track.color))
+        button.backgroundColor = (ticks > 0) != track.reversed ? UIColor(rgb: Int(track.color)) : .systemFill
         button.layer.cornerRadius = 4
-        //TODO: Update foreground color
-        button.tintColor = .white
+        button.setTitle(track.multiple && ticks > 1 ? "\(ticks)" : nil, for: .normal)
+        button.setTitleColor(track.lightText ? .white : .black, for: .normal)
         
         button.translatesAutoresizingMaskIntoConstraints = false
         
