@@ -25,6 +25,8 @@ class TrackTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        tableView.canCancelContentTouches = true
+        
         tableView.register(DayTableViewCell.self, forCellReuseIdentifier: "DayCell")
         tableView.delegate = self
         if #available(iOS 15.0, *) {

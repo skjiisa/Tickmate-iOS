@@ -37,6 +37,23 @@ extension Track {
         let luma = (0.299 * r + 0.587 * g + 0.114 * b) / 255
         return luma < 2/3
     }
+    
+    func textColor() -> UIColor {
+        lightText ? .white : .black
+    }
+    
+    func textColor() -> Color {
+        lightText ? .white : .black
+    }
+    
+    func buttonColor(ticks: Int? = nil) -> UIColor {
+        guard let ticks = ticks else { return UIColor(rgb: Int(color)) }
+        return (ticks > 0) != reversed ? UIColor(rgb: Int(color)) : .systemFill
+    }
+    
+    func buttonText(ticks: Int) -> String? {
+        multiple && ticks > 1 ? "\(ticks)" : nil
+    }
 }
 
 extension Tick {

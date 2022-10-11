@@ -49,6 +49,7 @@ class DayTableViewCell: UITableViewCell {
         
         tracks.enumerated().forEach { index, track in
             let button = self.button(for: track)
+            configure(button: button, for: track)
             button.tag = index
             stackView.addArrangedSubview(button)
             NSLayoutConstraint.activate([
@@ -64,20 +65,24 @@ class DayTableViewCell: UITableViewCell {
         }
         
         // Create button
-        let button = UIButton(primaryAction: UIAction { action in
+        let action = UIAction { action in
             print(track.name)
-        })
-        let ticks = TrackController.shared.tickController(for: track).ticks(on: day)
-        //TODO: Make Track convenience functions for color
-        button.backgroundColor = (ticks > 0) != track.reversed ? UIColor(rgb: Int(track.color)) : .systemFill
-        button.layer.cornerRadius = 4
-        button.setTitle(track.multiple && ticks > 1 ? "\(ticks)" : nil, for: .normal)
-        button.setTitleColor(track.lightText ? .white : .black, for: .normal)
-        
-        button.translatesAutoresizingMaskIntoConstraints = false
+        }
+        let button = UIButton(primaryAction: action)
         
         buttons[track] = button
         return button
+    }
+    
+    private func configure(button: UIButton, for track: Track) {
+        let ticks = TrackController.shared.tickController(for: track).ticks(on: day)
+        
+        button.backgroundColor = track.buttonColor(ticks: ticks)
+        button.layer.cornerRadius = 4
+        button.setTitle(track.buttonText(ticks: ticks), for: .normal)
+        button.setTitleColor(track.textColor(), for: .normal)
+        
+        button.translatesAutoresizingMaskIntoConstraints = false
     }
 
 }
