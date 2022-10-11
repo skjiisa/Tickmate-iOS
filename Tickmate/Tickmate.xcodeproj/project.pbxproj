@@ -15,6 +15,7 @@
 		5901D4D82684281C00A5BE86 /* TicksWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = 5901D4D32684281A00A5BE86 /* TicksWidget.intentdefinition */; };
 		5901D4DB2684281C00A5BE86 /* TicksWidgetExtension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 5901D4CB2684281A00A5BE86 /* TicksWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		5904EAAF2657111300B2D0A0 /* Binding+onChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5904EAAE2657111300B2D0A0 /* Binding+onChange.swift */; };
+		5920735B28F627B200DD7647 /* TickButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5920735A28F627B200DD7647 /* TickButton.swift */; };
 		592850F2265EF54B00E682F5 /* GroupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592850F1265EF54B00E682F5 /* GroupController.swift */; };
 		592CE888264F19B400668684 /* View+Centered.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592CE887264F19B400668684 /* View+Centered.swift */; };
 		592CE88A264F1CA800668684 /* GroupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 592CE889264F1CA800668684 /* GroupView.swift */; };
@@ -149,6 +150,7 @@
 		5901D4D42684281C00A5BE86 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		5901D4D62684281C00A5BE86 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5904EAAE2657111300B2D0A0 /* Binding+onChange.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Binding+onChange.swift"; sourceTree = "<group>"; };
+		5920735A28F627B200DD7647 /* TickButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TickButton.swift; sourceTree = "<group>"; };
 		592850F1265EF54B00E682F5 /* GroupController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupController.swift; sourceTree = "<group>"; };
 		592CE887264F19B400668684 /* View+Centered.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+Centered.swift"; sourceTree = "<group>"; };
 		592CE889264F1CA800668684 /* GroupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupView.swift; sourceTree = "<group>"; };
@@ -345,6 +347,7 @@
 			isa = PBXGroup;
 			children = (
 				598BFD2227E9565500F202D6 /* DayTableViewCell.swift */,
+				5920735A28F627B200DD7647 /* TickButton.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -664,6 +667,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				59F3EDC225FC4F270009CDEC /* ViewControllerContainer.swift in Sources */,
+				5920735B28F627B200DD7647 /* TickButton.swift in Sources */,
 				59FBCF2A25E07BD8007B114F /* Persistence.swift in Sources */,
 				5901D4D82684281C00A5BE86 /* TicksWidget.intentdefinition in Sources */,
 				592CE890264F337000668684 /* Tickmate+Wrapping.swift in Sources */,
