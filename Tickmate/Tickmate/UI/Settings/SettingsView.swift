@@ -31,9 +31,21 @@ struct SettingsView: View {
     
     @State private var timeOffset: Date = Date()
     @State private var showingRestrictedPaymentsAlert = false
+    #if DEBUG
+    @State private var newUI = false
+    #endif
     
     var body: some View {
         Form {
+            #if DEBUG
+            Button("New UI") {
+                newUI = true
+            }
+            .sheet(isPresented: $newUI) {
+                NewUI()
+            }
+            #endif
+            
             Section {
                 Toggle(isOn: $customDayStart.animation()) {
                     TextWithCaption(
