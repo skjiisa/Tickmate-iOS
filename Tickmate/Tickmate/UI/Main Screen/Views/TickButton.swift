@@ -11,6 +11,7 @@ class TickButton: UIButton {
     
     convenience init(for track: Track, tickController: TickController, day: Int) {
         let action = UIAction { action in
+            UISelectionFeedbackGenerator().selectionChanged()
             tickController.tick(day: day)
         }
         self.init(primaryAction: action)
