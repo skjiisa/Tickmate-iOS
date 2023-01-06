@@ -2,7 +2,7 @@
 //  SettingsView.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 3/9/21.
+//  Created by Elaine Lyons on 3/9/21.
 //
 
 import SwiftUI
@@ -43,6 +43,7 @@ struct SettingsView: View {
             }
             .sheet(isPresented: $newUI) {
                 NewUI()
+                    .edgesIgnoringSafeArea(.bottom)
             }
             #endif
             

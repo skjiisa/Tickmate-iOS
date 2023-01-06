@@ -2,7 +2,7 @@
 //  TickView.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 6/24/21.
+//  Created by Elaine Lyons on 6/24/21.
 //
 
 import SwiftUI
@@ -34,7 +34,7 @@ struct DayRow<C: RandomAccessCollection>: View where C.Element == Track {
     }
     
     @ViewBuilder
-    private var backgroud: some View {
+    private var background: some View {
         if lines && trackController.weekend(day: day) {
             VStack {
                 Spacer()
@@ -70,7 +70,7 @@ struct DayRow<C: RandomAccessCollection>: View where C.Element == Track {
                     .opacity(0)
             }
         }
-        .listRowBackground(backgroud)
+        .listRowBackground(background)
         .id(day)
     }
 }

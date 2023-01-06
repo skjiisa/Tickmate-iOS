@@ -2,7 +2,7 @@
 //  TickmateApp.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 2/19/21.
+//  Created by Elaine Lyons on 2/19/21.
 //
 
 import SwiftUI
@@ -17,6 +17,8 @@ struct TickmateApp: App {
         WindowGroup {
             if newUI {
                 NewUI()
+                    .edgesIgnoringSafeArea(.bottom)
+                    .environment(\.managedObjectContext, persistenceController.container.viewContext)
             } else {
             ContentView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)

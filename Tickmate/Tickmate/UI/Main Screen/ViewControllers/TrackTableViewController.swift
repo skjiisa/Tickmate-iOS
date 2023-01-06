@@ -5,7 +5,7 @@
 //  Created by Elaine Lyons on 2/10/22.
 //
 
-import UIKit
+import SwiftUI
 import Combine
 
 class TrackTableViewController: UITableViewController {
@@ -27,7 +27,7 @@ class TrackTableViewController: UITableViewController {
         
         tableView.canCancelContentTouches = true
         
-        tableView.register(DayTableViewCell.self, forCellReuseIdentifier: "DayCell")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "DayCell")
         tableView.delegate = self
         if #available(iOS 15.0, *) {
             tableView.sectionHeaderTopPadding = 0
@@ -42,7 +42,7 @@ class TrackTableViewController: UITableViewController {
             } else {
                 // We only want to flash the scroll bar if the table is scrolled above the bottom.
                 //TODO: Test this on a square screen with no Safe Area
-                // Could even potentially add a bit more tolorance to this
+                // Could even potentially add a bit more tolerance to this
                 // so it doesn't flash them when only scrolled up a bit.
                 //Note: If there's an added option to flip so today is at the top, make sure to adjust this
                 let position = self.tableView.contentSize.height - self.tableView.bounds.size.height + self.tableView.contentInset.bottom
@@ -100,8 +100,11 @@ class TrackTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "DayCell", for: indexPath)
-        if let dayRow = cell as? DayTableViewCell {
-            dayRow.configure(with: tracks, day: TickController.numDays - indexPath.row - 1)
+        
+        let trackController = TrackController.shared
+        cell.contentConfiguration = UIHostingConfiguration {
+            DayRow(TickController.numDays - indexPath.row - 1, tracks: tracks, spaces: false, lines: false)
+                .environmentObject(trackController)
         }
 
         scrollToDelegate()
