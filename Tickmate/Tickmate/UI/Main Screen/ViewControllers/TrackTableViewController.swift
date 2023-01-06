@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Combine
+import CoreData
 
 class TrackTableViewController: UITableViewController {
     
@@ -14,12 +15,40 @@ class TrackTableViewController: UITableViewController {
     
     var index = 0
     var scrollController: ScrollController = .shared
-    private var initialized = false
-    //TODO: Replace
-    var tracks: [Track] = []
     
+    private var _tracks: [Track]?
+    var tracks: [Track] {
+        if let _tracks {
+            return _tracks
+        }
+        
+        if let group {
+            // TODO: Return group's tracks
+        }
+        
+        return []
+    }
+    
+    var group: TrackGroup? {
+        didSet {
+            guard let group else { return }
+            //TODO: Create and FRC
+            let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
+            
+            fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Track.index, ascending: true)]
+            fetchRequest.predicate = NSPredicate(format: "enabled == YES AND %@ IN groups", group)
+            
+            _tracks = try? PersistenceController.shared.container.viewContext.fetch(fetchRequest)
+        }
+    }
+    
+    private var initialized = false
     private var pagingSubscriber: AnyCancellable?
     private var tracksHeader: UIViewController?
+    
+    func load(tracks: [Track]) {
+        _tracks = tracks
+    }
     
     //MARK: Lifecycle
 

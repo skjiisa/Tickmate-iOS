@@ -2,13 +2,15 @@
 //  GroupController.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 5/26/21.
+//  Created by Elaine Lyons on 5/26/21.
 //
 
 import CoreData
 import SwiftUI
 
 class GroupController: NSObject, ObservableObject {
+    
+    static var shared = GroupController()
     
     var fetchedResultsController: NSFetchedResultsController<TrackGroup>
     var trackController: TrackController?
