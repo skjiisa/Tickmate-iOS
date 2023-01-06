@@ -19,6 +19,7 @@ class TrackTableViewController: UITableViewController {
     var tracks: [Track] = []
     
     private var pagingSubscriber: AnyCancellable?
+    private var tracksHeader: UIViewController?
     
     //MARK: Lifecycle
 
@@ -93,10 +94,6 @@ class TrackTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         TickController.numDays
     }
-    
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        "Page \(index)"
-    }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "DayCell", for: indexPath)
@@ -119,6 +116,44 @@ class TrackTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         44
+    }
+    
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        // Only create the tracks header once
+        if let tracksHeader {
+            return tracksHeader.view
+        }
+        
+        // Update the source of truth for these
+        let vcContainer = ViewControllerContainer()
+        let trackController = TrackController.shared
+        let groupController = GroupController()
+        
+        let hostingController = UIHostingController {
+            TracksHeader(tracks: tracks)
+                .environmentObject(vcContainer)
+                .environmentObject(trackController)
+                .environmentObject(groupController)
+        }
+        
+        addChild(hostingController)
+        // TODO: Should this be willMove? Normally it should be called
+        // after its view is added as a subview, but that hasn't happened
+        // yet since we're returning the view for UIKit to handle
+        hostingController.didMove(toParent: self)
+        
+        tracksHeader = hostingController
+        
+        return hostingController.view
+    }
+    
+    override func tableView(_ tableView: UITableView, didEndDisplayingHeaderView view: UIView, forSection section: Int) {
+        // Only try to remove tracksHeader if that's what this actually is
+        guard view == tracksHeader?.view else { return }
+        
+        // TODO: didMove instead since this is is called after the view is done being displayed?
+        tracksHeader?.willMove(toParent: nil)
+        tracksHeader?.removeFromParent()
     }
     
     //MARK: Scroll View Delegate
@@ -149,7 +184,7 @@ class TrackTableViewController: UITableViewController {
     
     override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         print("scrollViewWillBeginDragging")
-        // Avoid uncessesary calls to setter as that seems to flash it
+        // Avoid unnecessary calls to setter as that seems to flash it
         if !tableView.showsVerticalScrollIndicator {
             tableView.showsVerticalScrollIndicator = true
         }

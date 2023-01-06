@@ -2,14 +2,14 @@
 //  TicksView.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 2/19/21.
+//  Created by Elaine Lyons on 2/19/21.
 //
 
 import SwiftUI
 import SwiftDate
 import Introspect
 
-//MARK: Ticks View
+//MARK: - Ticks View
 
 struct TicksView: View {
     
@@ -29,8 +29,6 @@ struct TicksView: View {
     var scrollToBottomToggle: Bool = false
     
     @StateObject private var vcContainer = ViewControllerContainer()
-    
-    @State private var showingTrack: Track?
     
     init(scrollToBottomToggle: Bool = false) {
         self.scrollToBottomToggle = scrollToBottomToggle
@@ -55,45 +53,8 @@ struct TicksView: View {
     
     var body: some View {
         VStack(spacing: 0) {
-            HStack(spacing: 4) {
-                Rectangle()
-                    .opacity(0)
-                    .frame(width: 80, height: 32)
-                ForEach(tracks) { track in
-                    Button {
-                        showingTrack = track
-                        UISelectionFeedbackGenerator().selectionChanged()
-                    } label: {
-                        ZStack {
-                            RoundedRectangle(cornerRadius: 3)
-                                .foregroundColor(Color(.systemFill))
-                                .frame(height: 32)
-                            if let systemImage = track.systemImage {
-                                Text("\(Image(systemName: systemImage))")
-                            }
-                        }
-                    }
-                    .foregroundColor(.primary)
-                    .onAppear {
-                        trackController.loadTicks(for: track)
-                    }
-                }
-            }
-            .padding(.horizontal)
-            .padding(.vertical, 4)
-            .sheet(item: $showingTrack) {
-                vcContainer.deactivateEditMode()
-            } content: { track in
-                NavigationView {
-                    TrackView(track: track, selection: $showingTrack, sheet: true)
-                }
+            TracksHeader(tracks: tracks)
                 .environmentObject(vcContainer)
-                .environmentObject(trackController)
-                .environmentObject(groupController)
-                .introspectViewController { vc in
-                    vc.presentationController?.delegate = vcContainer
-                }
-            }
             
             Divider()
             
@@ -127,7 +88,62 @@ struct TicksView: View {
     }
 }
 
-//MARK: Preview
+//MARK: - TracksHeader
+
+struct TracksHeader<C: RandomAccessCollection>: View where C.Element == Track {
+    
+    @EnvironmentObject private var vcContainer: ViewControllerContainer
+    @EnvironmentObject private var trackController: TrackController
+    @EnvironmentObject private var groupController: GroupController
+    
+    var tracks: C
+    
+    @State private var showingTrack: Track?
+    
+    var body: some View {
+        HStack(spacing: 4) {
+            Rectangle()
+                .opacity(0)
+                .frame(width: 80, height: 32)
+            ForEach(tracks) { track in
+                Button {
+                    showingTrack = track
+                    UISelectionFeedbackGenerator().selectionChanged()
+                } label: {
+                    ZStack {
+                        RoundedRectangle(cornerRadius: 3)
+                            .foregroundColor(Color(.systemFill))
+                            .frame(height: 32)
+                        if let systemImage = track.systemImage {
+                            Text("\(Image(systemName: systemImage))")
+                        }
+                    }
+                }
+                .foregroundColor(.primary)
+                .onAppear {
+                    trackController.loadTicks(for: track)
+                }
+            }
+        }
+        .padding(.horizontal)
+        .padding(.vertical, 4)
+        .sheet(item: $showingTrack) {
+            vcContainer.deactivateEditMode()
+        } content: { track in
+            NavigationView {
+                TrackView(track: track, selection: $showingTrack, sheet: true)
+            }
+            .environmentObject(vcContainer)
+            .environmentObject(trackController)
+            .environmentObject(groupController)
+            .introspectViewController { vc in
+                vc.presentationController?.delegate = vcContainer
+            }
+        }
+    }
+}
+
+//MARK: - Preview
 
 struct TicksView_Previews: PreviewProvider {
     static var previews: some View {
