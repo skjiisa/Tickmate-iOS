@@ -84,7 +84,7 @@ class TrackTableViewController: UITableViewController {
         }
     }
 
-    // MARK: Table View Data Source
+    //MARK: Table View Data Source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
         1
@@ -103,7 +103,7 @@ class TrackTableViewController: UITableViewController {
         
         let trackController = TrackController.shared
         cell.contentConfiguration = UIHostingConfiguration {
-            DayRow(TickController.numDays - indexPath.row - 1, tracks: tracks, spaces: false, lines: false)
+            DayRow(TickController.numDays - indexPath.row - 1, tracks: tracks, spaces: false, lines: false, showDate: false)
                 .environmentObject(trackController)
         }
 

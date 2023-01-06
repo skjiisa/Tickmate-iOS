@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-//MARK: Day Row
+//MARK: - Day Row
 
 struct DayRow<C: RandomAccessCollection>: View where C.Element == Track {
     
@@ -19,18 +19,16 @@ struct DayRow<C: RandomAccessCollection>: View where C.Element == Track {
     var lines: Bool
     var widget: Bool
     var compact: Bool
+    var showDate: Bool
     
-    init(_ day: Int, tracks: C, spaces: Bool, lines: Bool) {
-        self.init(day, tracks: tracks, spaces: spaces, lines: lines, widget: false, compact: false)
-    }
-    
-    init(_ day: Int, tracks: C, spaces: Bool, lines: Bool, widget: Bool, compact: Bool) {
+    init(_ day: Int, tracks: C, spaces: Bool, lines: Bool, widget: Bool = false, compact: Bool = false, showDate: Bool = true) {
         self.day = day
         self.tracks = tracks
         self.spaces = spaces
         self.lines = lines
         self.widget = widget
         self.compact = compact
+        self.showDate = showDate
     }
     
     @ViewBuilder
@@ -54,11 +52,18 @@ struct DayRow<C: RandomAccessCollection>: View where C.Element == Track {
                     .opacity(0)
             }
             HStack(spacing: 4) {
-                let label = trackController.dayLabel(day: day, compact: widget)
-                TextWithCaption(label.text, caption: widget ? nil : label.caption)
-                    .lineLimit(1)
-                    .frame(width: compact ? 30 : widget ? 50 : 80, alignment: .leading)
-                    .font(compact ? .system(size: 11) : .body)
+                Group {
+                    if showDate {
+                        let label = trackController.dayLabel(day: day, compact: widget)
+                        TextWithCaption(label.text, caption: widget ? nil : label.caption)
+                            .lineLimit(1)
+                            .font(compact ? .system(size: 11) : .body)
+                    } else {
+                        Color.clear
+                    }
+                }
+                .frame(width: compact ? 30 : widget ? 50 : 80, alignment: .leading)
+                
                 ForEach(tracks) { track in
                     TickView(day: day, widget: widget, compact: compact, track: track, tickController: trackController.tickController(for: track))
                 }
@@ -75,7 +80,7 @@ struct DayRow<C: RandomAccessCollection>: View where C.Element == Track {
     }
 }
 
-//MARK: Tick View
+//MARK: - Tick View
 
 struct TickView: View {
     
