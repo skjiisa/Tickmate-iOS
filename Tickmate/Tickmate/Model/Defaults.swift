@@ -2,7 +2,7 @@
 //  Defaults.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 3/9/21.
+//  Created by Elaine Lyons on 3/9/21.
 //
 
 import Foundation
@@ -23,4 +23,39 @@ enum Defaults: String {
     case appGroupDatabaseMigration  // Bool
     case userDefaultsMigration      // Bool     App Group
     case lastUpdateTime             // String   App Group
+}
+
+extension UserDefaults {
+    static let appGroup = UserDefaults(suiteName: groupID)
+    
+    /// Whether or not to show a group of all tracks.
+    /// Use `UserDefaults.standard`.
+    @objc var showAllTracks: Bool {
+        get {
+            bool(forKey: Defaults.showAllTracks.rawValue)
+        }
+        set {
+            set(newValue, forKey: Defaults.showAllTracks.rawValue)
+        }
+    }
+    
+    /// Whether or not to show a group of all ungrouped tracks.
+    /// Use `UserDefaults.standard`.
+    @objc var showUngroupedTracks: Bool {
+        get {
+            bool(forKey: Defaults.showUngroupedTracks.rawValue)
+        }
+        set {
+            set(newValue, forKey: Defaults.showUngroupedTracks.rawValue)
+        }
+    }
+    
+    @objc var groupsUnlocked: Bool {
+        get {
+            bool(forKey: StoreController.Products.groups.rawValue)
+        }
+        set {
+            set(newValue, forKey: StoreController.Products.groups.rawValue)
+        }
+    }
 }

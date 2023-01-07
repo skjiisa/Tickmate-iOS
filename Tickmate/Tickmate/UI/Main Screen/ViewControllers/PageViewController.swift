@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Combine
 
 class PageViewController: UIPageViewController {
     
@@ -15,13 +16,27 @@ class PageViewController: UIPageViewController {
     var scrollController: ScrollController = .shared
     var trackController: TrackController = .shared
     var groupController: GroupController = .shared
-    private var page: Int = 0
-
-    private var showAllTracks = false
-    private var showUngroupedTracks = true
-    private var groupsUnlocked = true
     
-    private var pages = [Page]()
+    private var allTracksPage: [Page] {
+        // Update logic to force it if groups not unlocked
+        UserDefaults.standard.showAllTracks ? [Page.allTracks] : []
+    }
+    private var ungroupedTracksPage: [Page] {
+        UserDefaults.standard.showUngroupedTracks ? [Page.ungrouped] : []
+    }
+    private var groups: [TrackGroup] {
+        UserDefaults.standard.groupsUnlocked ? groupController.fetchedResultsController.fetchedObjects ?? [] : []
+    }
+    private var groupsPages: [Page] {
+        groups.map { .group($0) }
+    }
+    
+    private var page: Int = 0
+    private var pages: [Page] = []
+    
+    private var subscriptions = Set<AnyCancellable>()
+    private var shouldReloadPages = false
+    
     
     //MARK: Lifecycle
 
@@ -31,16 +46,18 @@ class PageViewController: UIPageViewController {
         dataSource = self
         delegate = self
         
-        //TODO: Make this respond to publishers and/or FRC delegate
-        let groups = groupsUnlocked ? groupController.fetchedResultsController.fetchedObjects ?? [] : []
+        // UserDefaults.standard.showAllTracks = true // for testing settings changes
+        reloadPages()
         
-        let allTracks = showAllTracks ? [Page.allTracks] : []
-        let ungroupedTracks = showUngroupedTracks ? [Page.ungrouped] : []
-        
-        pages = allTracks + ungroupedTracks + groups.map { .group($0) }
-        
-        if let initialVC = trackVC(for: page) {
-            setViewControllers([initialVC], direction: .forward, animated: true)
+        let keyPaths: [KeyPath<UserDefaults, Bool>] = [\.showAllTracks, \.showUngroupedTracks, \.groupsUnlocked]
+        keyPaths.forEach { keyPath in
+            UserDefaults.standard
+                .publisher(for: keyPath)
+                .dropFirst()
+                .sink { [weak self] _ in
+                    self?.shouldReloadPages = true
+                }
+                .store(in: &subscriptions)
         }
         
         _ = view.subviews.first { (view: UIView) -> Bool in
@@ -52,9 +69,34 @@ class PageViewController: UIPageViewController {
             }
             return false
         }
+        
+        /* For testing settings changes
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+            print("!!!!!!!!!! hiding 'all tracks' page")
+            UserDefaults.standard.showAllTracks = false
+            
+            self.viewWillAppear(true)
+        }
+        */
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        if shouldReloadPages {
+            reloadPages()
+        }
     }
     
     //MARK: Private
+    
+    private func reloadPages() {
+        print("!!!!!!! Reloading pages")
+        pages = allTracksPage + ungroupedTracksPage + groupsPages
+        
+        if let initialVC = trackVC(for: page) {
+            setViewControllers([initialVC], direction: .forward, animated: true)
+        }
+    }
     
     private func trackVC(for index: Int) -> TrackTableViewController? {
         guard pages.indices.contains(index),
