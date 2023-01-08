@@ -7,6 +7,7 @@
 
 import SwiftUI
 import Combine
+import CoreData
 
 class PageViewController: UIPageViewController {
     
@@ -17,26 +18,68 @@ class PageViewController: UIPageViewController {
     var trackController: TrackController = .shared
     var groupController: GroupController = .shared
     
+    private var groupsUnlocked: Bool {
+        UserDefaults.standard.groupsUnlocked
+    }
+    
+    // All Tracks
+    private var showingAllTracks: Bool {
+        UserDefaults.standard.showAllTracks || groups.count == 0 || !groupsUnlocked
+    }
     private var allTracksPage: [Page] {
-        // Update logic to force it if groups not unlocked
-        UserDefaults.standard.showAllTracks ? [Page.allTracks] : []
+        showingAllTracks ? [Page.allTracks] : []
+    }
+    
+    // Ungrouped Tracks
+    private var showingUngroupedTracks: Bool {
+        UserDefaults.standard.showUngroupedTracks && ungroupedTracksFRC.fetchedObjects?.count ?? 0 > 0 && groupsUnlocked
     }
     private var ungroupedTracksPage: [Page] {
-        UserDefaults.standard.showUngroupedTracks ? [Page.ungrouped] : []
+        showingUngroupedTracks ? [Page.ungrouped] : []
     }
+    
+    // Groups
     private var groups: [TrackGroup] {
-        UserDefaults.standard.groupsUnlocked ? groupController.fetchedResultsController.fetchedObjects ?? [] : []
+        groupsUnlocked ? groupController.fetchedResultsController.fetchedObjects ?? [] : []
     }
     private var groupsPages: [Page] {
         groups.map { .group($0) }
     }
     
+    // Page
     private var page: Int = 0
     private var pages: [Page] = []
     
+    // Refreshing
     private var subscriptions = Set<AnyCancellable>()
     private var shouldReloadPages = false
     
+    //MARK: FetchedResultsController
+    
+    lazy private var ungroupedTracksFRC: NSFetchedResultsController<Track> = {
+        let context = PersistenceController.shared.container.viewContext
+        
+        let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
+        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Track.index, ascending: true)]
+        fetchRequest.predicate = NSPredicate(format: "enabled == YES AND groups.@count == 0")
+        
+        let frc = NSFetchedResultsController<Track>(
+            fetchRequest: fetchRequest,
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil)
+        
+        frc.delegate = self
+        
+        do {
+            try frc.performFetch()
+            print("PageViewController FRC fetched.")
+        } catch {
+            NSLog("Error performing Tracks fetch: \(error)")
+        }
+        
+        return frc
+    }()
     
     //MARK: Lifecycle
 
@@ -93,6 +136,7 @@ class PageViewController: UIPageViewController {
         print("!!!!!!! Reloading pages")
         pages = allTracksPage + ungroupedTracksPage + groupsPages
         
+        // TODO: Be smarter about what page is loaded first
         if let initialVC = trackVC(for: page) {
             setViewControllers([initialVC], direction: .forward, animated: true)
         }
@@ -112,9 +156,8 @@ class PageViewController: UIPageViewController {
             let tracks = trackController.fetchedResultsController.fetchedObjects ?? []
             trackVC.load(tracks: tracks)
         case .ungrouped:
-            // TODO: Update
-            let tracks = trackController.fetchedResultsController.fetchedObjects?.prefix(4)
-            trackVC.load(tracks: Array(tracks ?? []))
+            let tracks = ungroupedTracksFRC.fetchedObjects ?? []
+            trackVC.load(tracks: tracks)
         case .group(let group):
             trackVC.group = group
         }
@@ -136,7 +179,7 @@ class PageViewController: UIPageViewController {
 
 }
 
-//MARK: Page View Controller Data Source
+//MARK: - Page View Controller Data Source
 
 extension PageViewController: UIPageViewControllerDataSource {
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
@@ -148,7 +191,7 @@ extension PageViewController: UIPageViewControllerDataSource {
     }
 }
 
-//MARK: Page View Controller Delegate
+//MARK: - Page View Controller Delegate
 
 extension PageViewController: UIPageViewControllerDelegate {
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
@@ -157,7 +200,7 @@ extension PageViewController: UIPageViewControllerDelegate {
     }
 }
 
-//MARK: Scroll View Delegate
+//MARK: - Scroll View Delegate
 
 extension PageViewController: UIScrollViewDelegate {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
@@ -174,4 +217,10 @@ extension PageViewController: UIScrollViewDelegate {
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         scrollController.isPaging = false
     }
+}
+
+//MARK: - Fetched Results Controller Delegate
+
+extension PageViewController: NSFetchedResultsControllerDelegate {
+    // TODO: Check if number of ungrouped tracks changes to or from 0
 }
