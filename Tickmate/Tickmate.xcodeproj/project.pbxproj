@@ -77,6 +77,8 @@
 		598BFD2027E9545C00F202D6 /* TrackTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598BFD1F27E9545C00F202D6 /* TrackTableViewController.swift */; };
 		598BFD2327E9565500F202D6 /* DayTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598BFD2227E9565500F202D6 /* DayTableViewCell.swift */; };
 		598BFD2527E9577200F202D6 /* PageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 598BFD2427E9577200F202D6 /* PageViewController.swift */; };
+		5990D97B296B967F002E0911 /* TracksContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5990D97A296B967F002E0911 /* TracksContainer.swift */; };
+		5990D97C296B967F002E0911 /* TracksContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5990D97A296B967F002E0911 /* TracksContainer.swift */; };
 		5991968F25F813ED003215CC /* PresetTracksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5991968E25F813ED003215CC /* PresetTracksView.swift */; };
 		5991969225F817F7003215CC /* PresetTracks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5991969125F817F7003215CC /* PresetTracks.swift */; };
 		5996360F264F128A00AAF6CA /* GroupsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5996360E264F128A00AAF6CA /* GroupsView.swift */; };
@@ -178,6 +180,7 @@
 		598BFD1F27E9545C00F202D6 /* TrackTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrackTableViewController.swift; sourceTree = "<group>"; };
 		598BFD2227E9565500F202D6 /* DayTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DayTableViewCell.swift; sourceTree = "<group>"; };
 		598BFD2427E9577200F202D6 /* PageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PageViewController.swift; sourceTree = "<group>"; };
+		5990D97A296B967F002E0911 /* TracksContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TracksContainer.swift; sourceTree = "<group>"; };
 		5991968E25F813ED003215CC /* PresetTracksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetTracksView.swift; sourceTree = "<group>"; };
 		5991969125F817F7003215CC /* PresetTracks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresetTracks.swift; sourceTree = "<group>"; };
 		5995F873268D77C200A0E3C4 /* TicksWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TicksWidgetExtension.entitlements; sourceTree = "<group>"; };
@@ -442,6 +445,7 @@
 				59E6E15025F8837E008A74A9 /* Defaults.swift */,
 				5904EAAE2657111300B2D0A0 /* Binding+onChange.swift */,
 				59303A502665D00900EB900E /* TrackGroups.swift */,
+				5990D97A296B967F002E0911 /* TracksContainer.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -635,6 +639,7 @@
 				593164342685402F005DDA1A /* Color+RGB.swift in Sources */,
 				593164372685405F005DDA1A /* StoreController.swift in Sources */,
 				593164392685406A005DDA1A /* AlertItem.swift in Sources */,
+				5990D97C296B967F002E0911 /* TracksContainer.swift in Sources */,
 				598BFD1827E9497900F202D6 /* View+DismissKeyboard.swift in Sources */,
 				593164352685404D005DDA1A /* TextWithCaption.swift in Sources */,
 			);
@@ -709,6 +714,7 @@
 				5904EAAF2657111300B2D0A0 /* Binding+onChange.swift in Sources */,
 				5939239C2654CE050085DABD /* PageView.swift in Sources */,
 				59E6E15125F8837E008A74A9 /* Defaults.swift in Sources */,
+				5990D97B296B967F002E0911 /* TracksContainer.swift in Sources */,
 				59373F5B2967D0B7007DB2B3 /* UIHostingController+Closure.swift in Sources */,
 				59342E1C2603F3DF007E9F64 /* OnboardingView.swift in Sources */,
 				597A7FDD25F6E1C900256268 /* StateEditButton.swift in Sources */,

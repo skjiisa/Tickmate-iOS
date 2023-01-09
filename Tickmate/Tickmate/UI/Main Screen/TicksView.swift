@@ -88,7 +88,7 @@ struct TicksView: View {
     }
 }
 
-//MARK: - TracksHeader
+//MARK: - Tracks Header
 
 struct TracksHeader<C: RandomAccessCollection>: View where C.Element == Track {
     
@@ -140,6 +140,16 @@ struct TracksHeader<C: RandomAccessCollection>: View where C.Element == Track {
                 vc.presentationController?.delegate = vcContainer
             }
         }
+    }
+}
+
+//MARK: Tracks Header Proxy
+
+struct TracksHeaderProxy: View {
+    @ObservedObject var tracksContainer: TracksContainer
+    
+    var body: some View {
+        TracksHeader(tracks: tracksContainer.tracks)
     }
 }
 

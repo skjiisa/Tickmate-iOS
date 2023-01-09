@@ -16,29 +16,20 @@ class TrackTableViewController: UITableViewController {
     var index = 0
     var scrollController: ScrollController = .shared
     
-    private var _tracks: [Track]?
-    var tracks: [Track] {
-        if let _tracks {
-            return _tracks
-        }
-        
-        if let group {
-            // TODO: Return group's tracks
-        }
-        
-        return []
-    }
+    private let tracksContainer = TracksContainer()
     
     var group: TrackGroup? {
         didSet {
             guard let group else { return }
-            //TODO: Create and FRC
+            //TODO: Create FRC
             let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
             
             fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Track.index, ascending: true)]
             fetchRequest.predicate = NSPredicate(format: "enabled == YES AND %@ IN groups", group)
             
-            _tracks = try? PersistenceController.shared.container.viewContext.fetch(fetchRequest)
+            if let tracks = try? PersistenceController.shared.container.viewContext.fetch(fetchRequest) {
+                load(tracks: tracks)
+            }
         }
     }
     
@@ -47,7 +38,7 @@ class TrackTableViewController: UITableViewController {
     private var tracksHeader: UIViewController?
     
     func load(tracks: [Track]) {
-        _tracks = tracks
+        tracksContainer.tracks = tracks
     }
     
     //MARK: Lifecycle
@@ -84,12 +75,27 @@ class TrackTableViewController: UITableViewController {
                 // until the user actually starts scrolling again (see scrollViewWillBeginDragging).
             }
         }
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+            print("!!!!!!!!!! removing first track")
+            self.tracksContainer.tracks.removeFirst()
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         scrollToDelegate()
     }
+    
+    /*
+    override func didMove(toParent parent: UIViewController?) {
+        super.didMove(toParent: parent)
+        guard parent == nil else { return }
+        
+        print("!!!!!!!! TrackTableViewController.didMove(toParent:)", index)
+        delegate?.isRemoved()
+    }
+     */
     
     //MARK: Private
     
@@ -129,7 +135,7 @@ class TrackTableViewController: UITableViewController {
         
         let trackController = TrackController.shared
         cell.contentConfiguration = UIHostingConfiguration {
-            DayRow(TickController.numDays - indexPath.row - 1, tracks: tracks, spaces: false, lines: false, showDate: false)
+            DayRowProxy(tracksContainer: tracksContainer, day: TickController.numDays - indexPath.row - 1, spaces: false, lines: false, showDate: false)
                 .environmentObject(trackController)
         }
 
@@ -159,7 +165,7 @@ class TrackTableViewController: UITableViewController {
         let groupController = GroupController()
         
         let hostingController = UIHostingController {
-            TracksHeader(tracks: tracks)
+            TracksHeaderProxy(tracksContainer: tracksContainer)
                 .environmentObject(vcContainer)
                 .environmentObject(trackController)
                 .environmentObject(groupController)

@@ -80,6 +80,24 @@ struct DayRow<C: RandomAccessCollection>: View where C.Element == Track {
     }
 }
 
+//MARK: Day Row Proxy
+
+// I would like for this to be scoped inside of DayRow, but
+// I couldn't figure out how to get generics working properly
+struct DayRowProxy: View {
+    
+    @ObservedObject var tracksContainer: TracksContainer
+    
+    let day: Int
+    var spaces: Bool
+    var lines: Bool
+    var showDate: Bool
+    
+    var body: some View {
+        DayRow(day, tracks: tracksContainer.tracks, spaces: spaces, lines: lines, showDate: showDate)
+    }
+}
+
 //MARK: - Tick View
 
 struct TickView: View {
