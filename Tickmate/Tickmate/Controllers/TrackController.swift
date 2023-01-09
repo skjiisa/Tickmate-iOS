@@ -2,7 +2,7 @@
 //  TrackController.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 2/21/21.
+//  Created by Elaine Lyons on 2/21/21.
 //
 
 import CoreData
@@ -322,7 +322,7 @@ class TrackController: NSObject, ObservableObject {
     
 }
 
-//MARK: Fetched Results Controller Delegate
+//MARK: - Fetched Results Controller Delegate
 
 extension TrackController: NSFetchedResultsControllerDelegate {
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {

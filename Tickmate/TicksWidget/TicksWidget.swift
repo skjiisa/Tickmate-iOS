@@ -2,7 +2,7 @@
 //  TicksWidget.swift
 //  TicksWidget
 //
-//  Created by Isaac Lyons on 6/23/21.
+//  Created by Elaine Lyons on 6/23/21.
 //
 
 import WidgetKit
@@ -11,7 +11,7 @@ import Intents
 import CoreData
 import SwiftDate
 
-//MARK: Provider
+//MARK: - Provider
 
 struct Provider: IntentTimelineProvider {
     func placeholder(in context: Context) -> TracksEntry {
@@ -92,6 +92,8 @@ struct Provider: IntentTimelineProvider {
         }
     }
     
+    //MARK: Helpers
+    
     private func tracks(for configuration: ConfigurationIntent, context moc: NSManagedObjectContext) -> [Track]? {
         // This isn't using a switch statement because chaining ??? operators allows it to fall
         // back to the default fetch request if the results are nil, OR if they're empty.
@@ -150,7 +152,7 @@ struct Provider: IntentTimelineProvider {
     }
 }
 
-//MARK: TracksEntry
+//MARK: - TracksEntry
 
 struct TracksEntry: TimelineEntry {
     let date: Date
@@ -166,7 +168,7 @@ struct TracksEntry: TimelineEntry {
     }
 }
 
-//MARK: TicksWidgetEntryView
+//MARK: - TicksWidgetEntryView
 
 struct TicksWidgetEntryView : View {
     @Environment(\.colorScheme) private var colorScheme
@@ -305,7 +307,7 @@ struct TicksWidgetEntryView : View {
     */
 }
 
-//MARK: TicksWidget
+//MARK: - TicksWidget
 
 @main
 struct TicksWidget: Widget {
@@ -332,7 +334,7 @@ struct TicksWidget: Widget {
     }
 }
 
-//MARK: Previews
+//MARK: - Previews
 
 struct TicksWidget_Previews: PreviewProvider {
     static let trackController = TrackController(observeChanges: false, preview: true)

@@ -2,13 +2,15 @@
 //  ContentView.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 2/19/21.
+//  Created by Elaine Lyons on 2/19/21.
 //
 
 import SwiftUI
 import Introspect
 
 struct ContentView: View {
+    
+    //MARK: Properties
     
     @Environment(\.managedObjectContext) private var moc
     
@@ -57,6 +59,8 @@ struct ContentView: View {
         guard #available(iOS 15, *) else { return false }
         return true
     }
+    
+    //MARK: Body
     
     var body: some View {
         NavigationView {
@@ -197,6 +201,8 @@ struct ContentView: View {
         }
     }
     
+    //MARK: Helpers
+    
     private func updatePage(pageInserted: Bool) {
         if groups.count > 0 {
             page += pageInserted ? 1 : (page == 0 ? 0 : -1)
@@ -204,6 +210,8 @@ struct ContentView: View {
     }
     
 }
+
+//MARK: - Previews
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {

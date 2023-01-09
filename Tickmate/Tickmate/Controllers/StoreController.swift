@@ -2,7 +2,7 @@
 //  StoreController.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 6/1/21.
+//  Created by Elaine Lyons on 6/1/21.
 //
 
 import SwiftUI
@@ -12,7 +12,7 @@ class StoreController: NSObject, ObservableObject {
     
     // For some reason, using an @AppStorage property on ContentView for
     // groups would cause lag when changing page. Even if the property wasn't
-    // read dirctly, but instead updated a @State property with an .onChange,
+    // read directly, but instead updated a @State property with an .onChange,
     // it would still cause the lag, even if that .onChange was never called.
     @Published private(set) var groupsUnlocked: Bool
     
@@ -81,7 +81,7 @@ class StoreController: NSObject, ObservableObject {
     
 }
 
-//MARK: Products Request Delegate
+//MARK: - Products Request Delegate
 
 extension StoreController: SKProductsRequestDelegate {
     func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
@@ -104,7 +104,7 @@ extension StoreController: SKProductsRequestDelegate {
     }
 }
 
-//MARK: Payment Transaction Observer
+//MARK: - Payment Transaction Observer
 
 extension StoreController: SKPaymentTransactionObserver {
     func paymentQueue(_ queue: SKPaymentQueue, updatedTransactions transactions: [SKPaymentTransaction]) {
