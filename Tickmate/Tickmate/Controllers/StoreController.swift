@@ -16,7 +16,10 @@ class StoreController: NSObject, ObservableObject {
     // it would still cause the lag, even if that .onChange was never called.
     @Published private(set) var groupsUnlocked: Bool
     
+    // TODO: Remove this
+    // Probably reword this whole system tbh
     @Published private(set) var products = [SKProduct]()
+    @Published private(set) var groupsProduct: SKProduct?
     
     @Published private(set) var purchased = Set<String>()
     @Published private(set) var purchasing = Set<String>()
@@ -99,6 +102,9 @@ extension StoreController: SKProductsRequestDelegate {
                     .filter { UserDefaults.standard.bool(forKey: $0) }
                     .forEach { self.purchased.insert($0) }
                 self.products = response.products
+                self.groupsProduct = response.products.first { product in
+                    product.productIdentifier == Products.groups.rawValue
+                }
             }
         }
     }
