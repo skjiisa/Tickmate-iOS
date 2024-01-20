@@ -46,12 +46,9 @@ struct GroupsView: View {
             
             Section {
                 Button("Create new group") {
-                    withAnimation {
-                        // TODO: Bandaid. Should be done better
-                        groupController.objectWillChange.send()
-                        let newGroup = TrackGroup(index: Int16(groups.count), context: moc)
-                        select(newGroup, delay: 0.25)
-                    }
+                    groupController.animateNextChange = true
+                    let newGroup = TrackGroup(index: Int16(groups.count), context: moc)
+                    select(newGroup, delay: 0.25)
                 }
                 .centered()
             }
