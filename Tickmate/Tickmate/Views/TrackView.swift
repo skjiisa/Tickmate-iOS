@@ -2,7 +2,7 @@
 //  TrackView.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 2/23/21.
+//  Created by Elaine Lyons on 2/23/21.
 //
 
 import SwiftUI
@@ -58,7 +58,7 @@ struct TrackView: View {
             
             Section(header: Text("Name")) {
                 TextField("Name", text: $draftTrack.name)
-                    .introspectTextField { textField in
+                    .introspect(.textField, on: .iOS(.v14, .v15, .v16, .v17)) { textField in
                         vcContainer.textField = textField
                         vcContainer.shouldReturn = {
                             // There is a bug with SwiftUI TextFields that causes them
@@ -75,7 +75,10 @@ struct TrackView: View {
                     .id(fixTextField)
                     .onAppear {
                         // iOS 15 doesn't seem to like actually loading the text field's text on appear
-                        fixTextField.toggle()
+                        guard #available(iOS 15, *) else { return }
+                        guard #unavailable(iOS 17) else { return }
+                        guard !fixTextField else { return }
+                        fixTextField = true
                     }
             }
             

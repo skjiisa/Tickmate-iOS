@@ -2,12 +2,12 @@
 //  TicksView.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 2/19/21.
+//  Created by Elaine Lyons on 2/19/21.
 //
 
 import SwiftUI
 import SwiftDate
-import Introspect
+import SwiftUIIntrospect
 
 //MARK: Ticks View
 
@@ -90,7 +90,7 @@ struct TicksView: View {
                 .environmentObject(vcContainer)
                 .environmentObject(trackController)
                 .environmentObject(groupController)
-                .introspectViewController { vc in
+                .introspect(.viewController, on: .iOS(.v14, .v15, .v16, .v17)) { vc in
                     vc.presentationController?.delegate = vcContainer
                 }
             }
@@ -110,8 +110,11 @@ struct TicksView: View {
                     }
                 }
                 .listStyle(PlainListStyle())
-                .introspectTableView { tableView in
+                .introspect(.list, on: .iOS(.v14, .v15)) { tableView in
                     tableView.scrollsToTop = false
+                }
+                .introspect(.list, on: .iOS(.v16, .v17)) { collectionView in
+                    collectionView.scrollsToTop = false
                 }
                 .padding(0)
                 .onAppear {

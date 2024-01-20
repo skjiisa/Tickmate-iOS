@@ -2,12 +2,12 @@
 //  View+Centered.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 5/14/21.
+//  Created by Elaine Lyons on 5/14/21.
 //
 
 import SwiftUI
 
-struct CenteredModifier: ViewModifier {
+private struct CenteredModifier: ViewModifier {
     func body(content: Content) -> some View {
         HStack {
             Spacer()

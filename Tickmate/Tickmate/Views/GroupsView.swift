@@ -2,7 +2,7 @@
 //  GroupsView.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 5/14/21.
+//  Created by Elaine Lyons on 5/14/21.
 //
 
 import SwiftUI
@@ -46,8 +46,12 @@ struct GroupsView: View {
             
             Section {
                 Button("Create new group") {
-                    let newGroup = TrackGroup(index: Int16(groups.count), context: moc)
-                    select(newGroup, delay: 0.25)
+                    withAnimation {
+                        // TODO: Bandaid. Should be done better
+                        groupController.objectWillChange.send()
+                        let newGroup = TrackGroup(index: Int16(groups.count), context: moc)
+                        select(newGroup, delay: 0.25)
+                    }
                 }
                 .centered()
             }

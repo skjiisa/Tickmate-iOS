@@ -2,11 +2,11 @@
 //  ContentView.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 2/19/21.
+//  Created by Elaine Lyons on 2/19/21.
 //
 
 import SwiftUI
-import Introspect
+import SwiftUIIntrospect
 
 struct ContentView: View {
     
@@ -141,7 +141,7 @@ struct ContentView: View {
                 .environmentObject(trackController)
                 .environmentObject(groupController)
                 .environmentObject(vcContainer)
-                .introspectViewController { vc in
+                .introspect(.viewController, on: .iOS(.v14, .v15, .v16, .v17)) { vc in
                     vc.presentationController?.delegate = vcContainer
                 }
             }
@@ -174,7 +174,7 @@ struct ContentView: View {
                 .environmentObject(trackController)
                 .environmentObject(groupController)
                 .environmentObject(vcContainer)
-                .introspectViewController { vc in
+                .introspect(.viewController, on: .iOS(.v14, .v15, .v16, .v17)) { vc in
                     vc.presentationController?.delegate = vcContainer
                 }
             }

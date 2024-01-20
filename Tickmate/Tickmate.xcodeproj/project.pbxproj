@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -81,7 +81,6 @@
 		59EF632D25E5CF24003E7259 /* TrackRepresentation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59EF632C25E5CF24003E7259 /* TrackRepresentation.swift */; };
 		59EF633725E5DC93003E7259 /* TextWithCaption.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59EF633625E5DC93003E7259 /* TextWithCaption.swift */; };
 		59F0980225E081CC00667971 /* TicksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F0980125E081CC00667971 /* TicksView.swift */; };
-		59F3EDBB25FC46770009CDEC /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = 59F3EDBA25FC46770009CDEC /* Introspect */; };
 		59F3EDC225FC4F270009CDEC /* ViewControllerContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F3EDC125FC4F270009CDEC /* ViewControllerContainer.swift */; };
 		59F6170926671C2100CC78E1 /* AlertItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F6170826671C2100CC78E1 /* AlertItem.swift */; };
 		59F6EA9D25E369830069DF40 /* Tickmate+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59F6EA9C25E369830069DF40 /* Tickmate+Convenience.swift */; };
@@ -94,6 +93,7 @@
 		59FBCF2825E07BD8007B114F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59FBCF2725E07BD8007B114F /* Preview Assets.xcassets */; };
 		59FBCF2A25E07BD8007B114F /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59FBCF2925E07BD8007B114F /* Persistence.swift */; };
 		59FBCF2D25E07BD8007B114F /* Tickmate.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 59FBCF2B25E07BD8007B114F /* Tickmate.xcdatamodeld */; };
+		B91ED2862B5B89640049EDB7 /* SwiftUIIntrospect in Frameworks */ = {isa = PBXBuildFile; productRef = B91ED2852B5B89640049EDB7 /* SwiftUIIntrospect */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -216,8 +216,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B91ED2862B5B89640049EDB7 /* SwiftUIIntrospect in Frameworks */,
 				59F6EAAE25E377E40069DF40 /* SwiftDate in Frameworks */,
-				59F3EDBB25FC46770009CDEC /* Introspect in Frameworks */,
 				5964545225E987C9004FE184 /* CloudKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -439,7 +439,7 @@
 			name = Tickmate;
 			packageProductDependencies = (
 				59F6EAAD25E377E40069DF40 /* SwiftDate */,
-				59F3EDBA25FC46770009CDEC /* Introspect */,
+				B91ED2852B5B89640049EDB7 /* SwiftUIIntrospect */,
 			);
 			productName = Tickmate;
 			productReference = 59FBCF1D25E07BD5007B114F /* Tickmate.app */;
@@ -937,7 +937,7 @@
 			repositoryURL = "https://github.com/siteline/SwiftUI-Introspect.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.1.2;
+				minimumVersion = 1.1.2;
 			};
 		};
 		59F6EAAC25E377E40069DF40 /* XCRemoteSwiftPackageReference "SwiftDate" */ = {
@@ -961,15 +961,15 @@
 			package = 59F6EAAC25E377E40069DF40 /* XCRemoteSwiftPackageReference "SwiftDate" */;
 			productName = SwiftDate;
 		};
-		59F3EDBA25FC46770009CDEC /* Introspect */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 59F3EDB925FC46770009CDEC /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
-			productName = Introspect;
-		};
 		59F6EAAD25E377E40069DF40 /* SwiftDate */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 59F6EAAC25E377E40069DF40 /* XCRemoteSwiftPackageReference "SwiftDate" */;
 			productName = SwiftDate;
+		};
+		B91ED2852B5B89640049EDB7 /* SwiftUIIntrospect */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 59F3EDB925FC46770009CDEC /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */;
+			productName = SwiftUIIntrospect;
 		};
 /* End XCSwiftPackageProductDependency section */
 
