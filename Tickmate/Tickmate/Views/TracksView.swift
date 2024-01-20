@@ -2,7 +2,7 @@
 //  TracksView.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 2/28/21.
+//  Created by Elaine Lyons on 2/28/21.
 //
 
 import SwiftUI
@@ -56,13 +56,11 @@ struct TracksView: View {
                         select(track: newTrack, delay: 0.25)
                     }
                 }
-                .centered()
                 .foregroundColor(.accentColor)
                 
                 Button("Add preset track") {
                     showingPresets = true
                 }
-                .centered()
                 .foregroundColor(.accentColor)
             }
         }

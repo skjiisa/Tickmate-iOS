@@ -2,11 +2,11 @@
 //  GroupView.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 5/14/21.
+//  Created by Elaine Lyons on 5/14/21.
 //
 
 import SwiftUI
-import Introspect
+import SwiftUIIntrospect
 
 struct GroupView: View {
     
@@ -30,7 +30,7 @@ struct GroupView: View {
         Form {
             Section(header: Text("Name")) {
                 TextField("Name", text: $name)
-                    .introspectTextField { textField in
+                    .introspect(.textField, on: .iOS(.v14, .v15, .v16, .v17)) { textField in
                         textField.returnKeyType = .done
                         vcContainer.textField = textField
                         vcContainer.shouldReturn = {
@@ -48,7 +48,10 @@ struct GroupView: View {
                     .id(fixTextField)
                     .onAppear {
                         // iOS 15 doesn't seem to like actually loading the text field's text on appear
-                        fixTextField.toggle()
+                        guard #available(iOS 15, *) else { return }
+                        guard #unavailable(iOS 17) else { return }
+                        guard !fixTextField else { return }
+                        fixTextField = true
                     }
             }
             
