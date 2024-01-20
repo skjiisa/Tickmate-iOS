@@ -2,7 +2,7 @@
 //  TicksWidget.swift
 //  TicksWidget
 //
-//  Created by Isaac Lyons on 6/23/21.
+//  Created by Elaine Lyons on 6/23/21.
 //
 
 import WidgetKit
@@ -129,7 +129,7 @@ struct Provider: IntentTimelineProvider {
     
     private func tracksFetchRequest() -> NSFetchRequest<Track> {
         let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Track.index, ascending: true)]
+        fetchRequest.sortDescriptors = TrackController.sortDescriptors
         fetchRequest.predicate = NSPredicate(format: "enabled == YES")
         fetchRequest.fetchLimit = 8
         return fetchRequest

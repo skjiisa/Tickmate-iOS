@@ -2,7 +2,7 @@
 //  TrackController.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 2/21/21.
+//  Created by Elaine Lyons on 2/21/21.
 //
 
 import CoreData
@@ -15,6 +15,12 @@ import WidgetKit
 class TrackController: NSObject, ObservableObject {
     
     //MARK: Properties
+    
+    static let sortDescriptors = [
+        NSSortDescriptor(keyPath: \Track.index, ascending: true),
+        // For consistency when there are index collisions with iCloud sync
+        NSSortDescriptor(keyPath: \Track.name, ascending: true),
+    ]
     
     var tickControllers: [Track: TickController] = [:]
     
@@ -32,7 +38,7 @@ class TrackController: NSObject, ObservableObject {
         let context = (preview ? PersistenceController.preview : PersistenceController.shared).container.viewContext
         
         let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Track.index, ascending: true)]
+        fetchRequest.sortDescriptors = Self.sortDescriptors
         
         let frc = NSFetchedResultsController<Track>(
             fetchRequest: fetchRequest,
@@ -323,8 +329,19 @@ class TrackController: NSObject, ObservableObject {
 //MARK: Fetched Results Controller Delegate
 
 extension TrackController: NSFetchedResultsControllerDelegate {
+    func controllerWillChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        objectWillChange.send()
+    }
+    /*
     func controller(_ controller: NSFetchedResultsController<NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         guard [.delete, .insert].contains(type) else { return }
+        
+        var indices = Set<Int16>()
+        let hasDuplicateIndices = fetchedResultsController.fetchedObjects?.contains { item in
+            indices.insert(item.index).inserted
+        } ?? false
+        
+        guard hasDuplicateIndices else { return }
         
         // Update Track indices
         var changed = false
@@ -343,4 +360,5 @@ extension TrackController: NSFetchedResultsControllerDelegate {
         }
         saveIfScheduled()
     }
+     */
 }

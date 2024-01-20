@@ -12,7 +12,7 @@ struct GroupView: View {
     
     //MARK: Properties
     
-    @FetchRequest(entity: Track.entity(), sortDescriptors: [NSSortDescriptor(keyPath: \Track.index, ascending: true)])
+    @FetchRequest(entity: Track.entity(), sortDescriptors: TrackController.sortDescriptors)
     private var allTracks: FetchedResults<Track>
     
     @EnvironmentObject private var vcContainer: ViewControllerContainer

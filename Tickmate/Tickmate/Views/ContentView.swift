@@ -14,13 +14,13 @@ struct ContentView: View {
     
     @FetchRequest(
         entity: TrackGroup.entity(),
-        sortDescriptors: [NSSortDescriptor(keyPath: \TrackGroup.index, ascending: true)],
+        sortDescriptors: GroupController.sortDescriptors,
         predicate: NSPredicate(format: "tracks.@count > 0"))
     private var groups: FetchedResults<TrackGroup>
     
     private var ungroupedTracksFetchRequest = FetchRequest<Track>(
         entity: Track.entity(),
-        sortDescriptors: [NSSortDescriptor(keyPath: \Track.index, ascending: true)],
+        sortDescriptors: TrackController.sortDescriptors,
         predicate: NSPredicate(format: "enabled == YES AND groups.@count == 0"),
         animation: .default)
     

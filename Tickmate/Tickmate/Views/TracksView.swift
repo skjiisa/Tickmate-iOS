@@ -163,7 +163,7 @@ struct TrackCell: View {
                         .foregroundColor(track.lightText ? .white : .black)
                 }
                 TextWithCaption(text: track.name ?? "", caption: caption)
-                Spacer()
+                Spacer(minLength: 0)
                 Toggle(isOn: $track.enabled) {
                     EmptyView()
                 }

@@ -36,7 +36,7 @@ struct TicksView: View {
         self.scrollToBottomToggle = scrollToBottomToggle
         fetchRequest = FetchRequest(
             entity: Track.entity(),
-            sortDescriptors: [NSSortDescriptor(keyPath: \Track.index, ascending: true)],
+            sortDescriptors: TrackController.sortDescriptors,
             predicate: NSPredicate(format: "enabled == YES"))
     }
     
@@ -44,7 +44,7 @@ struct TicksView: View {
         self.scrollToBottomToggle = scrollToBottomToggle
         fetchRequest = FetchRequest(
             entity: Track.entity(),
-            sortDescriptors: [NSSortDescriptor(keyPath: \Track.index, ascending: true)],
+            sortDescriptors: TrackController.sortDescriptors,
             predicate: NSPredicate(format: "enabled == YES AND %@ IN groups", group))
     }
     
