@@ -78,7 +78,7 @@ struct SettingsView: View {
             }
             
             Section(header: Text("Premium Features"), footer: Text("Groups allow you to swipe left and right between different sets of tracks from the main screen")) {
-                ForEach(storeController.products, id: \.productIdentifier) { product in
+                if let product = storeController.groupsProduct {
                     Button {
                         storeController.isAuthorizedForPayments
                             ? storeController.purchase(product)
@@ -100,9 +100,11 @@ struct SettingsView: View {
                         }
                     }
                     .disabled(storeController.purchased.contains(product.productIdentifier))
-                }
-                .alert(isPresented: $showingRestrictedPaymentsAlert) {
-                    Alert(title: Text("Access restricted"), message: Text("You don't have permission to make purchases on this account."))
+                    .alert(isPresented: $showingRestrictedPaymentsAlert) {
+                        Alert(title: Text("Access restricted"), message: Text("You don't have permission to make purchases on this account."))
+                    }
+                } else {
+                    ProgressView()
                 }
                 
                 Button("Restore purchases") {
