@@ -8,7 +8,9 @@
 import CoreData
 import SwiftUI
 import SwiftDate
+#if os(iOS)
 import WidgetKit
+#endif
 
 //MARK: TrackController
 
@@ -291,7 +293,9 @@ class TrackController: NSObject, ObservableObject {
         guard refreshWork == nil else { return }
         let work = DispatchWorkItem { [weak self] in
             self?.refreshWork = nil
+            #if os(iOS)
             WidgetCenter.shared.reloadAllTimelines()
+            #endif
             print("Widget timelines reloaded")
         }
         refreshWork = work

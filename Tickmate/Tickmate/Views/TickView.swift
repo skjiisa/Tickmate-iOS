@@ -2,7 +2,7 @@
 //  TickView.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 6/24/21.
+//  Created by Elaine Lyons on 6/24/21.
 //
 
 import SwiftUI
@@ -116,9 +116,16 @@ struct TickView: View {
                     .font(compact ? .system(size: 11) : .body)
             }
         }
+        // TODO: Test on iOS to see if this should be visionOS flagged
+        .hoverEffect()
         .onTapGesture {
             tickController.tick(day: day)
+            // TODO: Use CoreHaptics for audio feedback on visionOS?
+            // Or .sensoryFeedback (???)
+            // Or just replace with a native button
+            #if os(iOS)
             UISelectionFeedbackGenerator().selectionChanged()
+            #endif
         }
         .onLongPressGesture { pressing in
             guard track.multiple else { return }
@@ -128,7 +135,9 @@ struct TickView: View {
         } perform: {
             guard track.multiple else { return }
             if tickController.untick(day: day) {
+                #if os(iOS)
                 UIImpactFeedbackGenerator(style: .soft).impactOccurred()
+                #endif
             }
         }
         .scaleEffect(pressing ? 1.1 : 1)

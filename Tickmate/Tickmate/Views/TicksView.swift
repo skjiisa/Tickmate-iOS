@@ -62,16 +62,22 @@ struct TicksView: View {
                 ForEach(tracks) { track in
                     Button {
                         showingTrack = track
+                        #if os(iOS)
                         UISelectionFeedbackGenerator().selectionChanged()
+                        #endif
                     } label: {
                         ZStack {
+                            #if os(iOS)
                             RoundedRectangle(cornerRadius: 3)
                                 .foregroundColor(Color(.systemFill))
-                                .frame(height: 32)
+                            #elseif os(visionOS)
+                            Color.clear
+                            #endif
                             if let systemImage = track.systemImage {
                                 Text("\(Image(systemName: systemImage))")
                             }
                         }
+                        .frame(height: 32)
                     }
                     .foregroundColor(.primary)
                     .onAppear {
@@ -79,6 +85,9 @@ struct TicksView: View {
                     }
                 }
             }
+            #if os(visionOS)
+            .padding(.horizontal, 8)
+            #endif
             .padding(.horizontal)
             .padding(.vertical, 4)
             .sheet(item: $showingTrack) {
@@ -106,7 +115,9 @@ struct TicksView: View {
                     ForEach(0..<365) { dayComplement in
                         DayRow(364 - dayComplement, tracks: tracks, spaces: weekSeparatorSpaces, lines: weekSeparatorLines)
                             .listRowInsets(.init(top: 4, leading: 0, bottom: 4, trailing: 0))
+                            #if os(iOS)
                             .padding(.horizontal)
+                            #endif
                     }
                 }
                 .listStyle(PlainListStyle())
@@ -118,11 +129,11 @@ struct TicksView: View {
                 }
                 .padding(0)
                 .onAppear {
-                    proxy.scrollTo(0)
+                    proxy.scrollTo(0, anchor: .top)
                 }
                 .onChange(of: scrollToBottomToggle) { _ in
                     withAnimation {
-                        proxy.scrollTo(0)
+                        proxy.scrollTo(0, anchor: .top)
                     }
                 }
             }
@@ -139,5 +150,6 @@ struct TicksView_Previews: PreviewProvider {
                 .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
                 .environmentObject(TrackController())
         }
+        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
