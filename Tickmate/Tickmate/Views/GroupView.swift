@@ -30,20 +30,9 @@ struct GroupView: View {
         Form {
             Section(header: Text("Name")) {
                 TextField("Name", text: $name)
+                // TODO: Replace with .submitLabel(.done) when iOS 14 is dropped
                     .introspect(.textField, on: .iOS(.v14, .v15, .v16, .v17)) { textField in
                         textField.returnKeyType = .done
-                        vcContainer.textField = textField
-                        vcContainer.shouldReturn = {
-                            if let correctedText = textField.text {
-                                name = correctedText
-                                group.name = correctedText
-                                print(correctedText)
-                            }
-                            dismissKeyboard()
-                            return false
-                        }
-                        vcContainer.textFieldShouldEnableEditMode = false
-                        textField.delegate = vcContainer
                     }
                     .id(fixTextField)
                     .onAppear {
@@ -70,6 +59,7 @@ struct GroupView: View {
         }
         .onDisappear {
             withAnimation {
+                group.name = name
                 group.tracks = selectedTracks as NSSet
                 // If we try using the environment's moc to save, this will
                 // crash the app if the user makes this view disappear by
