@@ -2,7 +2,7 @@
 //  SettingsView.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 3/9/21.
+//  Created by Elaine Lyons on 3/9/21.
 //
 
 import SwiftUI
@@ -136,10 +136,10 @@ struct SettingsView: View {
             }
             
             Section {
-                Link("Support Website", destination: URL(string: "https://github.com/Isvvc/Tickmate-iOS/issues")!)
-                Link("Email Support", destination: URL(string: "mailto:lyons@tuta.io")!)
-                Link("Privacy Policy", destination: URL(string: "https://github.com/Isvvc/Tickmate-iOS/blob/main/Privacy%20Policy.txt")!)
-                Link("Source Code", destination: URL(string: "https://github.com/Isvvc/Tickmate-iOS/")!)
+                Link("Support Website", destination: URL(string: "https://github.com/skjiisa/Tickmate-iOS/issues")!)
+                Link("Email Support", destination: URL(string: "mailto:tickmate@lyons.app")!)
+                Link("Privacy Policy", destination: URL(string: "https://github.com/skjiisa/Tickmate-iOS/blob/main/Privacy%20Policy.txt")!)
+                Link("Source Code", destination: URL(string: "https://github.com/skjiisa/Tickmate-iOS/")!)
             }
         }
         .navigationTitle("Settings")
@@ -188,6 +188,7 @@ struct SettingsView_Previews: PreviewProvider {
         NavigationView {
             SettingsView(showing: .constant(true))
         }
+        .navigationViewStyle(StackNavigationViewStyle())
         .environmentObject(TrackController())
         .environmentObject(StoreController())
     }
