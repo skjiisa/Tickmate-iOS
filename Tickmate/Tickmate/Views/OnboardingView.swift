@@ -2,7 +2,7 @@
 //  OnboardingView.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 3/18/21.
+//  Created by Elaine Lyons on 3/18/21.
 //
 
 import SwiftUI
@@ -26,13 +26,6 @@ struct OnboardingView: View {
     var body: some View {
         NavigationView {
             VStack {
-                HStack {
-                    Text("Tickmate")
-                        .padding()
-                        .font(.bold(.largeTitle)())
-                    Spacer()
-                }
-                
                 Spacer()
                 LogoView()
                     .frame(maxHeight: 180)
@@ -45,6 +38,7 @@ struct OnboardingView: View {
                     .fixedSize(horizontal: false, vertical: true)
                 
                 Spacer()
+                #if os(iOS)
                 Button(action: start) {
                     RoundedRectangle(cornerRadius: 10)
                         .frame(height: 64)
@@ -55,7 +49,11 @@ struct OnboardingView: View {
                         )
                 }
                 .padding()
+                #elseif os(visionOS)
+                Button("Get started", action: start)
+                #endif
                 
+                // Hidden navigation link that can be triggered programmatically with showingPresets
                 NavigationLink(
                     destination: PresetTracksView(onSelect: select)
                         .toolbar {
@@ -63,11 +61,14 @@ struct OnboardingView: View {
                                 dismiss()
                             }
                         },
-                    isActive: $showingPresets) {
+                    isActive: $showingPresets
+                ) {
                     EmptyView()
                 }
+                .frame(height: 0)
+                .opacity(0)
             }
-            .navigationBarHidden(true)
+            .navigationTitle("Tickmate")
             .padding(.bottom)
         }
         .navigationViewStyle(StackNavigationViewStyle())
@@ -124,16 +125,24 @@ struct LogoView: View {
 
 struct OnboardingView_Previews: PreviewProvider {
     static var previews: some View {
-        OnboardingView(showing: .constant(true))
-            .previewDevice(PreviewDevice(rawValue: "iPhone 12 Pro Max"))
-            .previewDisplayName("iPhone 12 Pro Max")
-        
-        OnboardingView(showing: .constant(true))
-            .previewDevice(PreviewDevice(rawValue: "iPhone SE (2nd generation)"))
-            .previewDisplayName("iPhone SE 2")
-        
-        OnboardingView(showing: .constant(true))
-            .previewDevice(PreviewDevice(rawValue: "iPhone SE (1st generation)"))
-            .previewDisplayName("iPhone SE")
+        Group {
+            OnboardingView(showing: .constant(true))
+                .previewDevice(PreviewDevice(rawValue: "iPhone 12 Pro Max"))
+                .previewDisplayName("iPhone 12 Pro Max")
+            
+            OnboardingView(showing: .constant(true))
+                .previewDevice(PreviewDevice(rawValue: "iPhone SE (2nd generation)"))
+                .previewDisplayName("iPhone SE 2")
+            
+            OnboardingView(showing: .constant(true))
+                .previewDevice(PreviewDevice(rawValue: "iPhone SE (1st generation)"))
+                .previewDisplayName("iPhone SE")
+            
+            OnboardingView(showing: .constant(true))
+                .previewDevice(PreviewDevice(rawValue: "Apple Vision Pro"))
+                .previewDisplayName("Vision Pro")
+        }
+        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        .environmentObject(TrackController())
     }
 }

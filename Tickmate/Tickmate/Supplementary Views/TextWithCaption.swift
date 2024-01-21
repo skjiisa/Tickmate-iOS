@@ -2,7 +2,7 @@
 //  TextWithCaption.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 2/23/21.
+//  Created by Elaine Lyons on 2/23/21.
 //
 
 import SwiftUI

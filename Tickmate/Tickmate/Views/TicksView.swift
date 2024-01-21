@@ -83,6 +83,9 @@ struct TicksView: View {
                     .onAppear {
                         trackController.loadTicks(for: track)
                     }
+                    #if os(visionOS)
+                    .buttonStyle(.borderless)
+                    #endif
                 }
             }
             #if os(visionOS)
