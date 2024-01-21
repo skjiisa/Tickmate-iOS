@@ -149,7 +149,9 @@ struct SettingsView: View {
         }
         .navigationTitle("Settings")
         .toolbar {
-            ToolbarItem(placement: .primaryAction) {
+            // A WWDC talk said to always put close buttons in the top left, at
+            // least for visionOS. Do they mean _left_ left, or leading??
+            ToolbarItem(placement: .topBarLeading) {
                 Button("Done") {
                     showing = false
                 }
