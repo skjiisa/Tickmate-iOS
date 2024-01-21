@@ -97,7 +97,9 @@ struct GroupView: View {
                     if selectedTracks.contains(track) {
                         Spacer()
                         Image(systemName: "checkmark")
+                            #if os(iOS)
                             .foregroundColor(.accentColor)
+                            #endif
                             .transition(.scale)
                     }
                 }

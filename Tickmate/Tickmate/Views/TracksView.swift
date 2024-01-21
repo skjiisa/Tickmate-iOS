@@ -56,12 +56,16 @@ struct TracksView: View {
                         select(track: newTrack, delay: 0.25)
                     }
                 }
+                #if os(iOS)
                 .foregroundColor(.accentColor)
+                #endif
                 
                 Button("Add preset track") {
                     showingPresets = true
                 }
+                #if os(iOS)
                 .foregroundColor(.accentColor)
+                #endif
             }
         }
         .environment(\.editMode, $editMode)
@@ -185,5 +189,6 @@ struct TracksView_Previews: PreviewProvider {
                 .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
                 .environmentObject(TrackController(preview: true))
         }
+        .navigationViewStyle(StackNavigationViewStyle())
     }
 }

@@ -110,7 +110,7 @@ struct LogoView: View {
     
     var body: some View {
         VStack {
-            ForEach(0..<ticked.count) { row in
+            ForEach(0..<4) { row in
                 HStack {
                     ForEach(0..<3) { column in
                         RoundedRectangle(cornerRadius: 3.0)

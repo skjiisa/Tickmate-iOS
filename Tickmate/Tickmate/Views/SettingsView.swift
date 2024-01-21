@@ -94,8 +94,13 @@ struct SettingsView: View {
                             } else if storeController.purchasing.contains(product.productIdentifier) {
                                 ProgressView()
                             } else {
-                                Text(product.price, formatter: storeController.priceFormatter)
-                                    .foregroundColor(storeController.isAuthorizedForPayments ? .accentColor : .secondary)
+                                Text(
+                                    product.price,
+                                    formatter: storeController.priceFormatter
+                                )
+                                #if os(iOS)
+                                .foregroundColor(storeController.isAuthorizedForPayments ? .accentColor : .secondary)
+                                #endif
                             }
                         }
                     }

@@ -126,11 +126,18 @@ struct TrackView: View {
             }
             
             Section {
-                Button("Delete") {
-                    showDelete = true
+                if #available(iOS 15, *) {
+                    Button("Delete", role: .destructive) {
+                        showDelete = true
+                    }
+                    .centered()
+                } else {
+                    Button("Delete") {
+                        showDelete = true
+                    }
+                    .centered()
+                    .accentColor(.red)
                 }
-                .centered()
-                .accentColor(.red)
             }
             .actionSheet(isPresented: $showDelete) {
                 ActionSheet(
@@ -255,7 +262,10 @@ struct GroupsPicker: View {
                         if groups.contains(group) {
                             Spacer()
                             Image(systemName: "checkmark")
+                            #if os(iOS)
                                 .foregroundColor(.accentColor)
+                            #endif
+                            // TODO: This only seems to animate when hiding
                                 .transition(.scale)
                         }
                     }
@@ -287,6 +297,8 @@ struct TrackView_Previews: PreviewProvider {
                 .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
                 .environmentObject(ViewControllerContainer())
                 .environmentObject(TrackController())
+                .environmentObject(GroupController())
         }
+        .navigationViewStyle(StackNavigationViewStyle())
     }
 }
