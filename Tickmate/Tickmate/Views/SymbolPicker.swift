@@ -2,7 +2,7 @@
 //  SymbolPicker.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 2/24/21.
+//  Created by Elaine Lyons on 2/24/21.
 //
 
 import SwiftUI
@@ -16,27 +16,33 @@ struct SymbolPicker: View {
     var body: some View {
         ScrollViewReader { proxy in
             ScrollView(.vertical) {
-                LazyVGrid(columns: colunms) {
+                LazyVGrid(columns: colunms, spacing: 16) {
                     ForEach(SymbolsList, id: \.self) { symbol in
                         Button {
                             selection = symbol
                         } label: {
                             ZStack {
                                 RoundedRectangle(cornerRadius: 8)
-                                    .foregroundColor(selection == symbol ? .accentColor : Color(.secondarySystemGroupedBackground))
+                                    .foregroundColor(selection == symbol ? .accentColor : Color(.systemFill))
                                     .aspectRatio(1, contentMode: .fill)
                                 Image(systemName: symbol)
                                     .imageScale(.large)
-                                    .foregroundColor(.primary)
+                                    .foregroundColor(
+                                        selection == symbol ? .white : .primary
+                                    )
                             }
                         }
                         .id(symbol)
+                        // If you have this many buttons at once, they HAVE to
+                        // be plain or borderless or everything lags like hell.
+                        .buttonStyle(.plain)
+                        #if os(visionOS)
+                        .buttonBorderShape(.roundedRectangle(radius: 8))
+                        #endif
                     }
                 }
                 .padding()
             }
-            .background(Color(.systemGroupedBackground)
-                            .edgesIgnoringSafeArea(.bottom))
             .onAppear {
                 proxy.scrollTo(selection, anchor: .center)
             }
@@ -47,8 +53,15 @@ struct SymbolPicker: View {
 
 struct SymbolPicker_Previews: PreviewProvider {
     static var previews: some View {
-        NavigationView {
-            SymbolPicker(selection: .constant("pencil"))
+        Preview()
+    }
+    
+    struct Preview: View {
+        @State private var selection: String? = "cube"
+        var body: some View {
+            NavigationView {
+                SymbolPicker(selection: $selection)
+            }
         }
     }
 }

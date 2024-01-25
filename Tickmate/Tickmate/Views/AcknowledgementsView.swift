@@ -2,7 +2,7 @@
 //  AcknowledgementsView.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 3/10/21.
+//  Created by Elaine Lyons on 3/10/21.
 //
 
 import SwiftUI
@@ -11,7 +11,7 @@ struct AcknowledgementsView: View {
     
     private var tickmateAcknowledgement = Acknowledgement(
         name: "BSD 2-Clause License",
-        copyright: "2021, Isaac Lyons",
+        copyright: "2024, Elaine Lyons",
         link: nil,
         license: .bsd2)
     
@@ -65,5 +65,6 @@ struct AcknowledgementsView_Previews: PreviewProvider {
         NavigationView {
             AcknowledgementsView()
         }
+        .navigationViewStyle(StackNavigationViewStyle())
     }
 }

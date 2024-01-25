@@ -2,7 +2,7 @@
 //  SettingsView.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 3/9/21.
+//  Created by Elaine Lyons on 3/9/21.
 //
 
 import SwiftUI
@@ -94,8 +94,13 @@ struct SettingsView: View {
                             } else if storeController.purchasing.contains(product.productIdentifier) {
                                 ProgressView()
                             } else {
-                                Text(product.price, formatter: storeController.priceFormatter)
-                                    .foregroundColor(storeController.isAuthorizedForPayments ? .accentColor : .secondary)
+                                Text(
+                                    product.price,
+                                    formatter: storeController.priceFormatter
+                                )
+                                #if os(iOS)
+                                .foregroundColor(storeController.isAuthorizedForPayments ? .accentColor : .secondary)
+                                #endif
                             }
                         }
                     }
@@ -136,15 +141,17 @@ struct SettingsView: View {
             }
             
             Section {
-                Link("Support Website", destination: URL(string: "https://github.com/Isvvc/Tickmate-iOS/issues")!)
-                Link("Email Support", destination: URL(string: "mailto:lyons@tuta.io")!)
-                Link("Privacy Policy", destination: URL(string: "https://github.com/Isvvc/Tickmate-iOS/blob/main/Privacy%20Policy.txt")!)
-                Link("Source Code", destination: URL(string: "https://github.com/Isvvc/Tickmate-iOS/")!)
+                Link("Support Website", destination: URL(string: "https://github.com/skjiisa/Tickmate-iOS/issues")!)
+                Link("Email Support", destination: URL(string: "mailto:tickmate@lyons.app")!)
+                Link("Privacy Policy", destination: URL(string: "https://github.com/skjiisa/Tickmate-iOS/blob/main/Privacy%20Policy.txt")!)
+                Link("Source Code", destination: URL(string: "https://github.com/skjiisa/Tickmate-iOS/")!)
             }
         }
         .navigationTitle("Settings")
         .toolbar {
-            ToolbarItem(placement: .primaryAction) {
+            // A WWDC talk said to always put close buttons in the top left, at
+            // least for visionOS. Do they mean _left_ left, or leading??
+            ToolbarItem(placement: .topBarLeading) {
                 Button("Done") {
                     showing = false
                 }
@@ -188,6 +195,7 @@ struct SettingsView_Previews: PreviewProvider {
         NavigationView {
             SettingsView(showing: .constant(true))
         }
+        .navigationViewStyle(StackNavigationViewStyle())
         .environmentObject(TrackController())
         .environmentObject(StoreController())
     }
