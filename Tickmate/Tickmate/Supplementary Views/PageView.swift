@@ -2,7 +2,7 @@
 //  PageView.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 5/18/21.
+//  Created by Elaine Lyons on 5/18/21.
 //
 
 import SwiftUI
@@ -15,6 +15,7 @@ struct PageView<Content: View>: View {
     
     @GestureState private var translation: CGFloat = 0
     @State private var dragging = true
+    @State private var offset: CGFloat = 0
     
     var body: some View {
         GeometryReader { geo in
@@ -22,11 +23,16 @@ struct PageView<Content: View>: View {
                 content.frame(width: geo.size.width)
             }
             .frame(width: geo.size.width, alignment: .leading)
-            .offset(x: -CGFloat(currentIndex) * geo.size.width + translation)
-            .animation(dragging ? .easeOut(duration: 0.05) : .push)
+            .offset(x: offset)
             .gesture(
                 DragGesture().updating($translation) { value, state, _ in
                     dragging = true
+                    // If TicksView was actually performant, this shouldn't be
+                    // needed, but it's actually really laggy. Adding as
+                    // minuscule an animation possible magically smoothes it.
+                    withAnimation(.easeOut(duration: 0.05)) {
+                        updateOffset(geometryReaderWidth: geo.size.width)
+                    }
                     state = (currentIndex == 0 && value.translation.width > 0)
                         || (currentIndex == pageCount - 1 && value.translation.width < 0)
                         ? value.translation.width / 3
@@ -42,11 +48,18 @@ struct PageView<Content: View>: View {
                         : currentIndex
                     dragging = false
                     currentIndex = min(max(adjacentIndex, 0), pageCount - 1)
+                    withAnimation(.push) {
+                        updateOffset(geometryReaderWidth: geo.size.width)
+                    }
                 }
             )
             .onChange(of: pageCount) { _ in updatePage() }
             .onAppear(perform: updatePage)
         }
+    }
+    
+    private func updateOffset(geometryReaderWidth: CGFloat) {
+        offset = -CGFloat(currentIndex) * geometryReaderWidth + translation
     }
     
     private func updatePage() {
