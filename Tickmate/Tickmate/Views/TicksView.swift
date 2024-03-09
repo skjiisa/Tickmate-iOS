@@ -13,6 +13,8 @@ import SwiftUIIntrospect
 
 struct TicksView: View {
     
+    // MARK: Properties
+    
     @Environment(\.managedObjectContext) private var moc
     
     private var fetchRequest: FetchRequest<Track>
@@ -32,12 +34,17 @@ struct TicksView: View {
     
     @State private var showingTrack: Track?
     
+    // MARK: Init
+    
+    private static var standardPredicate: String = "enabled == YES AND isArchived == NO"
+    
     init(scrollToBottomToggle: Bool = false) {
         self.scrollToBottomToggle = scrollToBottomToggle
         fetchRequest = FetchRequest(
             entity: Track.entity(),
             sortDescriptors: TrackController.sortDescriptors,
-            predicate: NSPredicate(format: "enabled == YES"))
+            predicate: NSPredicate(format: Self.standardPredicate)
+        )
     }
     
     init(group: TrackGroup, scrollToBottomToggle: Bool = false) {
@@ -45,7 +52,11 @@ struct TicksView: View {
         fetchRequest = FetchRequest(
             entity: Track.entity(),
             sortDescriptors: TrackController.sortDescriptors,
-            predicate: NSPredicate(format: "enabled == YES AND %@ IN groups", group))
+            predicate: NSPredicate(
+                format: Self.standardPredicate + " AND %@ IN groups",
+                group
+            )
+        )
     }
     
     init(fetchRequest: FetchRequest<Track>, scrollToBottomToggle: Bool = false) {
@@ -150,9 +161,10 @@ struct TicksView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             TicksView()
-                .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-                .environmentObject(TrackController())
         }
         .navigationViewStyle(StackNavigationViewStyle())
+        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        .environmentObject(TrackController(preview: true))
+        .environmentObject(GroupController(preview: true))
     }
 }
