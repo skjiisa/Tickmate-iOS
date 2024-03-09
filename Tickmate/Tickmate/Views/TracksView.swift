@@ -153,6 +153,7 @@ struct TrackCell: View {
     
     @ObservedObject var track: Track
     @Binding var selection: Track?
+    var shouldShowToggle = true
     
     private var caption: String {
         [track.multiple ? "Multiple" : nil, track.reversed ? "Reversed" : nil].compactMap { $0 }.joined(separator: ", ")
@@ -180,11 +181,13 @@ struct TrackCell: View {
                 }
                 TextWithCaption(text: track.name ?? "", caption: caption)
                 Spacer(minLength: 0)
-                Toggle(isOn: $track.enabled) {
-                    EmptyView()
-                }
-                .onChange(of: track.enabled) { _ in
-                    PersistenceController.save(context: moc)
+                
+                if shouldShowToggle {
+                    Toggle("Enabled", isOn: $track.enabled)
+                        .labelsHidden()
+                        .onChange(of: track.enabled) { _ in
+                            PersistenceController.save(context: moc)
+                        }
                 }
             }
         }

@@ -276,12 +276,12 @@ struct TrackView: View {
     
     private func archive() {
         track.isArchived = true
-        trackController.scheduleSave()
+        PersistenceController.save(context: moc)
     }
     
     private func unarchive() {
         track.isArchived = false
-        trackController.scheduleSave()
+        PersistenceController.save(context: moc)
     }
     
     // MARK: Strings

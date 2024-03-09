@@ -10,6 +10,7 @@ import SwiftUI
 struct ArchivedTracksView: View {
     
     @Environment(\.managedObjectContext) private var moc
+    @State private var editMode = EditMode.inactive
     
     @EnvironmentObject private var trackController: TrackController
     
@@ -23,13 +24,30 @@ struct ArchivedTracksView: View {
         Form {
             Section {
                 ForEach(tracks) { track in
-                    // TODO: Remove `enabled` toggle
-                    TrackCell(track: track, selection: $selection)
+                    TrackCell(track: track, selection: $selection, shouldShowToggle: false)
                 }
+                .onDelete(perform: self.delete(_:))
             }
         }
+        .environment(\.editMode, $editMode)
         .navigationTitle("Archived tracks")
-        // TODO: Add edit mode for bulk unarchiving.
+        // TODO: Add bulk unarchiving?
+        // As far as I can tell, onDelete is only available with ForEach,
+        // but multiselect is only available with List, so you can only
+        // do one or the other???
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                StateEditButton(editMode: $editMode)
+            }
+        }
+    }
+    
+    private func delete(_ indexSet: IndexSet) {
+        indexSet.map { tracks[$0] }.forEach {
+            trackController.delete(track: $0, context: moc)
+        }
+        trackController.scheduleSave()
+        trackController.scheduleTimelineRefresh()
     }
 }
 
