@@ -12,7 +12,11 @@ struct GroupView: View {
     
     //MARK: Properties
     
-    @FetchRequest(entity: Track.entity(), sortDescriptors: TrackController.sortDescriptors)
+    @FetchRequest(
+        entity: Track.entity(),
+        sortDescriptors: TrackController.sortDescriptors,
+        predicate: NSPredicate(format: "isArchived == NO")
+    )
     private var allTracks: FetchedResults<Track>
     
     @EnvironmentObject private var vcContainer: ViewControllerContainer

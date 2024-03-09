@@ -205,6 +205,7 @@ struct TracksView_Previews: PreviewProvider {
         .navigationViewStyle(StackNavigationViewStyle())
         .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
         .environmentObject(TrackController(preview: true))
+        .environmentObject(GroupController(preview: true))
         .environmentObject(ViewControllerContainer())
     }
 }
