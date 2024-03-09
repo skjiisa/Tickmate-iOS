@@ -270,6 +270,7 @@ class TrackController: NSObject, ObservableObject {
         }
     }
     
+    // TODO: Update this to instead save _now_, but prevent a second save from happening for 5 seconds (or whatever interval)
     /// Schedule a Core Data save on the current view context.
     ///
     /// Call this function when you want to save a small change when other small changes may happen soon after.
