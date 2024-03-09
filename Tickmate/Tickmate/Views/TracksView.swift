@@ -30,6 +30,10 @@ struct TracksView: View {
         trackController.fetchedResultsController.fetchedObjects ?? []
     }
     
+    private var shouldShowArchivedTracksLink: Bool {
+        !(trackController.archivedTracksFRC.fetchedObjects ?? []).isEmpty
+    }
+    
     //MARK: Body
     
     var body: some View {
@@ -66,6 +70,14 @@ struct TracksView: View {
                 #if os(iOS)
                 .foregroundColor(.accentColor)
                 #endif
+            }
+            
+            if shouldShowArchivedTracksLink {
+                Section {
+                    NavigationLink("Archive") {
+                        ArchivedTracksView()
+                    }
+                }
             }
         }
         .environment(\.editMode, $editMode)
@@ -186,9 +198,10 @@ struct TracksView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             TracksView(showing: .constant(true))
-                .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-                .environmentObject(TrackController(preview: true))
         }
         .navigationViewStyle(StackNavigationViewStyle())
+        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        .environmentObject(TrackController(preview: true))
+        .environmentObject(ViewControllerContainer())
     }
 }

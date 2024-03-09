@@ -23,14 +23,16 @@ class PersistenceController {
         result.previewGroup = group
         
         let dateString = TrackController.iso8601.string(from: Date() - 5.days)
-        for i: Int16 in 0..<5 {
+        for i: Int16 in 0..<6 {
             let track = Track(
                 name: String(UUID().uuidString.dropLast(28)),
-                multiple: i > 0,
+                multiple: 1...2 ~= i,
                 reversed: i == 2,
                 startDate: dateString,
                 index: i,
-                context: viewContext)
+                isArchived: i == 5,
+                context: viewContext
+            )
             
             if i == 1 {
                 for day in 0..<5 {
