@@ -2,7 +2,7 @@
 //  TrackGroups.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 5/31/21.
+//  Created by Elaine Lyons on 5/31/21.
 //
 
 import Foundation
