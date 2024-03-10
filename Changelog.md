@@ -1,5 +1,25 @@
 # Tickmate Changelog
 
+## v1.3 and v1.3.1
+
+v1.3 released on the iOS App Store 2024/01/29  
+v1.3.1 released on the visionOS App Store 2024/02/02
+
+### Major changes
+
++ Native Apple Vision Pro support
+
+### Minor improvements
+
++ Improve future-proofing by only showing known in-app purchases
+([#88](https://github.com/skjiisa/Tickmate-iOS/pull/88))
++ Fix iOS 16 and 17 issues related to Introspect for SwiftUI
+([#89](https://github.com/skjiisa/Tickmate-iOS/pull/89))
++ Fix tracks rearranging themselves on new installs
+([#91](https://github.com/skjiisa/Tickmate-iOS/pull/91))
++ Make swiping between pages less janky (again)
+([a40b9a9](https://github.com/skjiisa/Tickmate-iOS/commit/a40b9a9dc6aab239704391e5666402d8f7735a95))
+
 ## v1.2.3
 
 Released on the App Store 2021/11/04
