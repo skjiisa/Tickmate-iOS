@@ -32,10 +32,17 @@ struct TrackView: View {
     @State private var actionSheet: Action?
     @State private var fixTextField = false
     
+    private var groupsEnabled: Bool {
+        groupsUnlocked && !track.isArchived
+    }
+    
+    @ViewBuilder
     private var groupsFooter: some View {
-        groupsUnlocked
-            ? AnyView(EmptyView())
-            : AnyView(Text("Unlock the groups upgrade from the settings page"))
+        if !groupsUnlocked {
+            Text("Unlock the groups upgrade from the settings page.")
+        } else if track.isArchived {
+            Text("Unarchive to add to groups.")
+        }
     }
     
     //MARK: Body
@@ -53,7 +60,7 @@ struct TrackView: View {
                             .foregroundColor(.secondary)
                     }
                 }
-                .disabled(!groupsUnlocked)
+                .disabled(!groupsEnabled)
             }
             
             Section(header: Text("Name")) {
@@ -275,8 +282,9 @@ struct TrackView: View {
     }
     
     private func archive() {
-        track.isArchived = true
+        track.archive()
         PersistenceController.save(context: moc)
+        selection = nil
     }
     
     private func unarchive() {

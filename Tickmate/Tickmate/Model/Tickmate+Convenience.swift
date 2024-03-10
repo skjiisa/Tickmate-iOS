@@ -48,6 +48,16 @@ extension Track {
         let luma = (0.299 * r + 0.587 * g + 0.114 * b) / 255
         return luma < 2/3
     }
+    
+    /// Archives the Track and removes it from all groups.
+    func archive() {
+        isArchived = true
+        // ContentView only displays Groups that aren't empty, but it would take
+        // a subquery to first filter out archived Tracks, but SwiftUI then
+        // won't dynamically respond to those changes, so it's easiest to just
+        // remove archived tracks from any groups.
+        self.groups = Set<TrackGroup>() as NSSet
+    }
 }
 
 extension Tick {
