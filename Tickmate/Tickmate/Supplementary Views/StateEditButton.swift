@@ -2,7 +2,7 @@
 //  StateEditButton.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 3/8/21.
+//  Created by Elaine Lyons on 3/8/21.
 //
 
 import SwiftUI

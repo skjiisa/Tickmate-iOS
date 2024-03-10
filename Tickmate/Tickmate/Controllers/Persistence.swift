@@ -2,7 +2,7 @@
 //  Persistence.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 2/19/21.
+//  Created by Elaine Lyons on 2/19/21.
 //
 
 import SwiftUI
