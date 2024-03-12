@@ -12,7 +12,11 @@ struct GroupView: View {
     
     //MARK: Properties
     
-    @FetchRequest(entity: Track.entity(), sortDescriptors: TrackController.sortDescriptors)
+    @FetchRequest(
+        entity: Track.entity(),
+        sortDescriptors: TrackController.sortDescriptors,
+        predicate: NSPredicate(format: "isArchived == NO")
+    )
     private var allTracks: FetchedResults<Track>
     
     @EnvironmentObject private var vcContainer: ViewControllerContainer
@@ -53,7 +57,12 @@ struct GroupView: View {
         .navigationTitle("Group details")
         .onAppear {
             name = group.wrappedName
-            if let tracks = group.tracks as? Set<Track> {
+            if var tracks = group.tracks as? Set<Track> {
+                // Groups shouldn't have archived Tracks. Remove archived Tracks
+                // that might be here because of sync conflicts on load.
+                tracks
+                    .filter(\.isArchived)
+                    .forEach { track in tracks.remove(track) }
                 selectedTracks = tracks
             }
         }
@@ -83,7 +92,11 @@ struct GroupView: View {
                 }
             } label: {
                 HStack {
-                    Text(track.name ?? "New Track")
+                    Label(
+                        track.name ?? "New Track",
+                        systemImage: track.systemImage ?? "questionmark.square"
+                    )
+                    
                     if selectedTracks.contains(track) {
                         Spacer()
                         Image(systemName: "checkmark")

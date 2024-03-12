@@ -2,7 +2,7 @@
 //  TrackGroups.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 5/31/21.
+//  Created by Elaine Lyons on 5/31/21.
 //
 
 import Foundation
@@ -16,6 +16,15 @@ class TrackGroups: ObservableObject {
     }
     
     func load(_ track: Track) {
+        guard !track.isArchived else {
+            // Archived tracks should not have any groups.
+            // Remove any that might be there from sync conflicts.
+            set.removeAll()
+            array.removeAll()
+            save(to: track)
+            return
+        }
+        
         guard let groups = track.groups as? Set<TrackGroup> else { return }
         set = groups
         array = groups.sorted(by: { $0.index < $1.index })

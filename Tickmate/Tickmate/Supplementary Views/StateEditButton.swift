@@ -2,7 +2,7 @@
 //  StateEditButton.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 3/8/21.
+//  Created by Elaine Lyons on 3/8/21.
 //
 
 import SwiftUI
@@ -17,18 +17,13 @@ struct StateEditButton: View {
     var onTap: () -> Void = {}
     
     var body: some View {
-        Button {
+        Button(editMode.isEditing ? doneText : "Edit") {
             withAnimation {
                 editMode = editMode == .active ? .inactive : .active
             }
             onTap()
-        } label: {
-            if editMode.isEditing {
-                Text(doneText)
-            } else {
-                Text("Edit")
-            }
         }
+        .animation(.none, value: editMode)
     }
 }
 

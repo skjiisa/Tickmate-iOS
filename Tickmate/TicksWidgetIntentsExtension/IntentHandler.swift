@@ -20,6 +20,9 @@ class IntentHandler: INExtension, ConfigurationIntentHandling {
     func provideTracksOptionsCollection(for intent: ConfigurationIntent, with completion: @escaping (INObjectCollection<TrackItem>?, Error?) -> Void) {
         let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Track.index, ascending: true)]
+        // If dynamic widgets are added, `enabled == YES` could maybe be removed
+        // in case there are Tracks you want _only_ displayed in the widget.
+        fetchRequest.predicate = NSPredicate(format: "enabled == YES AND isArchived == NO")
         
         do {
             let context = PersistenceController.shared.container.viewContext

@@ -2,7 +2,7 @@
 //  Tickmate+Convenience.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 2/21/21.
+//  Created by Elaine Lyons on 2/21/21.
 //
 
 import CoreData
@@ -19,7 +19,17 @@ extension TrackGroup {
 
 extension Track {
     @discardableResult
-    convenience init(name: String, color: Int32? = nil, multiple: Bool = false, reversed: Bool = false, startDate: String, systemImage: String? = nil, index: Int16, context moc: NSManagedObjectContext) {
+    convenience init(
+        name: String,
+        color: Int32? = nil,
+        multiple: Bool = false,
+        reversed: Bool = false,
+        startDate: String,
+        systemImage: String? = nil,
+        index: Int16,
+        isArchived: Bool = false,
+        context moc: NSManagedObjectContext
+    ) {
         self.init(context: moc)
         self.name = name
         self.color = color ?? Int32(Color(hue: Double.random(in: 0...1), saturation: 1, brightness: 1).rgb)
@@ -28,6 +38,7 @@ extension Track {
         self.startDate = startDate
         self.systemImage = systemImage ?? SymbolsList.randomElement()
         self.index = index
+        self.isArchived = isArchived
     }
     
     var lightText: Bool {
@@ -36,6 +47,16 @@ extension Track {
         let b = Double((color & 0x0000ff))
         let luma = (0.299 * r + 0.587 * g + 0.114 * b) / 255
         return luma < 2/3
+    }
+    
+    /// Archives the Track and removes it from all groups.
+    func archive() {
+        isArchived = true
+        // ContentView only displays Groups that aren't empty, but it would take
+        // a subquery to first filter out archived Tracks, but SwiftUI then
+        // won't dynamically respond to those changes, so it's easiest to just
+        // remove archived tracks from any groups.
+        self.groups = Set<TrackGroup>() as NSSet
     }
 }
 

@@ -30,6 +30,10 @@ struct TracksView: View {
         trackController.fetchedResultsController.fetchedObjects ?? []
     }
     
+    private var shouldShowArchivedTracksLink: Bool {
+        !(trackController.archivedTracksFRC.fetchedObjects ?? []).isEmpty
+    }
+    
     //MARK: Body
     
     var body: some View {
@@ -66,6 +70,14 @@ struct TracksView: View {
                 #if os(iOS)
                 .foregroundColor(.accentColor)
                 #endif
+            }
+            
+            if shouldShowArchivedTracksLink {
+                Section {
+                    NavigationLink("Archive") {
+                        ArchivedTracksView()
+                    }
+                }
             }
         }
         .environment(\.editMode, $editMode)
@@ -141,6 +153,7 @@ struct TrackCell: View {
     
     @ObservedObject var track: Track
     @Binding var selection: Track?
+    var shouldShowToggle = true
     
     private var caption: String {
         [track.multiple ? "Multiple" : nil, track.reversed ? "Reversed" : nil].compactMap { $0 }.joined(separator: ", ")
@@ -168,11 +181,13 @@ struct TrackCell: View {
                 }
                 TextWithCaption(text: track.name ?? "", caption: caption)
                 Spacer(minLength: 0)
-                Toggle(isOn: $track.enabled) {
-                    EmptyView()
-                }
-                .onChange(of: track.enabled) { _ in
-                    PersistenceController.save(context: moc)
+                
+                if shouldShowToggle {
+                    Toggle("Enabled", isOn: $track.enabled)
+                        .labelsHidden()
+                        .onChange(of: track.enabled) { _ in
+                            PersistenceController.save(context: moc)
+                        }
                 }
             }
         }
@@ -186,9 +201,11 @@ struct TracksView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
             TracksView(showing: .constant(true))
-                .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
-                .environmentObject(TrackController(preview: true))
         }
         .navigationViewStyle(StackNavigationViewStyle())
+        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        .environmentObject(TrackController(preview: true))
+        .environmentObject(GroupController(preview: true))
+        .environmentObject(ViewControllerContainer())
     }
 }

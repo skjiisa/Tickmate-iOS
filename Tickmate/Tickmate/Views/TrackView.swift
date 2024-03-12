@@ -29,13 +29,20 @@ struct TrackView: View {
     @State private var enabled = true
     @State private var initialized = false
     @State private var showingSymbolPicker = false
-    @State private var showDelete = false
+    @State private var actionSheet: Action?
     @State private var fixTextField = false
     
+    private var groupsEnabled: Bool {
+        groupsUnlocked && !track.isArchived
+    }
+    
+    @ViewBuilder
     private var groupsFooter: some View {
-        groupsUnlocked
-            ? AnyView(EmptyView())
-            : AnyView(Text("Unlock the groups upgrade from the settings page"))
+        if !groupsUnlocked {
+            Text("Unlock the groups upgrade from the settings page.")
+        } else if track.isArchived {
+            Text("Unarchive to add to groups.")
+        }
     }
     
     //MARK: Body
@@ -53,7 +60,7 @@ struct TrackView: View {
                             .foregroundColor(.secondary)
                     }
                 }
-                .disabled(!groupsUnlocked)
+                .disabled(!groupsEnabled)
             }
             
             Section(header: Text("Name")) {
@@ -125,27 +132,8 @@ struct TrackView: View {
                 }
             }
             
-            Section {
-                if #available(iOS 15, *) {
-                    Button("Delete", role: .destructive) {
-                        showDelete = true
-                    }
-                    .centered()
-                } else {
-                    Button("Delete") {
-                        showDelete = true
-                    }
-                    .centered()
-                    .accentColor(.red)
-                }
-            }
-            .actionSheet(isPresented: $showDelete) {
-                ActionSheet(
-                    title: Text("Are you sure you want to delete \(draftTrack.name.isEmpty ? "this track" : draftTrack.name)?"),
-                    buttons: [
-                        .destructive(Text("Delete"), action: delete),
-                        .cancel()
-                    ])
+            if !vcContainer.editMode.isEditing {
+                footerSection
             }
         }
         .navigationTitle("Track details")
@@ -186,6 +174,65 @@ struct TrackView: View {
                 PersistenceController.save(context: moc)
             }
             vcContainer.deactivateEditMode()
+        }
+    }
+    
+    // MARK: Footer section
+    
+    private var footerSection: some View {
+        Section {
+            if #available(iOS 15, *) {
+                Button("Delete", role: .destructive) {
+                    actionSheet = .delete
+                }
+            } else {
+                Button("Delete") {
+                    actionSheet = .delete
+                }
+                .accentColor(.red)
+            }
+            
+            Button(track.isArchived ? "Unarchive" : "Archive") {
+                actionSheet = track.isArchived ? .unarchive : .archive
+            }
+        }
+        .actionSheet(item: $actionSheet, content: self.actionSheet(for:))
+    }
+    
+    private enum Action: Hashable, Identifiable {
+        var id: Action { self }
+        case delete
+        case archive
+        case unarchive
+    }
+    
+    private func actionSheet(for action: Action) -> ActionSheet {
+        switch action {
+        case .delete:
+            ActionSheet(
+                title: Text("Are you sure you want to delete \(draftTrack.name.isEmpty ? "this track" : draftTrack.name)?"),
+                buttons: [
+                    .destructive(Text("Delete"), action: self.delete),
+                    .cancel()
+                ]
+            )
+        case .archive:
+            ActionSheet(
+                title: Text(Strings.archiveActionSheetTitle),
+                message: Text(Strings.archiveActionSheetMessage),
+                buttons: [
+                    .destructive(Text("Archive"), action: self.archive),
+                    .cancel(),
+                ]
+            )
+        case .unarchive:
+            ActionSheet(
+                title: Text("Unarchive track?"),
+                buttons: [
+                    .default(Text("Unarchive"), action: self.unarchive),
+                    .cancel(),
+                ]
+            )
         }
     }
     
@@ -232,6 +279,24 @@ struct TrackView: View {
                 PersistenceController.save(context: moc)
             }
         }
+    }
+    
+    private func archive() {
+        track.archive()
+        PersistenceController.save(context: moc)
+        selection = nil
+    }
+    
+    private func unarchive() {
+        track.isArchived = false
+        PersistenceController.save(context: moc)
+    }
+    
+    // MARK: Strings
+    
+    private enum Strings {
+        static var archiveActionSheetTitle: LocalizedStringKey = "Are you sure?"
+        static var archiveActionSheetMessage: LocalizedStringKey = "Archiving a track will hide it from the main track list. It will still be viewable from the archived tracks page at the bottom of the track list."
     }
 }
 

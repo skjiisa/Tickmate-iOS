@@ -94,6 +94,7 @@
 		59FBCF2A25E07BD8007B114F /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59FBCF2925E07BD8007B114F /* Persistence.swift */; };
 		59FBCF2D25E07BD8007B114F /* Tickmate.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 59FBCF2B25E07BD8007B114F /* Tickmate.xcdatamodeld */; };
 		B91ED2862B5B89640049EDB7 /* SwiftUIIntrospect in Frameworks */ = {isa = PBXBuildFile; productRef = B91ED2852B5B89640049EDB7 /* SwiftUIIntrospect */; };
+		B93BBF092B9CCAFC007E810A /* ArchivedTracksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93BBF082B9CCAFC007E810A /* ArchivedTracksView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -188,6 +189,7 @@
 		59FBCF2925E07BD8007B114F /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		59FBCF2C25E07BD8007B114F /* Tickmate.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Tickmate.xcdatamodel; sourceTree = "<group>"; };
 		59FBCF2E25E07BD8007B114F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B93BBF082B9CCAFC007E810A /* ArchivedTracksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchivedTracksView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -354,6 +356,7 @@
 				5931643E26855EB8005DDA1A /* TickView.swift */,
 				59EF632825E5CD4B003E7259 /* TrackView.swift */,
 				59C23A6B25E70E1A00AFBC4B /* SymbolPicker.swift */,
+				B93BBF082B9CCAFC007E810A /* ArchivedTracksView.swift */,
 				599D9F5125EC5A4900DF3795 /* TracksView.swift */,
 				5991968E25F813ED003215CC /* PresetTracksView.swift */,
 				59E6E14D25F88177008A74A9 /* SettingsView.swift */,
@@ -596,6 +599,7 @@
 				5991969225F817F7003215CC /* PresetTracks.swift in Sources */,
 				599D9F5225EC5A4900DF3795 /* TracksView.swift in Sources */,
 				59F6170926671C2100CC78E1 /* AlertItem.swift in Sources */,
+				B93BBF092B9CCAFC007E810A /* ArchivedTracksView.swift in Sources */,
 				59F6EA9D25E369830069DF40 /* Tickmate+Convenience.swift in Sources */,
 				59A0D8932645CF1600E01E61 /* View+DismissKeyboard.swift in Sources */,
 				59EF633725E5DC93003E7259 /* TextWithCaption.swift in Sources */,

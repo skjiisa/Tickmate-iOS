@@ -41,12 +41,14 @@ class TrackController: NSObject, ObservableObject {
         
         let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
         fetchRequest.sortDescriptors = Self.sortDescriptors
+        fetchRequest.predicate = NSPredicate(format: "isArchived == NO")
         
         let frc = NSFetchedResultsController<Track>(
             fetchRequest: fetchRequest,
             managedObjectContext: context,
             sectionNameKeyPath: nil,
-            cacheName: nil)
+            cacheName: nil
+        )
         
         if observeChanges {
             frc.delegate = self
@@ -55,6 +57,34 @@ class TrackController: NSObject, ObservableObject {
         do {
             try frc.performFetch()
             print("TrackController FRC fetched.")
+        } catch {
+            NSLog("Error performing Tracks fetch: \(error)")
+        }
+        
+        return frc
+    }()
+    
+    lazy var archivedTracksFRC: NSFetchedResultsController<Track> = {
+        let context = (preview ? PersistenceController.preview : PersistenceController.shared).container.viewContext
+        
+        let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
+        fetchRequest.sortDescriptors = Self.sortDescriptors
+        fetchRequest.predicate = NSPredicate(format: "isArchived == YES")
+        
+        let frc = NSFetchedResultsController<Track>(
+            fetchRequest: fetchRequest,
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
+        
+        if observeChanges {
+            frc.delegate = self
+        }
+        
+        do {
+            try frc.performFetch()
+            print("TrackController archived FRC fetched.")
         } catch {
             NSLog("Error performing Tracks fetch: \(error)")
         }
@@ -270,6 +300,7 @@ class TrackController: NSObject, ObservableObject {
         }
     }
     
+    // TODO: Update this to instead save _now_, but prevent a second save from happening for 5 seconds (or whatever interval)
     /// Schedule a Core Data save on the current view context.
     ///
     /// Call this function when you want to save a small change when other small changes may happen soon after.
