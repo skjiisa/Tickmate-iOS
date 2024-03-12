@@ -130,7 +130,7 @@ struct Provider: IntentTimelineProvider {
     private func tracksFetchRequest() -> NSFetchRequest<Track> {
         let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
         fetchRequest.sortDescriptors = TrackController.sortDescriptors
-        fetchRequest.predicate = NSPredicate(format: "enabled == YES")
+        fetchRequest.predicate = NSPredicate(format: "enabled == YES AND isArchived == NO")
         fetchRequest.fetchLimit = 8
         return fetchRequest
     }
