@@ -290,8 +290,12 @@ struct TicksWidgetEntryView : View {
                 }
             }
         }
-        .padding(12)
-        .background(colorScheme == .dark ? Color(.systemGroupedBackground) : Color(.systemBackground))
+        .versionedBackground {
+            Color(colorScheme == .dark ? .systemGroupedBackground : .systemBackground)
+            // I don't know why this is needed, but manually
+            // setting the theme doesn't work without it.
+                .environment(\.colorScheme, self.colorScheme)
+        }
     }
     
     // You can uncomment this and the above Text for easier debugging
@@ -303,6 +307,19 @@ struct TicksWidgetEntryView : View {
         return dateFormatter
     }()
     */
+}
+
+private extension View {
+    @ViewBuilder
+    func versionedBackground(_ backgroundView: () -> some View) -> some View {
+        if #available(iOS 17.0, *) {
+            self.containerBackground(for: .widget) {
+                backgroundView()
+            }
+        } else {
+            self.padding().background(backgroundView())
+        }
+    }
 }
 
 //MARK: TicksWidget
@@ -339,11 +356,16 @@ struct TicksWidget_Previews: PreviewProvider {
     
     static var previews: some View {
         ticksWidget(tracksCount: 3, days: 2, family: .systemSmall)
+            .previewDisplayName("3 tracks, 2 days, small")
         ticksWidget(tracksCount: 4, days: 5, family: .systemSmall)
             .environment(\.colorScheme, .dark)
+            .previewDisplayName("4 tracks, 5 days, small, dark")
         ticksWidget(tracksCount: 5, days: 4, family: .systemMedium)
+            .previewDisplayName("4 tracks, 5 days, medium")
         ticksWidget(tracksCount: 4, days: 7, family: .systemLarge)
+            .previewDisplayName("4 tracks, 7 days, large")
         ticksWidget(tracksCount: 5, days: 10, family: .systemLarge)
+            .previewDisplayName("5 tracks, 10 days, large")
     }
     
     static func tracks(_ count: Int) -> [Track] {
