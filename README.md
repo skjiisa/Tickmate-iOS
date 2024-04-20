@@ -2,7 +2,7 @@
 
 1-bit Journal
 
-[Download on the App Store](https://apps.apple.com/us/app/tickmate-1-bit-journal/id1558621933)
+<a href="https://apps.apple.com/us/app/tickmate-1-bit-journal/id1558621933?itsct=apps_box_badge&amp;itscg=30200" style="display: inline-block; overflow: hidden; border-radius: 13px; width: 250px; height: 83px;"><img src="https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83&amp;releaseDate=1620604800" alt="Download on the App Store" style="border-radius: 13px; width: 250px; height: 83px;"></a>
 
 ### Screenshots
 
@@ -23,20 +23,18 @@ You can track anything from habits you wish to build or break to how often you w
 
 ### Inspiration
 
-Tickmate for iOS was designed after [lordi/tickmate](https://github.com/lordi/tickmate) for Android.
+Tickmate for iOS was designed after, but not affiliated with, [lordi/tickmate](https://github.com/lordi/tickmate) for Android.
 
 ## Build
 
-Building Tickmate requires Xcode 12+ on macOS 10.15 or later for
-+ iOS Swift Package Manager support
-+ SwiftUI 2
+Just set your developer team in Xcode and build!
 
 Dependencies:
 
 * [malcommac/SwiftDate](https://github.com/malcommac/SwiftDate)
 * [siteline/SwiftUI-Introspect](https://github.com/siteline/SwiftUI-Introspect)
 
-These dependencies should be automatically fetched by Xcode.
+These dependencies will be automatically fetched by Swift Package Manager in Xcode.
 
 ## License
 
