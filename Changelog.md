@@ -1,5 +1,12 @@
 # Tickmate Changelog
 
+## v1.4
+
+Released on the App Store 2024/03/17
+
++ Tracks can now be archived
+([#93](https://github.com/skjiisa/Tickmate-iOS/pull/93))
+
 ## v1.3 and v1.3.1
 
 v1.3 released on the iOS App Store 2024/01/29  
