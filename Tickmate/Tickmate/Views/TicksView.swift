@@ -22,6 +22,8 @@ struct TicksView: View {
         fetchRequest.wrappedValue
     }
     
+    @AppStorage(Defaults.todayAtTop.rawValue, store: UserDefaults(suiteName: groupID))
+    private var todayAtTop = false
     @AppStorage(Defaults.weekSeparatorLines.rawValue) private var weekSeparatorLines: Bool = true
     @AppStorage(Defaults.weekSeparatorSpaces.rawValue) private var weekSeparatorSpaces: Bool = true
     
@@ -122,24 +124,31 @@ struct TicksView: View {
             
             ScrollViewReader { proxy in
                 List {
-                    Button("Go to bottom") {
-                        proxy.scrollTo(0)
+                    if !todayAtTop {
+                        Button("Go to bottom") {
+                            proxy.scrollTo(0)
+                        }
                     }
                     
-                    ForEach(0..<365) { dayComplement in
-                        DayRow(364 - dayComplement, tracks: tracks, spaces: weekSeparatorSpaces, lines: weekSeparatorLines)
-                            .listRowInsets(.init(top: 4, leading: 0, bottom: 4, trailing: 0))
-                            #if os(iOS)
-                            .padding(.horizontal)
-                            #endif
+                    ForEach(0..<365) { row in
+                        DayRow(
+                            todayAtTop ? row : 364 - row,
+                            tracks: tracks,
+                            spaces: weekSeparatorSpaces,
+                            lines: weekSeparatorLines
+                        )
+                        .listRowInsets(.init(top: 4, leading: 0, bottom: 4, trailing: 0))
+                        #if os(iOS)
+                        .padding(.horizontal)
+                        #endif
                     }
                 }
                 .listStyle(PlainListStyle())
                 .introspect(.list, on: .iOS(.v14, .v15)) { tableView in
-                    tableView.scrollsToTop = false
+                    tableView.scrollsToTop = todayAtTop
                 }
                 .introspect(.list, on: .iOS(.v16, .v17)) { collectionView in
-                    collectionView.scrollsToTop = false
+                    collectionView.scrollsToTop = todayAtTop
                 }
                 .padding(0)
                 .onAppear {

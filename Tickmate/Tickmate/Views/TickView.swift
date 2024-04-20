@@ -34,8 +34,8 @@ struct DayRow<C: RandomAccessCollection>: View where C.Element == Track {
     }
     
     @ViewBuilder
-    private var backgroud: some View {
-        if lines && trackController.weekend(day: day) {
+    private var background: some View {
+        if lines && trackController.shouldShowSeparatorBelow(day: day) {
             VStack {
                 Spacer()
                 Capsule()
@@ -70,7 +70,7 @@ struct DayRow<C: RandomAccessCollection>: View where C.Element == Track {
                     .opacity(0)
             }
         }
-        .listRowBackground(backgroud)
+        .listRowBackground(background)
         .id(day)
     }
 }

@@ -2,7 +2,7 @@
 //  Defaults.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 3/9/21.
+//  Created by Elaine Lyons on 3/9/21.
 //
 
 import Foundation
@@ -23,4 +23,5 @@ enum Defaults: String {
     case appGroupDatabaseMigration  // Bool
     case userDefaultsMigration      // Bool     App Group
     case lastUpdateTime             // String   App Group
+    case todayAtTop                 // Bool     App Group
 }
