@@ -201,18 +201,39 @@ class TrackController: NSObject, ObservableObject {
         return (weekday, dateFormatter.string(from: date))
     }
     
-    func weekend(day: Int) -> Bool {
+    func isWeekEnd(day: Int) -> Bool {
         // The Swift % operator doesn't calculate
         // the modulo from negative numbers,
         // so we're adding 7 and %ing again.
         (weekday - day % 7 + 7) % 7 + 1 == weekStartDay
     }
     
+    private func isWeekStart(day: Int) -> Bool {
+        (weekday - day % 7 + 6) % 7 + 1 == weekStartDay
+    }
+    
     func insets(day: Int) -> Edge.Set? {
-        weekend(day: day)
-            ? .bottom
-            : (weekday - day % 7 + 6) % 7 + 1 == weekStartDay
-            ? .top : nil
+        let todayAtTop = UserDefaults(suiteName: groupID)?.bool(forKey: Defaults.todayAtTop.rawValue) ?? false
+        var after: Edge.Set { todayAtTop ? .top : .bottom }
+        var before: Edge.Set { todayAtTop ? .bottom : .top }
+        
+        if isWeekEnd(day: day) {
+            return after
+        } else if isWeekStart(day: day) {
+            return before
+        } else {
+            return .none
+        }
+    }
+    
+    func shouldShowSeparatorBelow(day: Int) -> Bool {
+        let todayAtTop = UserDefaults(suiteName: groupID)?.bool(forKey: Defaults.todayAtTop.rawValue) ?? false
+        
+        if todayAtTop {
+            return isWeekStart(day: day)
+        } else {
+            return isWeekEnd(day: day)
+        }
     }
     
     //MARK: Track CRUD
@@ -300,7 +321,7 @@ class TrackController: NSObject, ObservableObject {
         }
     }
     
-    // TODO: Update this to instead save _now_, but prevent a second save from happening for 5 seconds (or whatever interval)
+    // TODO: Update this and the below to instead save _now_, but prevent a second save from happening for 5 seconds (or whatever interval)
     /// Schedule a Core Data save on the current view context.
     ///
     /// Call this function when you want to save a small change when other small changes may happen soon after.

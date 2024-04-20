@@ -17,6 +17,9 @@ struct SettingsView: View {
     @AppStorage(Defaults.weekStartDay.rawValue, store: UserDefaults(suiteName: groupID))
     private var weekStartDay = 2
     
+    @AppStorage(Defaults.todayAtTop.rawValue, store: UserDefaults(suiteName: groupID))
+    private var todayAtTop = false
+    
     @AppStorage(Defaults.weekSeparatorSpaces.rawValue) private var weekSeparatorSpaces: Bool = true
     @AppStorage(Defaults.weekSeparatorLines.rawValue) private var weekSeparatorLines: Bool = true
     @AppStorage(Defaults.relativeDates.rawValue) private var relativeDates = true
@@ -47,6 +50,15 @@ struct SettingsView: View {
                             text: "New day start time",
                             caption: "")
                     }
+                }
+            }
+            
+            Section {
+                Picker("Put today at the", selection: $todayAtTop) {
+                    Text("top")
+                        .tag(true)
+                    Text("bottom")
+                        .tag(false)
                 }
             }
             
@@ -167,6 +179,9 @@ struct SettingsView: View {
         }
         .onChange(of: customDayStart, perform: updateCustomDayStart)
         .onChange(of: timeOffset, perform: updateCustomDayStart)
+        .onChange(of: todayAtTop) { _ in
+            trackController.scheduleTimelineRefresh()
+        }
         .onChange(of: weekStartDay) { value in
             trackController.weekStartDay = value
         }

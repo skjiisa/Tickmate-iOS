@@ -172,6 +172,9 @@ struct TicksWidgetEntryView : View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.widgetFamily) private var widgetFamily
     
+    @AppStorage(Defaults.todayAtTop.rawValue, store: UserDefaults(suiteName: groupID))
+    private var todayAtTop = false
+    
     //MARK: Properties
     
     var entry: Provider.Entry
@@ -204,6 +207,14 @@ struct TicksWidgetEntryView : View {
         entry.configuration.daysMode == .automatic
             ? defaultNumDays
             : min(entry.configuration.numDays?.intValue ?? defaultNumDays, maxNumDays)
+    }
+    
+    struct Row: Identifiable {
+        var id: Int { value }
+        var value: Int
+    }
+    var rows: [Row] {
+        (0..<numDays).map(Row.init(value:))
     }
     
     var defaultNumTracks: Int {
@@ -273,13 +284,13 @@ struct TicksWidgetEntryView : View {
                 Divider()
             }
             
-            ForEach(0..<numDays) { dayComplement in
-                let day = numDays - 1 - dayComplement
+            ForEach(rows) { row in
+                let day = todayAtTop ? row.value : (numDays - 1 - row.value)
                 DayRow(day, tracks: tracks, spaces: false, lines: false, widget: true, compact: compact)
                 
-                if dayComplement < numDays - 1 {
-                    if entry.configuration.weekSeparators?.boolValue ?? true
-                        && entry.trackController.weekend(day: day) {
+                if row.value < numDays - 1 {
+                    if entry.configuration.weekSeparators?.boolValue ?? true,
+                       entry.trackController.shouldShowSeparatorBelow(day: day) {
                         Capsule()
                             .foregroundColor(.gray)
                             .frame(height: 2)
