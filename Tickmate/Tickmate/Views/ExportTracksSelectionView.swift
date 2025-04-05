@@ -59,6 +59,15 @@ struct ExportTracksSelectionView: View {
                         HStack {
                             if let systemImage = track.systemImage {
                                 Image(systemName: systemImage)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .padding(6)
+                                    .frame(width: 36, height: 36)
+                                    .foregroundColor(track.lightText ? .white : .black)
+                                    .background(
+                                        Color(rgb: Int(track.color))
+                                            .cornerRadius(4)
+                                    )
                             }
                             Text(track.name ?? "Unnamed Track")
                         }
