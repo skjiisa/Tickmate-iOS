@@ -16,6 +16,8 @@ struct ExportTracksSelectionView: View {
     @State private var selectedTracks: Set<Track> = []
     @State private var allAreSelected: Bool = false
     @State private var csv: CSV?
+    @State private var isExporting = false
+    @State private var alert: AlertItem?
     
     private struct CSV: Identifiable {
         let url: URL
@@ -78,9 +80,16 @@ struct ExportTracksSelectionView: View {
         .sheet(item: $csv) { csv in
             ShareSheet(activityItems: [csv.url])
         }
+        .alert(alertItem: $alert)
     }
     
     private func exportSelectedTracksToCSV() {
+        guard !isExporting else { return }
+        isExporting = true
+        defer {
+            isExporting = false
+        }
+        
         let tracks = Array(selectedTracks)
         var csvString = "Date," + tracks.map { $0.name ?? "Unnamed Track" }.joined(separator: ",") + "\n"
         
@@ -117,7 +126,7 @@ struct ExportTracksSelectionView: View {
             try csvString.write(to: fileURL, atomically: true, encoding: .utf8)
             csv = CSV(url: fileURL)
         } catch {
-            print("Error saving CSV: \(error)")
+            alert = AlertItem(title: "Error exporting CSV", message: error.localizedDescription)
         }
     }
 }
