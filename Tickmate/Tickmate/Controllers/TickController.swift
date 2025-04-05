@@ -287,15 +287,18 @@ extension TickController: NSFetchedResultsControllerDelegate {
         trackController?.scheduleTimelineRefresh()
     }
     
+    /// Returns the number of days from today to the oldest tick
+    /// A positive number means the oldest tick is that many days ago
+    ///
     /// This function was written by Trae using Claude-3.5-Sonnet
-    func oldestTickDate() -> Date? {
+    func oldestTickDate() -> Int? {
         guard let allTicks = fetchedResultsController.fetchedObjects,
               let lastTick = allTicks.last,
-              let startDateString = track.startDate,
-              let startDate = DateInRegion(startDateString, region: .current)?.dateTruncated(at: [.hour, .minute, .second])
+              let todayOffset = todayOffset
         else { return nil }
         
         // Since ticks are sorted by dayOffset descending, the last tick has the smallest offset
-        return startDate.date + Int(lastTick.dayOffset).days
+        // Convert from dayOffset (days since start) to days from today
+        return todayOffset - Int(lastTick.dayOffset)
     }
 }

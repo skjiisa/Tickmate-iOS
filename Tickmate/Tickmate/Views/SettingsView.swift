@@ -232,9 +232,8 @@ struct SettingsView: View {
         var earliestDay = 0
         for track in tracks {
             let controller = trackController.tickController(for: track)
-            if let oldestDate = controller.oldestTickDate() {
-                let days = Int((today - oldestDate).timeInterval / (24 * 3600))
-                earliestDay = max(earliestDay, days)
+            if let oldestDays = controller.oldestTickDate() {
+                earliestDay = max(earliestDay, oldestDays)
             }
         }
         
