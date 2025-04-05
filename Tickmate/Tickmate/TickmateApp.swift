@@ -9,7 +9,7 @@ import SwiftUI
 
 @main
 struct TickmateApp: App {
-    let persistenceController = PersistenceController.shared
+    let persistenceController = PersistenceController.shared.loadDemo()
 
     var body: some Scene {
         WindowGroup {

@@ -34,6 +34,12 @@ struct SettingsView: View {
     
     @State private var timeOffset: Date = Date()
     @State private var showingRestrictedPaymentsAlert = false
+    @State private var csv: CSV?
+    
+    private struct CSV: Identifiable {
+        let url: URL
+        var id: URL { url }
+    }
     
     var body: some View {
         Form {
@@ -152,6 +158,15 @@ struct SettingsView: View {
                 NavigationLink("Acknowledgements", destination: AcknowledgementsView())
             }
             
+            Section(header: Text("Data Export")) {
+                Button("Export as CSV") {
+                    exportToCSV()
+                }
+            }
+            .sheet(item: $csv) { csv in
+                ShareSheet(activityItems: [csv.url])
+            }
+            
             Section {
                 Link("Support Website", destination: URL(string: "https://github.com/skjiisa/Tickmate-iOS/issues")!)
                 Link("Email Support", destination: URL(string: "mailto:tickmate@lyons.app")!)
@@ -203,6 +218,49 @@ struct SettingsView: View {
         trackController.setCustomDayStart(minutes: minutes)
     }
     
+    /// This function was written by Trae using Claude-3.5-Sonnet
+    private func exportToCSV() {
+        let tracks = trackController.fetchedResultsController.fetchedObjects ?? []
+        var csvString = "Date," + tracks.map { $0.name ?? "Unnamed Track" }.joined(separator: ",") + "\n"
+        
+        let today = Date()
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateStyle = .short
+        dateFormatter.timeStyle = .none
+        
+        // Find the earliest tick date across all tracks
+        var earliestDay = 0
+        for track in tracks {
+            let controller = trackController.tickController(for: track)
+            if let oldestDate = controller.oldestTickDate() {
+                let days = Int((today - oldestDate).timeInterval / (24 * 3600))
+                earliestDay = max(earliestDay, days)
+            }
+        }
+        
+        // Generate CSV from earliest date to today
+        for day in (0...earliestDay).reversed() {
+            let date = today - day.days
+            let dateString = dateFormatter.string(from: date)
+            let tickCounts = tracks.map { track -> String in
+                let controller = trackController.tickController(for: track)
+                let count = controller.tickCount(for: day)
+                return track.multiple ? String(count) : (count > 0 ? "1" : "0")
+            }
+            csvString += dateString + "," + tickCounts.joined(separator: ",") + "\n"
+        }
+        
+        let tempDir = FileManager.default.temporaryDirectory
+        let fileURL = tempDir.appendingPathComponent("tickmate_export.csv")
+        
+        do {
+            try csvString.write(to: fileURL, atomically: true, encoding: .utf8)
+            csv = CSV(url: fileURL)
+        } catch {
+            print("Error saving CSV: \(error)")
+        }
+    }
+    
 }
 
 struct SettingsView_Previews: PreviewProvider {
@@ -211,7 +269,8 @@ struct SettingsView_Previews: PreviewProvider {
             SettingsView(showing: .constant(true))
         }
         .navigationViewStyle(StackNavigationViewStyle())
-        .environmentObject(TrackController())
-        .environmentObject(StoreController())
+        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        .environmentObject(TrackController(preview: true))
+        .environmentObject(GroupController(preview: true))
     }
 }
