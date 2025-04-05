@@ -48,6 +48,8 @@ class TickController: NSObject, ObservableObject {
         
         if observeChanges {
             fetchedResultsController.delegate = self
+            
+            NotificationCenter.default.addObserver(self, selector: #selector(updateLastSyncTime), name: .NSPersistentStoreRemoteChange, object: nil)
         }
         
         do {
@@ -57,6 +59,13 @@ class TickController: NSObject, ObservableObject {
         }
         
         loadTicks()
+    }
+    
+    // TODO: Move?
+    @objc
+    private func updateLastSyncTime() {
+        let now = Date().timeIntervalSince1970
+        UserDefaults(suiteName: groupID)?.set(now, forKey: Defaults.lastCloudKitSyncTime.rawValue)
     }
     
     func setTodayOffset() -> Int? {

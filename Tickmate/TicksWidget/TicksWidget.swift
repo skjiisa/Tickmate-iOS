@@ -56,28 +56,49 @@ struct Provider: IntentTimelineProvider {
         let timeline = Timeline(entries: entries, policy: .atEnd)
         
         // Check last sync time
-        let lastSyncSeconds: Int
+        let lastWidgetSyncSeconds: Int
                 
         if let lastUpdateTimeString = UserDefaults(suiteName: groupID)?.string(forKey: Defaults.lastUpdateTime.rawValue),
            let lastUpdateTime = TrackController.iso8601Full.date(from: lastUpdateTimeString),
            let difference = Date().difference(in: .second, from: lastUpdateTime) {
-            lastSyncSeconds = difference
+            lastWidgetSyncSeconds = difference
         } else {
-            lastSyncSeconds = 0
+            lastWidgetSyncSeconds = 0
         }
         
-        print("!!!!!!!!!!!!Difference", lastSyncSeconds)
+        let lastSyncTimeInterval = UserDefaults(suiteName: groupID)?.double(forKey: Defaults.lastCloudKitSyncTime.rawValue)
+        let lastSyncTime = lastSyncTimeInterval.map(Date.init(timeIntervalSince1970:))
+        
+        let maxSyncTimeInterval = 90.days.timeInterval
+        let minWidgetSyncMinutes: Int = 29
+        
+        let shouldReadFromCloudKit: Bool
+        if let lastSyncTime,
+           // TODO: Check sign and direction on this
+           -lastSyncTime.timeIntervalSinceNow > maxSyncTimeInterval,
+           lastWidgetSyncSeconds > 60 * minWidgetSyncMinutes {
+            shouldReadFromCloudKit = true
+        } else {
+            shouldReadFromCloudKit = false
+        }
+        
+        print("!!!!!!!!!!!!Difference", lastWidgetSyncSeconds)
         
         // Refreshes of the widget will only check for changes from CloudKit
         // if the last update was more than 29 minutes in the past.
         // You can lower this value during testing to test CloudKit fetches.
-        if lastSyncSeconds > 60 * 29 {
+        if shouldReadFromCloudKit {
             // Download updated data from CloudKit
             DispatchQueue.global(qos: .background).async {
                 let dispatchGroup = DispatchGroup()
                 
                 tracks.forEach { track in
                     dispatchGroup.enter()
+                    // TODO: Maybe don't perform the sync if it's midnight
+                    // so my CloudKit rate limit doesn't get hit if this
+                    // app ends up getting a lot of users?
+                    // Note: would probably want to cache the last CloudKit
+                    // result if doing something like that.
                     trackController.tickController(for: track).loadCKTicks(completion: dispatchGroup.leave)
                 }
                 
