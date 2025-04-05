@@ -96,6 +96,7 @@
 		B90C7F252DA0D92100C8F12B /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90C7F242DA0D92000C8F12B /* ShareSheet.swift */; };
 		B91ED2862B5B89640049EDB7 /* SwiftUIIntrospect in Frameworks */ = {isa = PBXBuildFile; productRef = B91ED2852B5B89640049EDB7 /* SwiftUIIntrospect */; };
 		B93BBF092B9CCAFC007E810A /* ArchivedTracksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93BBF082B9CCAFC007E810A /* ArchivedTracksView.swift */; };
+		B9E609ED2DA0EDDA00C00B44 /* ExportTracksSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E609EC2DA0EDDA00C00B44 /* ExportTracksSelectionView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -192,6 +193,7 @@
 		59FBCF2E25E07BD8007B114F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B90C7F242DA0D92000C8F12B /* ShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
 		B93BBF082B9CCAFC007E810A /* ArchivedTracksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchivedTracksView.swift; sourceTree = "<group>"; };
+		B9E609EC2DA0EDDA00C00B44 /* ExportTracksSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportTracksSelectionView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -362,6 +364,7 @@
 				599D9F5125EC5A4900DF3795 /* TracksView.swift */,
 				5991968E25F813ED003215CC /* PresetTracksView.swift */,
 				59E6E14D25F88177008A74A9 /* SettingsView.swift */,
+				B9E609EC2DA0EDDA00C00B44 /* ExportTracksSelectionView.swift */,
 				B90C7F242DA0D92000C8F12B /* ShareSheet.swift */,
 				59E9397125F98ACD002FD8CD /* AcknowledgementsView.swift */,
 				59342E1B2603F3DF007E9F64 /* OnboardingView.swift */,
@@ -612,6 +615,7 @@
 				5904EAAF2657111300B2D0A0 /* Binding+onChange.swift in Sources */,
 				5939239C2654CE050085DABD /* PageView.swift in Sources */,
 				59E6E15125F8837E008A74A9 /* Defaults.swift in Sources */,
+				B9E609ED2DA0EDDA00C00B44 /* ExportTracksSelectionView.swift in Sources */,
 				59342E1C2603F3DF007E9F64 /* OnboardingView.swift in Sources */,
 				597A7FDD25F6E1C900256268 /* StateEditButton.swift in Sources */,
 				59E6E14E25F88177008A74A9 /* SettingsView.swift in Sources */,

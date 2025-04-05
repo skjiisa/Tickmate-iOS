@@ -34,12 +34,6 @@ struct SettingsView: View {
     
     @State private var timeOffset: Date = Date()
     @State private var showingRestrictedPaymentsAlert = false
-    @State private var csv: CSV?
-    
-    private struct CSV: Identifiable {
-        let url: URL
-        var id: URL { url }
-    }
     
     var body: some View {
         Form {
@@ -159,12 +153,7 @@ struct SettingsView: View {
             }
             
             Section(header: Text("Data Export")) {
-                Button("Export as CSV") {
-                    exportToCSV()
-                }
-            }
-            .sheet(item: $csv) { csv in
-                ShareSheet(activityItems: [csv.url])
+                NavigationLink("Export as CSV", destination: ExportTracksSelectionView())
             }
             
             Section {
@@ -216,48 +205,6 @@ struct SettingsView: View {
         let components = timeOffset.in(region: .current).dateComponents
         minutes = (components.hour ?? 0) * 60 + (components.minute ?? 0)
         trackController.setCustomDayStart(minutes: minutes)
-    }
-    
-    /// This function was written by Trae using Claude-3.5-Sonnet
-    private func exportToCSV() {
-        let tracks = trackController.fetchedResultsController.fetchedObjects ?? []
-        var csvString = "Date," + tracks.map { $0.name ?? "Unnamed Track" }.joined(separator: ",") + "\n"
-        
-        let today = Date()
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateStyle = .short
-        dateFormatter.timeStyle = .none
-        
-        // Find the earliest tick date across all tracks
-        var earliestDay = 0
-        for track in tracks {
-            let controller = trackController.tickController(for: track)
-            if let oldestDays = controller.oldestTickDate() {
-                earliestDay = max(earliestDay, oldestDays)
-            }
-        }
-        
-        // Generate CSV from earliest date to today
-        for day in (0...earliestDay).reversed() {
-            let date = today - day.days
-            let dateString = dateFormatter.string(from: date)
-            let tickCounts = tracks.map { track -> String in
-                let controller = trackController.tickController(for: track)
-                let count = controller.tickCount(for: day)
-                return track.multiple ? String(count) : (count > 0 ? "1" : "0")
-            }
-            csvString += dateString + "," + tickCounts.joined(separator: ",") + "\n"
-        }
-        
-        let tempDir = FileManager.default.temporaryDirectory
-        let fileURL = tempDir.appendingPathComponent("tickmate_export.csv")
-        
-        do {
-            try csvString.write(to: fileURL, atomically: true, encoding: .utf8)
-            csv = CSV(url: fileURL)
-        } catch {
-            print("Error saving CSV: \(error)")
-        }
     }
     
 }
