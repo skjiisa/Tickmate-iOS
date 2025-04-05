@@ -27,55 +27,39 @@ struct ExportTracksSelectionView: View {
     }
     
     var body: some View {
-        List {
+        List(selection: $selectedTracks) {
             Section {
                 Button(allAreSelected ? "Deselect All" : "Select All") {
                     if allAreSelected {
                         selectedTracks.removeAll()
-                        allAreSelected = false
                     } else {
                         selectedTracks = Set(allTracks)
-                        allAreSelected = true
                     }
                 }
             }
             
-            Section {
-                ForEach(allTracks) { track in
-                    Toggle(isOn: Binding(
-                        get: { selectedTracks.contains(track) },
-                        set: { isSelected in
-                            if isSelected {
-                                selectedTracks.insert(track)
-                                if selectedTracks.count == allTracks.count {
-                                    allAreSelected = true
-                                }
-                            } else {
-                                allAreSelected = false
-                                selectedTracks.remove(track)
-                            }
+            Section(header: Text("Select Tracks to export")) {
+                ForEach(allTracks, id: \.self) { track in
+                    HStack {
+                        if let systemImage = track.systemImage {
+                            Image(systemName: systemImage)
+                                .resizable()
+                                .scaledToFit()
+                                .padding(6)
+                                .frame(width: 36, height: 36)
+                                .foregroundColor(track.lightText ? .white : .black)
+                                .background(
+                                    Color(rgb: Int(track.color))
+                                        .cornerRadius(4)
+                                )
                         }
-                    )) {
-                        HStack {
-                            if let systemImage = track.systemImage {
-                                Image(systemName: systemImage)
-                                    .resizable()
-                                    .scaledToFit()
-                                    .padding(6)
-                                    .frame(width: 36, height: 36)
-                                    .foregroundColor(track.lightText ? .white : .black)
-                                    .background(
-                                        Color(rgb: Int(track.color))
-                                            .cornerRadius(4)
-                                    )
-                            }
-                            Text(track.name ?? "Unnamed Track")
-                        }
+                        Text(track.name ?? "Unnamed Track")
                     }
                 }
             }
         }
-        .navigationTitle("Select Tracks")
+        .environment(\.editMode, .constant(.active))
+        .navigationTitle("CSV Export")
         .toolbar {
             ToolbarItem(placement: .confirmationAction) {
                 Button("Export") {
@@ -87,13 +71,14 @@ struct ExportTracksSelectionView: View {
         .onAppear {
             // Select all tracks by default
             selectedTracks = Set(allTracks)
-            allAreSelected = true
+        }
+        .onChange(of: selectedTracks) { _ in
+            allAreSelected = selectedTracks.count == allTracks.count
         }
         .sheet(item: $csv) { csv in
             ShareSheet(activityItems: [csv.url])
         }
     }
-    
     
     private func exportSelectedTracksToCSV() {
         let tracks = Array(selectedTracks)
@@ -137,7 +122,6 @@ struct ExportTracksSelectionView: View {
     }
 }
 
-#if DEBUG
 struct ExportTracksSelectionView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationView {
@@ -147,4 +131,3 @@ struct ExportTracksSelectionView_Previews: PreviewProvider {
         .environmentObject(TrackController(preview: true))
     }
 }
-#endif
