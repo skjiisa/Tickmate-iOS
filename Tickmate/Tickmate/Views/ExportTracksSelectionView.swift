@@ -2,16 +2,19 @@
 //  ExportTracksSelectionView.swift
 //  Tickmate
 //
-//  Created by Trae AI on 3/27/24.
+//  Created by Elaine Lyons on 3/27/24.
 //
 
 import SwiftUI
 import SwiftDate
 
+// The original version of this file was written by Trae using Claude-3.5-Sonnet
+
 struct ExportTracksSelectionView: View {
     @EnvironmentObject private var trackController: TrackController
     
     @State private var selectedTracks: Set<Track> = []
+    @State private var allAreSelected: Bool = false
     @State private var csv: CSV?
     
     private struct CSV: Identifiable {
@@ -19,25 +22,36 @@ struct ExportTracksSelectionView: View {
         var id: URL { url }
     }
     
+    private var allTracks: [Track] {
+        trackController.fetchedResultsController.fetchedObjects ?? []
+    }
+    
     var body: some View {
         List {
             Section {
-                Button("Select All") {
-                    selectedTracks = Set(trackController.fetchedResultsController.fetchedObjects ?? [])
-                }
-                Button("Deselect All") {
-                    selectedTracks.removeAll()
+                Button(allAreSelected ? "Deselect All" : "Select All") {
+                    if allAreSelected {
+                        selectedTracks.removeAll()
+                        allAreSelected = false
+                    } else {
+                        selectedTracks = Set(allTracks)
+                        allAreSelected = true
+                    }
                 }
             }
             
             Section {
-                ForEach(trackController.fetchedResultsController.fetchedObjects ?? []) { track in
+                ForEach(allTracks) { track in
                     Toggle(isOn: Binding(
                         get: { selectedTracks.contains(track) },
                         set: { isSelected in
                             if isSelected {
                                 selectedTracks.insert(track)
+                                if selectedTracks.count == allTracks.count {
+                                    allAreSelected = true
+                                }
                             } else {
+                                allAreSelected = false
                                 selectedTracks.remove(track)
                             }
                         }
@@ -63,7 +77,8 @@ struct ExportTracksSelectionView: View {
         }
         .onAppear {
             // Select all tracks by default
-            selectedTracks = Set(trackController.fetchedResultsController.fetchedObjects ?? [])
+            selectedTracks = Set(allTracks)
+            allAreSelected = true
         }
         .sheet(item: $csv) { csv in
             ShareSheet(activityItems: [csv.url])
