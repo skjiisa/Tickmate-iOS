@@ -24,4 +24,5 @@ enum Defaults: String {
     case userDefaultsMigration      // Bool     App Group
     case lastUpdateTime             // String   App Group
     case todayAtTop                 // Bool     App Group
+    case todayLock                  // Bool     App Group
 }

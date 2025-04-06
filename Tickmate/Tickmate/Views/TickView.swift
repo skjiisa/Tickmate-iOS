@@ -19,18 +19,20 @@ struct DayRow<C: RandomAccessCollection>: View where C.Element == Track {
     var lines: Bool
     var widget: Bool
     var compact: Bool
+    var canEdit: Bool
     
-    init(_ day: Int, tracks: C, spaces: Bool, lines: Bool) {
-        self.init(day, tracks: tracks, spaces: spaces, lines: lines, widget: false, compact: false)
+    init(_ day: Int, tracks: C, spaces: Bool, lines: Bool, canEdit: Bool) {
+        self.init(day, tracks: tracks, spaces: spaces, lines: lines, widget: false, compact: false, canEdit: canEdit)
     }
     
-    init(_ day: Int, tracks: C, spaces: Bool, lines: Bool, widget: Bool, compact: Bool) {
+    init(_ day: Int, tracks: C, spaces: Bool, lines: Bool, widget: Bool, compact: Bool, canEdit: Bool) {
         self.day = day
         self.tracks = tracks
         self.spaces = spaces
         self.lines = lines
         self.widget = widget
         self.compact = compact
+        self.canEdit = canEdit
     }
     
     @ViewBuilder
@@ -60,7 +62,14 @@ struct DayRow<C: RandomAccessCollection>: View where C.Element == Track {
                     .frame(width: compact ? 30 : widget ? 50 : 80, alignment: .leading)
                     .font(compact ? .system(size: 11) : .body)
                 ForEach(tracks) { track in
-                    TickView(day: day, widget: widget, compact: compact, track: track, tickController: trackController.tickController(for: track))
+                    TickView(
+                        day: day,
+                        widget: widget,
+                        compact: compact,
+                        canEdit: canEdit,
+                        track: track,
+                        tickController: trackController.tickController(for: track)
+                    )
                 }
             }
             if spaces && trackController.insets(day: day) == .bottom {
@@ -82,6 +91,7 @@ struct TickView: View {
     let day: Int
     var widget: Bool
     var compact: Bool
+    var canEdit: Bool
     
     @ObservedObject var track: Track
     @ObservedObject var tickController: TickController
@@ -116,9 +126,9 @@ struct TickView: View {
                     .font(compact ? .system(size: 11) : .body)
             }
         }
-        // TODO: Test on iOS to see if this should be visionOS flagged
         .hoverEffect()
         .onTapGesture {
+            guard canEdit else { return }
             tickController.tick(day: day)
             // TODO: Use CoreHaptics for audio feedback on visionOS?
             // Or .sensoryFeedback (???)
@@ -128,12 +138,12 @@ struct TickView: View {
             #endif
         }
         .onLongPressGesture { pressing in
-            guard track.multiple else { return }
+            guard track.multiple, canEdit else { return }
             withAnimation(pressing ? .easeInOut(duration: 0.6) : .interactiveSpring()) {
                 self.pressing = pressing
             }
         } perform: {
-            guard track.multiple else { return }
+            guard track.multiple, canEdit else { return }
             if tickController.untick(day: day) {
                 #if os(iOS)
                 UIImpactFeedbackGenerator(style: .soft).impactOccurred()

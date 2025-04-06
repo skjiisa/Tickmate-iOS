@@ -22,8 +22,12 @@ struct TicksView: View {
         fetchRequest.wrappedValue
     }
     
+    @AppStorage(Defaults.todayLock.rawValue, store: UserDefaults(suiteName: groupID))
+    private var todayLock = false
+    
     @AppStorage(Defaults.todayAtTop.rawValue, store: UserDefaults(suiteName: groupID))
     private var todayAtTop = false
+    
     @AppStorage(Defaults.weekSeparatorLines.rawValue) private var weekSeparatorLines: Bool = true
     @AppStorage(Defaults.weekSeparatorSpaces.rawValue) private var weekSeparatorSpaces: Bool = true
     
@@ -131,11 +135,13 @@ struct TicksView: View {
                     }
                     
                     ForEach(0..<365) { row in
+                        let day = todayAtTop ? row : 364 - row
                         DayRow(
-                            todayAtTop ? row : 364 - row,
+                            day,
                             tracks: tracks,
                             spaces: weekSeparatorSpaces,
-                            lines: weekSeparatorLines
+                            lines: weekSeparatorLines,
+                            canEdit: day == 0 || !todayLock
                         )
                         .listRowInsets(.init(top: 4, leading: 0, bottom: 4, trailing: 0))
                         #if os(iOS)

@@ -286,7 +286,7 @@ struct TicksWidgetEntryView : View {
             
             ForEach(rows) { row in
                 let day = todayAtTop ? row.value : (numDays - 1 - row.value)
-                DayRow(day, tracks: tracks, spaces: false, lines: false, widget: true, compact: compact)
+                DayRow(day, tracks: tracks, spaces: false, lines: false, widget: true, compact: compact, canEdit: false)
                 
                 if row.value < numDays - 1 {
                     if entry.configuration.weekSeparators?.boolValue ?? true,
