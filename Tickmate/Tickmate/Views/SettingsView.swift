@@ -152,6 +152,10 @@ struct SettingsView: View {
                 NavigationLink("Acknowledgements", destination: AcknowledgementsView())
             }
             
+            Section(header: Text("Data Export")) {
+                NavigationLink("Export as CSV", destination: ExportTracksSelectionView())
+            }
+            
             Section {
                 Link("Support Website", destination: URL(string: "https://github.com/skjiisa/Tickmate-iOS/issues")!)
                 Link("Email Support", destination: URL(string: "mailto:tickmate@lyons.app")!)
@@ -211,7 +215,8 @@ struct SettingsView_Previews: PreviewProvider {
             SettingsView(showing: .constant(true))
         }
         .navigationViewStyle(StackNavigationViewStyle())
-        .environmentObject(TrackController())
-        .environmentObject(StoreController())
+        .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
+        .environmentObject(TrackController(preview: true))
+        .environmentObject(GroupController(preview: true))
     }
 }

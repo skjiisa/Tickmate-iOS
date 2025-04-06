@@ -2,7 +2,7 @@
 //  TickController.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 2/21/21.
+//  Created by Elaine Lyons on 2/21/21.
 //
 
 import CoreData
@@ -15,7 +15,7 @@ class TickController: NSObject, ObservableObject {
     
     let track: Track
     @Published var ticks: [Tick?] = []
-    /// The tick count for a given day as fetche with `loadCKTicks` for new days that aren't already in `ticks`.
+    /// The tick count for a given day as fetched with `loadCKTicks` for new days that aren't already in `ticks`.
     @Published var ckTicks: [Int16?]?
     private var fetchedResultsController: NSFetchedResultsController<Tick>
     weak var trackController: TrackController?
@@ -282,8 +282,23 @@ extension TickController: NSFetchedResultsControllerDelegate {
         }
         
         // This is done here as opposed to in the tick(day:)
-        // function so that the timeline will alse be
+        // function so that the timeline will also be
         // refreshed on changes fetched from CloudKit.
         trackController?.scheduleTimelineRefresh()
+    }
+    
+    /// Returns the number of days from today to the oldest tick
+    /// A positive number means the oldest tick is that many days ago
+    ///
+    /// This function was written by Trae using Claude-3.5-Sonnet
+    func oldestTickDate() -> Int? {
+        guard let allTicks = fetchedResultsController.fetchedObjects,
+              let lastTick = allTicks.last,
+              let todayOffset = todayOffset
+        else { return nil }
+        
+        // Since ticks are sorted by dayOffset descending, the last tick has the smallest offset
+        // Convert from dayOffset (days since start) to days from today
+        return todayOffset - Int(lastTick.dayOffset)
     }
 }
