@@ -11,7 +11,7 @@ struct AcknowledgementsView: View {
     
     private var tickmateAcknowledgement = Acknowledgement(
         name: "BSD 2-Clause License",
-        copyright: "2024, Elaine Lyons",
+        copyright: "2025, Elaine Lyons",
         link: nil,
         license: .bsd2)
     
