@@ -54,7 +54,10 @@ struct PageView<Content: View>: View {
                 }
             )
             .onChange(of: pageCount) { _ in updatePage() }
-            .onAppear(perform: updatePage)
+            .onAppear {
+                updatePage()
+                updateOffset(geometryReaderWidth: geo.size.width)
+            }
         }
     }
     
