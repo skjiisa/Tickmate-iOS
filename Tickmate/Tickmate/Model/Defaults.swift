@@ -25,4 +25,5 @@ enum Defaults: String {
     case lastUpdateTime             // String   App Group
     case todayAtTop                 // Bool     App Group
     case todayLock                  // Bool     App Group
+    case lastCloudKitSyncTime       // Double   App Group (timeIntervalSince1970)
 }
