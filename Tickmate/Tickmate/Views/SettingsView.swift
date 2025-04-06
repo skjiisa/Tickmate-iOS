@@ -39,18 +39,16 @@ struct SettingsView: View {
         Form {
             Section {
                 Toggle(isOn: $customDayStart.animation()) {
-                    TextWithCaption(
-                        text: "Custom day rollover time",
-                        caption: "For staying up past midnight")
+                    Text("Custom day rollover time")
                 }
                 
                 if customDayStart {
                     DatePicker(selection: $timeOffset, displayedComponents: [.hourAndMinute]) {
-                        TextWithCaption(
-                            text: "New day start time",
-                            caption: "")
+                        Text("New day start time")
                     }
                 }
+            } footer: {
+                Text("If you frequently use the app past midnight, you can set a custom day rollover time so “today” won't change until later in the morning.")
             }
             
             Section {
@@ -163,7 +161,7 @@ struct SettingsView: View {
         .toolbar {
             // A WWDC talk said to always put close buttons in the top left, at
             // least for visionOS. Do they mean _left_ left, or leading??
-            ToolbarItem(placement: .topBarLeading) {
+            ToolbarItem(placement: .cancellationAction) {
                 Button("Done") {
                     showing = false
                 }
