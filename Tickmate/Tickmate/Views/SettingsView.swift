@@ -17,6 +17,9 @@ struct SettingsView: View {
     @AppStorage(Defaults.weekStartDay.rawValue, store: UserDefaults(suiteName: groupID))
     private var weekStartDay = 2
     
+    @AppStorage(Defaults.todayLock.rawValue, store: UserDefaults(suiteName: groupID))
+    private var todayLock = false
+    
     @AppStorage(Defaults.todayAtTop.rawValue, store: UserDefaults(suiteName: groupID))
     private var todayAtTop = false
     
@@ -52,15 +55,20 @@ struct SettingsView: View {
             }
             
             Section {
+                Toggle(isOn: $todayLock) {
+                    Text("Today Lock  \(Image(systemName: todayLock ? "lock" : "lock.open"))")
+                }
+            } footer: {
+                Text("Only allow ticking the current day. Prevents accidental changes to past dates.")
+            }
+            
+            Section {
                 Picker("Put today at the", selection: $todayAtTop) {
                     Text("top")
                         .tag(true)
                     Text("bottom")
                         .tag(false)
                 }
-            }
-            
-            Section {
                 Toggle(isOn: $relativeDates) {
                     TextWithCaption(text: "Use relative dates", caption: "Today, Yesterday")
                 }
@@ -216,5 +224,6 @@ struct SettingsView_Previews: PreviewProvider {
         .environment(\.managedObjectContext, PersistenceController.preview.container.viewContext)
         .environmentObject(TrackController(preview: true))
         .environmentObject(GroupController(preview: true))
+        .environmentObject(StoreController())
     }
 }

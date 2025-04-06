@@ -31,6 +31,29 @@ class TrackController: NSObject, ObservableObject {
     @Published var weekStartDay: Int
     @Published var relativeDates: Bool
     
+    // Is it ideal for this to live here? Probably not.
+    // Do I care enough to make a proper place for it? No.
+    private var lockedDayTapCount: Int = 0
+    private var todayLockTask: Task<Void, any Error>?
+    @Published var todayLockAlert: AlertItem?
+    
+    func didTapLockedDay() {
+        todayLockTask?.cancel()
+        lockedDayTapCount += 1
+        if lockedDayTapCount >= 2 {
+            todayLockAlert = AlertItem(
+                title: "Today Lock Enabled",
+                message: "To edit previous days, disable Today Lock in settings"
+            )
+            lockedDayTapCount = 0
+        } else {
+            todayLockTask = Task {
+                try await Task.sleep(nanoseconds: 5 * NSEC_PER_SEC)
+                lockedDayTapCount = 0
+            }
+        }
+    }
+    
     private var observeChanges: Bool
     private var preview: Bool
     private var saveWork: DispatchWorkItem?
