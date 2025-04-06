@@ -56,10 +56,7 @@ struct SettingsView: View {
             
             Section {
                 Toggle(isOn: $todayLock) {
-                    HStack {
-                        Text("Today lock")
-                        Image(systemName: todayLock ? "lock" : "lock.open")
-                    }
+                    Text("Today Lock  \(Image(systemName: todayLock ? "lock" : "lock.open"))")
                 }
             } footer: {
                 Text("Only allow ticking the current day. Prevents accidental changes to past dates.")
