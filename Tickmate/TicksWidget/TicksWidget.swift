@@ -69,13 +69,12 @@ struct Provider: IntentTimelineProvider {
         let lastSyncTimeInterval = UserDefaults(suiteName: groupID)?.double(forKey: Defaults.lastCloudKitSyncTime.rawValue)
         let lastSyncTime = lastSyncTimeInterval.map(Date.init(timeIntervalSince1970:))
         
-        let maxSyncTimeInterval = 90.days.timeInterval
+        let maxSyncTimeInterval = 7.days.timeInterval
         let minWidgetSyncMinutes: Int = 29
         
         let shouldReadFromCloudKit: Bool
         if let lastSyncTime,
-           // TODO: Check sign and direction on this
-           -lastSyncTime.timeIntervalSinceNow > maxSyncTimeInterval,
+           lastSyncTime.timeIntervalSinceNow > -maxSyncTimeInterval,
            lastWidgetSyncSeconds > 60 * minWidgetSyncMinutes {
             shouldReadFromCloudKit = true
         } else {
