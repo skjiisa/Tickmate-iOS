@@ -88,6 +88,8 @@ struct DayRow<C: RandomAccessCollection>: View where C.Element == Track {
 
 struct TickView: View {
     
+    @EnvironmentObject private var trackController: TrackController
+    
     let day: Int
     var widget: Bool
     var compact: Bool
@@ -128,7 +130,10 @@ struct TickView: View {
         }
         .hoverEffect()
         .onTapGesture {
-            guard canEdit else { return }
+            guard canEdit else {
+                trackController.didTapLockedDay()
+                return
+            }
             tickController.tick(day: day)
             // TODO: Use CoreHaptics for audio feedback on visionOS?
             // Or .sensoryFeedback (???)

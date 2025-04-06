@@ -167,6 +167,7 @@ struct TicksView: View {
                 }
             }
         }
+        .alert(alertItem: $trackController.todayLockAlert)
     }
 }
 
