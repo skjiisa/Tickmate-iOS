@@ -96,11 +96,16 @@ struct SettingsView: View {
             }
             
             Section(header: Text("Premium Features"), footer: Text("Groups allow you to swipe left and right between different sets of tracks from the main screen")) {
-                if let product = storeController.groupsProduct {
+                if !storeController.isGroupsProductAvailable {
+                    TextWithCaption(
+                        "Premium features are not available in the EU",
+                        caption: "If you are seeing this and are not in the EU, consider contacting me below."
+                    )
+                } else if let product = storeController.groupsProduct {
                     Button {
                         storeController.isAuthorizedForPayments
-                            ? storeController.purchase(product)
-                            : (showingRestrictedPaymentsAlert = true)
+                        ? storeController.purchase(product)
+                        : (showingRestrictedPaymentsAlert = true)
                     } label: {
                         HStack {
                             TextWithCaption(product.localizedTitle, caption: product.localizedDescription)
@@ -116,9 +121,9 @@ struct SettingsView: View {
                                     product.price,
                                     formatter: storeController.priceFormatter
                                 )
-                                #if os(iOS)
+#if os(iOS)
                                 .foregroundColor(storeController.isAuthorizedForPayments ? .accentColor : .secondary)
-                                #endif
+#endif
                             }
                         }
                     }
@@ -164,7 +169,7 @@ struct SettingsView: View {
             
             Section {
                 Link("Support Website", destination: URL(string: "https://github.com/skjiisa/Tickmate-iOS/issues")!)
-                Link("Email Support", destination: URL(string: "mailto:tickmate@lyons.app")!)
+                Link("Email Me", destination: URL(string: "mailto:tickmate@lyons.app")!)
                 Link("Privacy Policy", destination: URL(string: "https://github.com/skjiisa/Tickmate-iOS/blob/main/Privacy%20Policy.txt")!)
                 Link("Source Code", destination: URL(string: "https://github.com/skjiisa/Tickmate-iOS/")!)
             }
