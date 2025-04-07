@@ -2,7 +2,7 @@
 //  StoreController.swift
 //  Tickmate
 //
-//  Created by Isaac Lyons on 6/1/21.
+//  Created by Elaine Lyons on 6/1/21.
 //
 
 import SwiftUI
@@ -20,6 +20,7 @@ class StoreController: NSObject, ObservableObject {
     // Probably reword this whole system tbh
     @Published private(set) var products = [SKProduct]()
     @Published private(set) var groupsProduct: SKProduct?
+    @Published private(set) var isGroupsProductAvailable: Bool = true
     
     @Published private(set) var purchased = Set<String>()
     @Published private(set) var purchasing = Set<String>()
@@ -88,6 +89,13 @@ class StoreController: NSObject, ObservableObject {
 
 extension StoreController: SKProductsRequestDelegate {
     func productsRequest(_ request: SKProductsRequest, didReceive response: SKProductsResponse) {
+        if response.invalidProductIdentifiers.contains(Products.groups.rawValue) {
+            DispatchQueue.main.async {
+                self.isGroupsProductAvailable = false
+            }
+            return
+        }
+        
         if !response.invalidProductIdentifiers.isEmpty {
             NSLog("Invalid product identifiers found: \(response.invalidProductIdentifiers)")
         }
