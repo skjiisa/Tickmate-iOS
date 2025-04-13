@@ -93,10 +93,6 @@ class TracksHeaderView: UIView {
             button.tintColor = .label
         }
         
-        NSLayoutConstraint.activate([
-            button.heightAnchor.constraint(equalToConstant: 32)
-        ])
-        
         button.addTarget(self, action: #selector(trackButtonTapped(_:)), for: .touchUpInside)
         button.tag = track.objectID.hashValue
         

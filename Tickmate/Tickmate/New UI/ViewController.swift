@@ -145,12 +145,4 @@ extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         44
     }
-    
-    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-        view.backgroundColor = .red
-        view.layer.borderWidth = 1
-        view.layer.borderColor = UIColor.green.cgColor
-        //view.backgroundColor = .clear
-        //view.layer.opacity = 0
-    }
 }

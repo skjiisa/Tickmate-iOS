@@ -77,7 +77,7 @@ class TrackTableViewController: UITableViewController {
         }.store(in: &subscriptions)
         
         tracksContainer.$tracks.sink { [weak self] tracks in
-            guard let self else { return }
+            guard let self, tableView.superview != nil else { return }
             tableView.visibleCells
                 .compactMap { $0 as? DayTableViewCell }
                 .forEach { $0.reconfigure(with: tracks) }
