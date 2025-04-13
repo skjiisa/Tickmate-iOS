@@ -34,7 +34,7 @@ class TrackTableViewController: UITableViewController {
     }
     
     private var initialized = false
-    private var pagingSubscriber: AnyCancellable?
+    private var subscriptions: Set<AnyCancellable> = []
     private var tracksHeader: UIViewController?
     
     func load(tracks: [Track]) {
@@ -55,7 +55,7 @@ class TrackTableViewController: UITableViewController {
         }
         scrollToDelegate()
         
-        pagingSubscriber = scrollController.$isPaging.sink { [weak self] isPaging in
+        scrollController.$isPaging.sink { [weak self] isPaging in
             guard let self = self else { return }
             
             if isPaging {
@@ -74,7 +74,14 @@ class TrackTableViewController: UITableViewController {
                 // If we set showsVerticalScrollIndicator to true here it'll show it, so leave it off
                 // until the user actually starts scrolling again (see scrollViewWillBeginDragging).
             }
-        }
+        }.store(in: &subscriptions)
+        
+        tracksContainer.$tracks.sink { [weak self] tracks in
+            guard let self else { return }
+            tableView.visibleCells
+                .compactMap { $0 as? DayTableViewCell }
+                .forEach { $0.reconfigure(with: tracks) }
+        }.store(in: &subscriptions)
         
         // TODO: REMOVE THIS!!!
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {

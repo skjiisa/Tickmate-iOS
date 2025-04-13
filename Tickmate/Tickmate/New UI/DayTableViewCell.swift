@@ -14,7 +14,7 @@ class DayTableViewCell: UITableViewCell {
     private var day: Int = 0
     
     private var stackView = UIStackView()
-    private var buttons: [Track: TickButton] = [:]
+    private var buttons: [Track: UIButton] = [:]
     
     private var subscriptions = Set<AnyCancellable>()
     
@@ -41,9 +41,19 @@ class DayTableViewCell: UITableViewCell {
         fatalError()
     }
     
+    func reconfigure(with tracks: [Track]) {
+        self.tracks = tracks
+        updateUI()
+    }
+    
     func configure(with tracks: [Track], day: Int) {
         self.tracks = tracks
         self.day = day
+        updateUI()
+    }
+    
+    private func updateUI() {
+        let day = self.day
         
         stackView.arrangedSubviews.forEach { view in
             view.removeConstraints(view.constraints)
@@ -58,35 +68,47 @@ class DayTableViewCell: UITableViewCell {
             let ticks = tickController.ticks(on: day)
             
             let button = self.button(for: track, tickController: tickController)
-            button.configure(for: track, ticks: ticks)
+            self.configure(button: button, for: track, ticks: ticks)
             button.tag = index
             stackView.addArrangedSubview(button)
+            button.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
                 // -12 matches the old SwiftUI implementation
                 button.heightAnchor.constraint(equalTo: stackView.heightAnchor, constant: -10)
             ])
             
             // Set up publisher to respond to changes
-            tickController.$ticks.sink { allTicks in
+            tickController.$ticks.sink { [weak self] allTicks in
                 // We can't use the tickController's ticks(on:) convenience
                 // function because it hasn't updated yet as of this sink call
                 guard allTicks.indices.contains(day) else { return }
                 let ticks = Int(allTicks[day]?.count ?? 0)
-                button.configure(for: track, ticks: ticks)
+                self?.configure(button: button, for: track, ticks: ticks)
             }
             .store(in: &subscriptions)
         }
     }
     
-    private func button(for track: Track, tickController: TickController) -> TickButton {
+    private func button(for track: Track, tickController: TickController) -> UIButton {
         if let button = buttons[track] {
             return button
         }
         
-        let button = TickButton(for: track, tickController: tickController, day: day)
+        let button = UIButton(primaryAction: UIAction { [weak tickController, weak self] _ in
+            guard let self, let tickController else { return }
+            UISelectionFeedbackGenerator().selectionChanged()
+            tickController.tick(day: self.day)
+        })
         
         buttons[track] = button
         return button
+    }
+    
+    func configure(button: UIButton, for track: Track, ticks: Int) {
+        button.backgroundColor = track.buttonColor(ticks: ticks)
+        button.layer.cornerRadius = 4
+        button.setTitle(track.buttonText(ticks: ticks), for: .normal)
+        button.setTitleColor(track.textColor(), for: .normal)
     }
 
 }

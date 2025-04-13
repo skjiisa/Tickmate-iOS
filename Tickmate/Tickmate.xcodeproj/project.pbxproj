@@ -104,7 +104,6 @@
 		B95E5FAB2DAB47EF002FD0AB /* Defaults+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95E5FAA2DAB47EF002FD0AB /* Defaults+Convenience.swift */; };
 		B95E5FAD2DAB48B4002FD0AB /* TracksContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95E5FAC2DAB48B4002FD0AB /* TracksContainer.swift */; };
 		B95E5FAF2DAB4927002FD0AB /* ProxyViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95E5FAE2DAB4927002FD0AB /* ProxyViews.swift */; };
-		B95E5FB22DAB4A2B002FD0AB /* TickButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95E5FB12DAB4A2B002FD0AB /* TickButton.swift */; };
 		B95E5FB32DAB4A2B002FD0AB /* DayTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95E5FB02DAB4A2B002FD0AB /* DayTableViewCell.swift */; };
 		B9E609ED2DA0EDDA00C00B44 /* ExportTracksSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E609EC2DA0EDDA00C00B44 /* ExportTracksSelectionView.swift */; };
 /* End PBXBuildFile section */
@@ -212,7 +211,6 @@
 		B95E5FAC2DAB48B4002FD0AB /* TracksContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TracksContainer.swift; sourceTree = "<group>"; };
 		B95E5FAE2DAB4927002FD0AB /* ProxyViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyViews.swift; sourceTree = "<group>"; };
 		B95E5FB02DAB4A2B002FD0AB /* DayTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayTableViewCell.swift; sourceTree = "<group>"; };
-		B95E5FB12DAB4A2B002FD0AB /* TickButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TickButton.swift; sourceTree = "<group>"; };
 		B9E609EC2DA0EDDA00C00B44 /* ExportTracksSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportTracksSelectionView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -417,7 +415,6 @@
 				B95E5FA32DAB479E002FD0AB /* PageViewController.swift */,
 				B95E5FA42DAB479E002FD0AB /* TrackTableViewController.swift */,
 				B95E5FB02DAB4A2B002FD0AB /* DayTableViewCell.swift */,
-				B95E5FB12DAB4A2B002FD0AB /* TickButton.swift */,
 				B95E5FAC2DAB48B4002FD0AB /* TracksContainer.swift */,
 				B95E5FAA2DAB47EF002FD0AB /* Defaults+Convenience.swift */,
 				B95E5FAE2DAB4927002FD0AB /* ProxyViews.swift */,
@@ -637,7 +634,6 @@
 				59EF632D25E5CF24003E7259 /* TrackRepresentation.swift in Sources */,
 				592850F2265EF54B00E682F5 /* GroupController.swift in Sources */,
 				59EF632925E5CD4B003E7259 /* TrackView.swift in Sources */,
-				B95E5FB22DAB4A2B002FD0AB /* TickButton.swift in Sources */,
 				B95E5FB32DAB4A2B002FD0AB /* DayTableViewCell.swift in Sources */,
 				59C23A6725E70D7000AFBC4B /* SymbolsList.swift in Sources */,
 				5991968F25F813ED003215CC /* PresetTracksView.swift in Sources */,
