@@ -35,7 +35,7 @@ class TrackTableViewController: UITableViewController {
     
     private var initialized = false
     private var subscriptions: Set<AnyCancellable> = []
-    private var tracksHeader: UIViewController?
+    private let headerView = TracksHeaderView()
     
     func load(tracks: [Track]) {
         tracksContainer.tracks = tracks
@@ -81,6 +81,8 @@ class TrackTableViewController: UITableViewController {
             tableView.visibleCells
                 .compactMap { $0 as? DayTableViewCell }
                 .forEach { $0.reconfigure(with: tracks) }
+            
+            headerView.configure(with: tracks)
         }.store(in: &subscriptions)
         
         // TODO: REMOVE THIS!!!
@@ -165,44 +167,7 @@ class TrackTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        nil
-        /*
-        // Only create the tracks header once
-        if let tracksHeader {
-            return tracksHeader.view
-        }
-        
-        // Update the source of truth for these
-        let vcContainer = ViewControllerContainer()
-        let trackController = TrackController.shared
-        let groupController = GroupController()
-        
-        let hostingController = UIHostingController(rootView:
-            TracksHeaderProxy(tracksContainer: tracksContainer)
-                .environmentObject(vcContainer)
-                .environmentObject(trackController)
-                .environmentObject(groupController)
-        )
-        
-        addChild(hostingController)
-        // TODO: Should this be willMove? Normally it should be called
-        // after its view is added as a subview, but that hasn't happened
-        // yet since we're returning the view for UIKit to handle
-        hostingController.didMove(toParent: self)
-        
-        tracksHeader = hostingController
-        
-        return hostingController.view
-         */
-    }
-    
-    override func tableView(_ tableView: UITableView, didEndDisplayingHeaderView view: UIView, forSection section: Int) {
-        // Only try to remove tracksHeader if that's what this actually is
-        guard view == tracksHeader?.view else { return }
-        
-        // TODO: didMove instead since this is is called after the view is done being displayed?
-        tracksHeader?.willMove(toParent: nil)
-        tracksHeader?.removeFromParent()
+        self.headerView
     }
     
     //MARK: Scroll View Delegate
