@@ -96,6 +96,16 @@
 		B90C7F252DA0D92100C8F12B /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90C7F242DA0D92000C8F12B /* ShareSheet.swift */; };
 		B91ED2862B5B89640049EDB7 /* SwiftUIIntrospect in Frameworks */ = {isa = PBXBuildFile; productRef = B91ED2852B5B89640049EDB7 /* SwiftUIIntrospect */; };
 		B93BBF092B9CCAFC007E810A /* ArchivedTracksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93BBF082B9CCAFC007E810A /* ArchivedTracksView.swift */; };
+		B95E5FA12DAB478B002FD0AB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B95E5FA02DAB478B002FD0AB /* Main.storyboard */; };
+		B95E5FA52DAB479E002FD0AB /* TrackTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95E5FA42DAB479E002FD0AB /* TrackTableViewController.swift */; };
+		B95E5FA62DAB479E002FD0AB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95E5FA22DAB479E002FD0AB /* ViewController.swift */; };
+		B95E5FA72DAB479E002FD0AB /* PageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95E5FA32DAB479E002FD0AB /* PageViewController.swift */; };
+		B95E5FA92DAB47B2002FD0AB /* ScrollController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95E5FA82DAB47B2002FD0AB /* ScrollController.swift */; };
+		B95E5FAB2DAB47EF002FD0AB /* Defaults+Convenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95E5FAA2DAB47EF002FD0AB /* Defaults+Convenience.swift */; };
+		B95E5FAD2DAB48B4002FD0AB /* TracksContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95E5FAC2DAB48B4002FD0AB /* TracksContainer.swift */; };
+		B95E5FAF2DAB4927002FD0AB /* ProxyViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95E5FAE2DAB4927002FD0AB /* ProxyViews.swift */; };
+		B95E5FB32DAB4A2B002FD0AB /* DayTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95E5FB02DAB4A2B002FD0AB /* DayTableViewCell.swift */; };
+		B95E5FB52DAB5983002FD0AB /* TracksHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95E5FB42DAB5983002FD0AB /* TracksHeaderView.swift */; };
 		B9E609ED2DA0EDDA00C00B44 /* ExportTracksSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9E609EC2DA0EDDA00C00B44 /* ExportTracksSelectionView.swift */; };
 /* End PBXBuildFile section */
 
@@ -193,6 +203,16 @@
 		59FBCF2E25E07BD8007B114F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B90C7F242DA0D92000C8F12B /* ShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
 		B93BBF082B9CCAFC007E810A /* ArchivedTracksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchivedTracksView.swift; sourceTree = "<group>"; };
+		B95E5FA02DAB478B002FD0AB /* Main.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		B95E5FA22DAB479E002FD0AB /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		B95E5FA32DAB479E002FD0AB /* PageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageViewController.swift; sourceTree = "<group>"; };
+		B95E5FA42DAB479E002FD0AB /* TrackTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackTableViewController.swift; sourceTree = "<group>"; };
+		B95E5FA82DAB47B2002FD0AB /* ScrollController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollController.swift; sourceTree = "<group>"; };
+		B95E5FAA2DAB47EF002FD0AB /* Defaults+Convenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Defaults+Convenience.swift"; sourceTree = "<group>"; };
+		B95E5FAC2DAB48B4002FD0AB /* TracksContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TracksContainer.swift; sourceTree = "<group>"; };
+		B95E5FAE2DAB4927002FD0AB /* ProxyViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProxyViews.swift; sourceTree = "<group>"; };
+		B95E5FB02DAB4A2B002FD0AB /* DayTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayTableViewCell.swift; sourceTree = "<group>"; };
+		B95E5FB42DAB5983002FD0AB /* TracksHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TracksHeaderView.swift; sourceTree = "<group>"; };
 		B9E609EC2DA0EDDA00C00B44 /* ExportTracksSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExportTracksSelectionView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -320,6 +340,7 @@
 				5964544E25E987C6004FE184 /* Tickmate.entitlements */,
 				59FBCF2025E07BD5007B114F /* TickmateApp.swift */,
 				59FBCF3C25E07DF0007B114F /* Model */,
+				B95E5F9F2DAB4769002FD0AB /* New UI */,
 				59FBCF3D25E07E05007B114F /* Views */,
 				59EF633525E5DC85003E7259 /* Supplementary Views */,
 				59FBCF3E25E07E0B007B114F /* Controllers */,
@@ -385,6 +406,23 @@
 				59603D442666C85A001482C6 /* StoreController.swift */,
 			);
 			path = Controllers;
+			sourceTree = "<group>";
+		};
+		B95E5F9F2DAB4769002FD0AB /* New UI */ = {
+			isa = PBXGroup;
+			children = (
+				B95E5FA02DAB478B002FD0AB /* Main.storyboard */,
+				B95E5FA82DAB47B2002FD0AB /* ScrollController.swift */,
+				B95E5FA22DAB479E002FD0AB /* ViewController.swift */,
+				B95E5FA32DAB479E002FD0AB /* PageViewController.swift */,
+				B95E5FB42DAB5983002FD0AB /* TracksHeaderView.swift */,
+				B95E5FA42DAB479E002FD0AB /* TrackTableViewController.swift */,
+				B95E5FB02DAB4A2B002FD0AB /* DayTableViewCell.swift */,
+				B95E5FAC2DAB48B4002FD0AB /* TracksContainer.swift */,
+				B95E5FAA2DAB47EF002FD0AB /* Defaults+Convenience.swift */,
+				B95E5FAE2DAB4927002FD0AB /* ProxyViews.swift */,
+			);
+			path = "New UI";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -522,6 +560,7 @@
 				5985C7F42698F3F800413FF2 /* Launch Screen.storyboard in Resources */,
 				59FBCF2825E07BD8007B114F /* Preview Assets.xcassets in Resources */,
 				59FBCF2525E07BD8007B114F /* Assets.xcassets in Resources */,
+				B95E5FA12DAB478B002FD0AB /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -587,12 +626,18 @@
 				59303A512665D00900EB900E /* TrackGroups.swift in Sources */,
 				59C23A6C25E70E1A00AFBC4B /* SymbolPicker.swift in Sources */,
 				59F6EAA725E36D680069DF40 /* TrackController.swift in Sources */,
+				B95E5FA52DAB479E002FD0AB /* TrackTableViewController.swift in Sources */,
+				B95E5FAF2DAB4927002FD0AB /* ProxyViews.swift in Sources */,
+				B95E5FA62DAB479E002FD0AB /* ViewController.swift in Sources */,
+				B95E5FA72DAB479E002FD0AB /* PageViewController.swift in Sources */,
 				59F0980225E081CC00667971 /* TicksView.swift in Sources */,
 				59F6EAA425E36D510069DF40 /* TickController.swift in Sources */,
 				59E9397225F98ACD002FD8CD /* AcknowledgementsView.swift in Sources */,
+				B95E5FAB2DAB47EF002FD0AB /* Defaults+Convenience.swift in Sources */,
 				59EF632D25E5CF24003E7259 /* TrackRepresentation.swift in Sources */,
 				592850F2265EF54B00E682F5 /* GroupController.swift in Sources */,
 				59EF632925E5CD4B003E7259 /* TrackView.swift in Sources */,
+				B95E5FB32DAB4A2B002FD0AB /* DayTableViewCell.swift in Sources */,
 				59C23A6725E70D7000AFBC4B /* SymbolsList.swift in Sources */,
 				5991968F25F813ED003215CC /* PresetTracksView.swift in Sources */,
 				59D483C027057E3300CB30C0 /* View+Conditional.swift in Sources */,
@@ -601,6 +646,7 @@
 				59FBCF2325E07BD5007B114F /* ContentView.swift in Sources */,
 				59FBCF2125E07BD5007B114F /* TickmateApp.swift in Sources */,
 				5996360F264F128A00AAF6CA /* GroupsView.swift in Sources */,
+				B95E5FAD2DAB48B4002FD0AB /* TracksContainer.swift in Sources */,
 				59FBCF2D25E07BD8007B114F /* Tickmate.xcdatamodeld in Sources */,
 				B90C7F252DA0D92100C8F12B /* ShareSheet.swift in Sources */,
 				59603D452666C85A001482C6 /* StoreController.swift in Sources */,
@@ -617,6 +663,8 @@
 				59E6E15125F8837E008A74A9 /* Defaults.swift in Sources */,
 				B9E609ED2DA0EDDA00C00B44 /* ExportTracksSelectionView.swift in Sources */,
 				59342E1C2603F3DF007E9F64 /* OnboardingView.swift in Sources */,
+				B95E5FB52DAB5983002FD0AB /* TracksHeaderView.swift in Sources */,
+				B95E5FA92DAB47B2002FD0AB /* ScrollController.swift in Sources */,
 				597A7FDD25F6E1C900256268 /* StateEditButton.swift in Sources */,
 				59E6E14E25F88177008A74A9 /* SettingsView.swift in Sources */,
 				5931643F26855EB8005DDA1A /* TickView.swift in Sources */,
