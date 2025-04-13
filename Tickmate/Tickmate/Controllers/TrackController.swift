@@ -16,6 +16,8 @@ import WidgetKit
 
 class TrackController: NSObject, ObservableObject {
     
+    static var shared = TrackController()
+    
     //MARK: Properties
     
     static let sortDescriptors = [
