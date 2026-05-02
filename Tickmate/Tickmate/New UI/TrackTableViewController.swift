@@ -5,75 +5,88 @@
 //  Created by Elaine Lyons on 2/10/22.
 //
 
+import UIKit
 import SwiftUI
 import Combine
 import CoreData
 
 class TrackTableViewController: UITableViewController {
-    
+
     //MARK: Properties
-    
+
+    /// Total number of days rendered in the page. Mirrors the SwiftUI
+    /// `TicksView` constant.
+    static let numDays = 365
+
     var index = 0
     var scrollController: ScrollController = .shared
-    
+
     private let tracksContainer = TracksContainer()
-    
+
     @AppStorage(Defaults.weekSeparatorLines.rawValue)
     private var weekSeparatorLines: Bool = true
-    
+
     @AppStorage(Defaults.weekSeparatorSpaces.rawValue)
     private var weekSeparatorSpaces: Bool = true
-    
+
+    @AppStorage(Defaults.todayAtTop.rawValue, store: UserDefaults(suiteName: groupID))
+    private var todayAtTop: Bool = false
+
     var group: TrackGroup? {
         didSet {
             guard let group else { return }
             //TODO: Create FRC
             let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
-            
+
             fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Track.index, ascending: true)]
             fetchRequest.predicate = NSPredicate(format: "enabled == YES AND %@ IN groups", group)
-            
+
             if let tracks = try? PersistenceController.shared.container.viewContext.fetch(fetchRequest) {
                 load(tracks: tracks)
             }
         }
     }
-    
+
     private var initialized = false
     private var subscriptions: Set<AnyCancellable> = []
     private let headerView = TracksHeaderView()
-    
+
     func load(tracks: [Track]) {
         tracksContainer.tracks = tracks
     }
-    
+
     //MARK: Lifecycle
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         tableView.canCancelContentTouches = true
-        
+
         tableView.register(DayTableViewCell.self, forCellReuseIdentifier: "DayCell")
         tableView.delegate = self
         if #available(iOS 15.0, *) {
             tableView.sectionHeaderTopPadding = 0
         }
-        scrollToDelegate()
-        
+        tableView.scrollsToTop = todayAtTop
+        scrollToInitialPosition()
+
         scrollController.$isPaging.sink { [weak self] isPaging in
             guard let self = self else { return }
-            
+
             if isPaging {
                 self.tableView.showsVerticalScrollIndicator = false
             } else {
-                // We only want to flash the scroll bar if the table is scrolled above the bottom.
-                //TODO: Test this on a square screen with no Safe Area
-                // Could even potentially add a bit more tolerance to this
-                // so it doesn't flash them when only scrolled up a bit.
-                //Note: If there's an added option to flip so today is at the top, make sure to adjust this
-                let position = self.tableView.contentSize.height - self.tableView.bounds.size.height + self.tableView.contentInset.bottom
-                if self.tableView.contentOffset.y < position {
+                // We only want to flash the scroll bar if the table is scrolled
+                // away from its "rest" edge.
+                let position: CGFloat
+                if self.todayAtTop {
+                    position = 0
+                } else {
+                    position = self.tableView.contentSize.height - self.tableView.bounds.size.height + self.tableView.contentInset.bottom
+                }
+                let offset = self.tableView.contentOffset.y
+                let needsFlash = self.todayAtTop ? offset > position : offset < position
+                if needsFlash {
                     self.tableView.showsVerticalScrollIndicator = true
                     self.tableView.flashScrollIndicators()
                 }
@@ -81,58 +94,75 @@ class TrackTableViewController: UITableViewController {
                 // until the user actually starts scrolling again (see scrollViewWillBeginDragging).
             }
         }.store(in: &subscriptions)
-        
+
         tracksContainer.$tracks.sink { [weak self] tracks in
             guard let self, tableView.superview != nil else { return }
             tableView.visibleCells
                 .compactMap { $0 as? DayTableViewCell }
                 .forEach { $0.reconfigure(with: tracks) }
-            
+
             headerView.configure(with: tracks)
         }.store(in: &subscriptions)
-        
+
         // TODO: REMOVE THIS!!!
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
             print("!!!!!!!!!! removing first track")
             self.tracksContainer.tracks.removeFirst()
         }
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        scrollToDelegate()
+        scrollToInitialPosition()
     }
-    
+
     /*
     override func didMove(toParent parent: UIViewController?) {
         super.didMove(toParent: parent)
         guard parent == nil else { return }
-        
+
         print("!!!!!!!! TrackTableViewController.didMove(toParent:)", index)
         delegate?.isRemoved()
     }
      */
-    
+
+    //MARK: Day <-> Row Mapping
+
+    /// Maps a row in the table to the day it represents.
+    /// When `todayAtTop` is on, row 0 == today (day 0). Otherwise row 0 ==
+    /// the oldest day (numDays - 1) and the last row is today.
+    func day(forRow row: Int) -> Int {
+        todayAtTop ? row : Self.numDays - row - 1
+    }
+
+    /// Inverse of `day(forRow:)`.
+    func row(forDay day: Int) -> Int {
+        todayAtTop ? day : Self.numDays - day - 1
+    }
+
     //MARK: Private
-    
-    private func scrollToDelegate() {
+
+    /// Move the table to its "rest" edge. With `todayAtTop` on that's the
+    /// top of the view; otherwise it's the bottom (so today is just above
+    /// the safe area).
+    private func scrollToInitialPosition() {
         guard !tableView.isDragging, !tableView.isDecelerating else { return }
-        
+
         guard scrollController.initialized else {
-            return scrollToBottom()
+            scrollToToday()
+            return
         }
-        
+
         let scrollPosition = scrollController.contentOffset
-        print(scrollPosition, "scrollToDelegate")
         self.tableView.contentOffset = scrollPosition
     }
-    
-    private func scrollToBottom(animated: Bool = false) {
-        let indexPath = IndexPath(row: /*TickController.numDays*/365-1, section: 0)
-        tableView.scrollToRow(at: indexPath, at: .top, animated: animated)
+
+    private func scrollToToday(animated: Bool = false) {
+        let indexPath = IndexPath(row: row(forDay: 0), section: 0)
+        let position: UITableView.ScrollPosition = todayAtTop ? .top : .bottom
+        tableView.scrollToRow(at: indexPath, at: position, animated: animated)
         if initialized {
             scrollController.contentOffset = tableView.contentOffset
-            print(scrollController.contentOffset, "scrollToBottom")
         }
     }
 
@@ -143,51 +173,46 @@ class TrackTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        365 //TickController.numDays
+        Self.numDays
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "DayCell", for: indexPath)
-        
-//        let trackController = TrackController.shared
-//        cell.contentConfiguration = UIHostingConfiguration {
-//            DayRowProxy(tracksContainer: tracksContainer, day: /*TickController.numDays*/ 365 - indexPath.row - 1, spaces: false, lines: false, showDate: false)
-//                .environmentObject(trackController)
-//        }
+
         if let dayCell = cell as? DayTableViewCell {
             dayCell.configure(
                 with: tracksContainer.tracks,
-                day: 365 - indexPath.row - 1,
+                day: day(forRow: indexPath.row),
                 lines: weekSeparatorLines,
                 spaces: weekSeparatorSpaces
             )
         }
 
-        scrollToDelegate()
+        scrollToInitialPosition()
         return cell
     }
-    
+
     //MARK: Table View Delegate
-    
+
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         44
     }
-    
+
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let day = 365 - indexPath.row - 1
+        let day = day(forRow: indexPath.row)
         let baseHeight: CGFloat = 44
         if weekSeparatorSpaces && TrackController.shared.shouldShowSeparatorBelow(day: day) {
             return baseHeight + 8 // Add 8 points of spacing for week separators
         }
         return baseHeight
     }
-    
+
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         self.headerView
     }
-    
+
     //MARK: Scroll View Delegate
-    
+
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
         // This function gets called on view load with a value of zero,
         // resetting the scroll position every time a new screen loads.
@@ -196,24 +221,17 @@ class TrackTableViewController: UITableViewController {
         guard scrollView.contentOffset != .zero,
               !scrollController.isPaging else { return }
         scrollController.contentOffset = scrollView.contentOffset
-//        print(scrollView.contentOffset, "scrollViewDidScroll")
     }
-    
+
     override func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
         scrollController.contentOffset = scrollView.contentOffset
-        print(scrollView.contentOffset, "scrollViewDidEndScrollingAnimation")
     }
 
     override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         scrollController.contentOffset = scrollView.contentOffset
-        print(scrollView.contentOffset,
-              "scrollViewDidEndDecelerating",
-              "contentSize.height - bounds.size.height + contentInset.bottom",
-              scrollView.contentSize.height - scrollView.bounds.size.height + scrollView.contentInset.bottom)
     }
-    
+
     override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        print("scrollViewWillBeginDragging")
         // Avoid unnecessary calls to setter as that seems to flash it
         if !tableView.showsVerticalScrollIndicator {
             tableView.showsVerticalScrollIndicator = true
@@ -224,13 +242,15 @@ class TrackTableViewController: UITableViewController {
 
     override func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         scrollController.contentOffset = scrollView.contentOffset
-        print(scrollView.contentOffset, "scrollViewDidEndDragging")
     }
-    
+
     override func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
-        print("scroll to top")
-        // Scroll to bottom instead
-        scrollToBottom(animated: true)
+        // When today is at the top, let the OS scroll to top for us.
+        // Otherwise, scroll to today (which is at the bottom) instead.
+        if todayAtTop {
+            return true
+        }
+        scrollToToday(animated: true)
         return false
     }
 

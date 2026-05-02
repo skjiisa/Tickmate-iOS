@@ -51,6 +51,9 @@ class ViewController: UIViewController {
     private var drop: DispatchWorkItem?
     private var impact: DispatchWorkItem?
 
+    @AppStorage(Defaults.todayAtTop.rawValue, store: UserDefaults(suiteName: groupID))
+    private var todayAtTop: Bool = false
+
     /// Height of the per-page header (shown above each track table). Used to mask
     /// the sidebar/shadow off so the per-page header always covers them.
     static let headerHeight: CGFloat = 44
@@ -240,7 +243,7 @@ extension ViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        365 // TickController.numDays
+        TrackTableViewController.numDays
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
@@ -249,7 +252,7 @@ extension ViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: DateLabelCell.reuseID, for: indexPath)
-        let day = /*TickController.numDays*/ 365 - indexPath.row - 1
+        let day = todayAtTop ? indexPath.row : TrackTableViewController.numDays - indexPath.row - 1
         if let dateCell = cell as? DateLabelCell {
             let label = TrackController.shared.dayLabel(day: day, compact: false)
             dateCell.configure(text: label.text, caption: label.caption)
@@ -328,10 +331,9 @@ extension ViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let day = 365 - indexPath.row - 1
+        let day = todayAtTop ? indexPath.row : TrackTableViewController.numDays - indexPath.row - 1
         let baseHeight: CGFloat = 44
-        let insets = TrackController.shared.insets(day: day)
-        if insets != nil {
+        if TrackController.shared.shouldShowSeparatorBelow(day: day) {
             return baseHeight + 8 // Add 8 points of spacing for week separators
         }
         return baseHeight
