@@ -72,6 +72,7 @@ class TrackTableViewController: UITableViewController {
             tableView.sectionHeaderTopPadding = 0
         }
         tableView.scrollsToTop = todayAtTop
+        headerView.delegate = self
         scrollToInitialPosition()
 
         scrollController.$isPaging.sink { [weak self] isPaging in
@@ -301,5 +302,50 @@ extension TrackTableViewController: DayTableViewCellDelegate {
         // Forward to TrackController so it can run the same two-tap-then-alert
         // logic the SwiftUI version uses.
         trackController?.didTapLockedDay()
+    }
+}
+
+//MARK: - TracksHeaderViewDelegate
+
+extension TrackTableViewController: TracksHeaderViewDelegate {
+    func tracksHeader(_ header: TracksHeaderView, didTap track: Track) {
+        // Mirror the SwiftUI .sheet(item: $showingTrack) behaviour: present
+        // TrackView for the tapped track wrapped in its own NavigationView.
+        let host = UIHostingController(rootView: TrackSheet(track: track, host: self))
+        present(host, animated: true)
+    }
+
+    /// Called by the SwiftUI TrackSheet when the user taps Done; the host
+    /// handles the actual UIKit dismiss.
+    func dismissTrackSheet() {
+        presentedViewController?.dismiss(animated: true)
+    }
+}
+
+//MARK: - SwiftUI sheet wrapper
+
+private struct TrackSheet: View {
+    let track: Track
+    weak var host: TrackTableViewController?
+
+    @State private var selection: Track?
+    @StateObject private var trackController = TrackController.shared
+    @StateObject private var groupController = GroupController.shared
+    @StateObject private var vcContainer = ViewControllerContainer()
+
+    var body: some View {
+        NavigationView {
+            TrackView(track: track, selection: $selection, sheet: true)
+        }
+        .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
+        .environmentObject(trackController)
+        .environmentObject(groupController)
+        .environmentObject(vcContainer)
+        .onAppear { selection = track }
+        // TrackView sets selection back to nil to dismiss; relay that to the
+        // UIKit host so it can actually run the dismiss animation.
+        .onChange(of: selection) { newValue in
+            if newValue == nil { host?.dismissTrackSheet() }
+        }
     }
 }
