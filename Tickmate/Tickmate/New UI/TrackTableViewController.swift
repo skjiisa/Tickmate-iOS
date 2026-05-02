@@ -59,6 +59,10 @@ class TrackTableViewController: UITableViewController {
     private let headerView = TracksHeaderView()
     private weak var trackController: TrackController? = .shared
 
+    /// Cached value used to detect when `todayAtTop` flips so the table can be
+    /// re-scrolled to the appropriate "rest" edge.
+    private var previousTodayAtTop: Bool = false
+
     /// Snapshot loader: used by the page VC for the All Tracks / Ungrouped
     /// pages where a pre-built FRC already exists upstream. The page VC
     /// re-feeds us when its FRC changes; we don't have to manage a delegate.
@@ -106,6 +110,7 @@ class TrackTableViewController: UITableViewController {
             tableView.sectionHeaderTopPadding = 0
         }
         tableView.scrollsToTop = todayAtTop
+        previousTodayAtTop = todayAtTop
         headerView.delegate = self
         scrollToInitialPosition()
 
@@ -151,11 +156,45 @@ class TrackTableViewController: UITableViewController {
                 self?.presentTodayLockAlert(alert)
             }
             .store(in: &subscriptions)
+
+        // Reload the table whenever any user default we depend on flips.
+        // Unlike SwiftUI views where @AppStorage drives invalidation for free,
+        // a UIViewController has to watch UserDefaults explicitly. Both the
+        // standard suite (week separator preferences) and the app-group suite
+        // (todayAtTop / todayLock) post their own didChange notifications.
+        NotificationCenter.default
+            .publisher(for: UserDefaults.didChangeNotification)
+            .sink { [weak self] _ in
+                self?.applySettingsChange()
+            }
+            .store(in: &subscriptions)
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         scrollToInitialPosition()
+    }
+
+    //MARK: Settings
+
+    /// Called whenever any UserDefaults value changes. Cheap to over-call:
+    /// `tableView.reloadData()` only rebuilds the visible cells (the table
+    /// keeps its scroll position), and `cellForRowAt` reads the latest
+    /// `@AppStorage` values when it configures each cell.
+    private func applySettingsChange() {
+        // Always keep scrollsToTop in sync with the current direction.
+        tableView.scrollsToTop = todayAtTop
+
+        let directionFlipped = todayAtTop != previousTodayAtTop
+        previousTodayAtTop = todayAtTop
+
+        tableView.reloadData()
+
+        if directionFlipped {
+            // The "rest" edge has moved (top ↔ bottom). Snap to today on the
+            // new edge so the user isn't left staring at a year ago.
+            scrollToToday(animated: false)
+        }
     }
 
     //MARK: Day <-> Row Mapping

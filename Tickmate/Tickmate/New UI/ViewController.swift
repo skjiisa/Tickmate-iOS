@@ -63,6 +63,10 @@ class ViewController: UIViewController {
     @AppStorage(Defaults.todayAtTop.rawValue, store: UserDefaults(suiteName: groupID))
     private var todayAtTop: Bool = false
 
+    /// Cached value used to detect when `todayAtTop` flips so the sidebar can
+    /// be re-scrolled to match the page table's new "rest" edge.
+    private var previousTodayAtTop: Bool = false
+
     /// Height of the per-page header (shown above each track table). Used to mask
     /// the sidebar/shadow off so the per-page header always covers them.
     static let headerHeight: CGFloat = 44
@@ -223,11 +227,23 @@ class ViewController: UIViewController {
     }
 
     private func setUpScrollSync() {
+        previousTodayAtTop = todayAtTop
+
         // Sync scroll position
         scrollController.$contentOffset.sink { [weak self] contentOffset in
             self?.tableView.contentOffset = contentOffset
         }
         .store(in: &subscribers)
+
+        // Reload the date column whenever a relevant user default changes.
+        // SwiftUI views with @AppStorage refresh automatically; UIViewControllers
+        // don't, so we listen for the global UserDefaults.didChangeNotification.
+        NotificationCenter.default
+            .publisher(for: UserDefaults.didChangeNotification)
+            .sink { [weak self] _ in
+                self?.applySettingsChange()
+            }
+            .store(in: &subscribers)
 
         scrollController.$isPaging.sink { [weak self] isPaging in
             guard let self = self else { return }
@@ -276,6 +292,29 @@ class ViewController: UIViewController {
             height: bounds.height * 2
         )
         shadowView.layer.mask = shadowMask
+    }
+
+    //MARK: Settings
+
+    /// Mirrors the per-page handler: rebuild the date-column rows whenever any
+    /// UserDefaults value flips. If `todayAtTop` flipped, also snap the column
+    /// to the matching edge so it stays in sync with the page tables.
+    private func applySettingsChange() {
+        let directionFlipped = todayAtTop != previousTodayAtTop
+        previousTodayAtTop = todayAtTop
+
+        tableView.reloadData()
+
+        if directionFlipped {
+            let row = todayAtTop ? 0 : TrackTableViewController.numDays - 1
+            let position: UITableView.ScrollPosition = todayAtTop ? .top : .bottom
+            // The page tables also re-scroll on this notification and publish
+            // their new offset back to ScrollController; that publish would
+            // immediately overwrite ours. Doing the scroll synchronously here
+            // gives the user something correct to look at during the brief
+            // window between our reload and the publisher's next runloop tick.
+            tableView.scrollToRow(at: IndexPath(row: row, section: 0), at: position, animated: false)
+        }
     }
 
     //MARK: Private
