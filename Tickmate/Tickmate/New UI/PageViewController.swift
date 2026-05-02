@@ -10,7 +10,21 @@ import Combine
 import CoreData
 
 class PageViewController: UIPageViewController {
-    
+
+    //MARK: Init
+
+    /// Programmatic initializer (replaces the storyboard instantiation).
+    init() {
+        super.init(transitionStyle: .scroll,
+                   navigationOrientation: .horizontal,
+                   options: nil)
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     //MARK: Properties
     
     var scrollPosition: CGPoint = .zero
@@ -143,10 +157,9 @@ class PageViewController: UIPageViewController {
     }
     
     private func trackVC(for index: Int) -> TrackTableViewController? {
-        guard pages.indices.contains(index),
-              let trackVC = storyboard?.instantiateViewController(withIdentifier: "TrackTable") as? TrackTableViewController
-        else { return nil }
-        
+        guard pages.indices.contains(index) else { return nil }
+        let trackVC = TrackTableViewController()
+
         let page = pages[index]
         
         trackVC.index = index
