@@ -41,8 +41,13 @@ class TrackTableViewController: UITableViewController {
             //TODO: Create FRC
             let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
 
-            fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Track.index, ascending: true)]
-            fetchRequest.predicate = NSPredicate(format: "enabled == YES AND %@ IN groups", group)
+            fetchRequest.sortDescriptors = TrackController.sortDescriptors
+            // Match SwiftUI TicksView.standardPredicate: enabled, not archived,
+            // belonging to this group.
+            fetchRequest.predicate = NSPredicate(
+                format: "enabled == YES AND isArchived == NO AND %@ IN groups",
+                group
+            )
 
             if let tracks = try? PersistenceController.shared.container.viewContext.fetch(fetchRequest) {
                 load(tracks: tracks)

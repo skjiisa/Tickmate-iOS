@@ -79,10 +79,11 @@ class PageViewController: UIPageViewController {
     
     lazy private var ungroupedTracksFRC: NSFetchedResultsController<Track> = {
         let context = PersistenceController.shared.container.viewContext
-        
+
         let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(keyPath: \Track.index, ascending: true)]
-        fetchRequest.predicate = NSPredicate(format: "enabled == YES AND groups.@count == 0")
+        fetchRequest.sortDescriptors = TrackController.sortDescriptors
+        // Match SwiftUI TicksView: enabled, not archived, no groups.
+        fetchRequest.predicate = NSPredicate(format: "enabled == YES AND isArchived == NO AND groups.@count == 0")
         
         let frc = NSFetchedResultsController<Track>(
             fetchRequest: fetchRequest,
