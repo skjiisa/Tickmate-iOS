@@ -95,7 +95,6 @@ class PageViewController: UIPageViewController {
         
         do {
             try frc.performFetch()
-            print("PageViewController FRC fetched.")
         } catch {
             NSLog("Error performing Tracks fetch: \(error)")
         }
@@ -125,24 +124,16 @@ class PageViewController: UIPageViewController {
                 .store(in: &subscriptions)
         }
         
+        // Find the underlying horizontal UIScrollView so we can publish paging
+        // state via ScrollController for the sidebar shadow animation.
         _ = view.subviews.first { (view: UIView) -> Bool in
             if let scrollView = view as? UIScrollView,
                !(scrollView is UITableView) {
-                print(scrollView)
                 scrollView.delegate = self
                 return true
             }
             return false
         }
-        
-        /* For testing settings changes
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-            print("!!!!!!!!!! hiding 'all tracks' page")
-            UserDefaults.standard.showAllTracks = false
-            
-            self.viewWillAppear(true)
-        }
-        */
     }
     
     override func viewWillAppear(_ animated: Bool) {

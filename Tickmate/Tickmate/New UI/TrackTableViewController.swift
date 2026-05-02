@@ -35,23 +35,22 @@ class TrackTableViewController: UITableViewController {
     @AppStorage(Defaults.todayLock.rawValue, store: UserDefaults(suiteName: groupID))
     private var todayLock: Bool = false
 
+    /// FRC backing the on-screen tracks list. Set up by `load(predicate:)`
+    /// or `load(tracks:)` (which builds an in-memory snapshot for callers
+    /// that already have an array). Owning the FRC here means rename /
+    /// archive / reorder operations propagate live without us needing a
+    /// manual reload from the host page VC.
+    private var tracksFRC: NSFetchedResultsController<Track>?
+
     var group: TrackGroup? {
         didSet {
             guard let group else { return }
-            //TODO: Create FRC
-            let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
-
-            fetchRequest.sortDescriptors = TrackController.sortDescriptors
             // Match SwiftUI TicksView.standardPredicate: enabled, not archived,
             // belonging to this group.
-            fetchRequest.predicate = NSPredicate(
+            load(predicate: NSPredicate(
                 format: "enabled == YES AND isArchived == NO AND %@ IN groups",
                 group
-            )
-
-            if let tracks = try? PersistenceController.shared.container.viewContext.fetch(fetchRequest) {
-                load(tracks: tracks)
-            }
+            ))
         }
     }
 
@@ -60,8 +59,38 @@ class TrackTableViewController: UITableViewController {
     private let headerView = TracksHeaderView()
     private weak var trackController: TrackController? = .shared
 
+    /// Snapshot loader: used by the page VC for the All Tracks / Ungrouped
+    /// pages where a pre-built FRC already exists upstream. The page VC
+    /// re-feeds us when its FRC changes; we don't have to manage a delegate.
     func load(tracks: [Track]) {
+        // Tear down any previous FRC so we don't keep firing change events
+        // for tracks the page is no longer responsible for.
+        tracksFRC = nil
         tracksContainer.tracks = tracks
+    }
+
+    /// FRC loader: used by the per-group case, where we own the lifecycle of
+    /// the underlying fetch.
+    func load(predicate: NSPredicate) {
+        let context = PersistenceController.shared.container.viewContext
+        let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()
+        fetchRequest.sortDescriptors = TrackController.sortDescriptors
+        fetchRequest.predicate = predicate
+
+        let frc = NSFetchedResultsController(
+            fetchRequest: fetchRequest,
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil
+        )
+        frc.delegate = self
+        do {
+            try frc.performFetch()
+        } catch {
+            NSLog("Error fetching tracks: \(error)")
+        }
+        tracksFRC = frc
+        tracksContainer.tracks = frc.fetchedObjects ?? []
     }
 
     //MARK: Lifecycle
@@ -122,28 +151,12 @@ class TrackTableViewController: UITableViewController {
                 self?.presentTodayLockAlert(alert)
             }
             .store(in: &subscriptions)
-
-        // TODO: REMOVE THIS!!!
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-            print("!!!!!!!!!! removing first track")
-            self.tracksContainer.tracks.removeFirst()
-        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         scrollToInitialPosition()
     }
-
-    /*
-    override func didMove(toParent parent: UIViewController?) {
-        super.didMove(toParent: parent)
-        guard parent == nil else { return }
-
-        print("!!!!!!!! TrackTableViewController.didMove(toParent:)", index)
-        delegate?.isRemoved()
-    }
-     */
 
     //MARK: Day <-> Row Mapping
 
@@ -298,6 +311,19 @@ class TrackTableViewController: UITableViewController {
         return false
     }
 
+}
+
+//MARK: - NSFetchedResultsControllerDelegate
+
+extension TrackTableViewController: NSFetchedResultsControllerDelegate {
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        // The TracksContainer publisher is what the visible cells and the
+        // header observe; just re-publish the full set when CoreData reports
+        // any change. The track count for a group page should never be large
+        // enough for this to matter performance-wise.
+        guard let frc = controller as? NSFetchedResultsController<Track> else { return }
+        tracksContainer.tracks = frc.fetchedObjects ?? []
+    }
 }
 
 //MARK: - DayTableViewCellDelegate
