@@ -67,18 +67,47 @@ class ViewController: UIViewController {
         navigationItem.title = "Tickmate"
         navigationItem.largeTitleDisplayMode = .never
 
-        navigationItem.leftBarButtonItem = UIBarButtonItem(
-            image: UIImage(systemName: "gear"),
-            style: .plain,
-            target: nil,
-            action: nil
-        )
-
+        setUpNavigationBarButtons()
         setUpHierarchy()
         setUpShadow()
         setUpTableView()
         setUpPageViewController()
         setUpScrollSync()
+    }
+
+    private func setUpNavigationBarButtons() {
+        // Left: gear → Settings sheet (mirrors SwiftUI ContentView toolbar).
+        navigationItem.leftBarButtonItem = UIBarButtonItem(
+            image: UIImage(systemName: "gear"),
+            style: .plain,
+            target: self,
+            action: #selector(presentSettings)
+        )
+
+        // Right: text.justify → Tracks sheet.
+        navigationItem.rightBarButtonItem = UIBarButtonItem(
+            image: UIImage(systemName: "text.justify"),
+            style: .plain,
+            target: self,
+            action: #selector(presentTracks)
+        )
+    }
+
+    @objc private func presentSettings() {
+        let host = UIHostingController(rootView: SettingsSheet(host: self))
+        present(host, animated: true)
+    }
+
+    @objc private func presentTracks() {
+        let host = UIHostingController(rootView: TracksSheet(host: self))
+        present(host, animated: true)
+    }
+
+    /// Called by the SwiftUI sheets when the user taps Done. We can't bind a
+    /// SwiftUI Binding directly to the UIViewController's modal state, so the
+    /// sheets call this after flipping their `showing` flag to `false`.
+    func dismissPresentedSheet() {
+        presentedViewController?.dismiss(animated: true)
     }
 
     override func viewDidLayoutSubviews() {
@@ -319,6 +348,53 @@ final class DateLabelCell: UITableViewCell {
         } else {
             captionLabel.text = nil
             captionLabel.isHidden = true
+        }
+    }
+}
+
+//MARK: - SwiftUI sheet wrappers
+
+/// SwiftUI wrapper for the Settings sheet. Set up so the same code path works
+/// for the new-UI host (ViewController) as for the old SwiftUI ContentView.
+private struct SettingsSheet: View {
+    weak var host: ViewController?
+    @State private var showing = true
+    // SettingsView expects these via .environmentObject from ContentView. We
+    // build them locally here so the sheet works when presented from UIKit.
+    @StateObject private var trackController = TrackController.shared
+    @StateObject private var storeController = StoreController()
+
+    var body: some View {
+        NavigationView {
+            SettingsView(showing: $showing)
+        }
+        .environmentObject(trackController)
+        .environmentObject(storeController)
+        .onChange(of: showing) { newValue in
+            if !newValue { host?.dismissPresentedSheet() }
+        }
+    }
+}
+
+/// SwiftUI wrapper for the Tracks sheet.
+private struct TracksSheet: View {
+    weak var host: ViewController?
+    @Environment(\.managedObjectContext) private var moc
+    @State private var showing = true
+    @StateObject private var trackController = TrackController.shared
+    @StateObject private var groupController = GroupController.shared
+    @StateObject private var vcContainer = ViewControllerContainer()
+
+    var body: some View {
+        NavigationView {
+            TracksView(showing: $showing)
+        }
+        .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
+        .environmentObject(trackController)
+        .environmentObject(groupController)
+        .environmentObject(vcContainer)
+        .onChange(of: showing) { newValue in
+            if !newValue { host?.dismissPresentedSheet() }
         }
     }
 }
