@@ -193,8 +193,17 @@ class TrackTableViewController: UITableViewController {
         let indexPath = IndexPath(row: row(forDay: 0), section: 0)
         let position: UITableView.ScrollPosition = todayAtTop ? .top : .bottom
         tableView.scrollToRow(at: indexPath, at: position, animated: animated)
-        if initialized {
-            scrollController.contentOffset = tableView.contentOffset
+        // Always publish the resulting offset back to ScrollController so the
+        // sidebar's date column scrolls to match. Previously this was gated on
+        // `initialized`, which meant the very first scroll-to-today on launch
+        // never reached the sidebar — leaving it stuck at offset zero showing
+        // year-old dates instead of today.
+        // Layout may not be complete yet when this is called from viewDidLoad,
+        // so defer the read of `tableView.contentOffset` until the next runloop
+        // tick to ensure scrollToRow has actually moved the table.
+        DispatchQueue.main.async { [weak self] in
+            guard let self else { return }
+            self.scrollController.contentOffset = self.tableView.contentOffset
         }
     }
 

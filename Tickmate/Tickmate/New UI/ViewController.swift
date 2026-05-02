@@ -21,26 +21,35 @@ struct NewUI: UIViewControllerRepresentable {
     func updateUIViewController(_ uiViewController: UIViewController, context: Context) { }
 }
 
-/// The main "host" view controller. Lays out:
-///   * `tableViewContainer`  – embeds the `PageViewController` (the swipable group pages)
-///   * `shadowView`          – the left "sidebar" that drops a shadow on the right edge
-///                             while paging, giving the new design its distinctive look.
-///   * `tableView`           – a 100pt-wide "ghost" table that displays date labels and
-///                             stays in sync with whichever page's table is on screen.
+/// The main "host" view controller. Lays out three layers, mirroring the
+/// original storyboard structure:
+///   * `pageContainer`       – full-width, embeds the `PageViewController`
+///                             (the swipeable group pages). Lowest z-order.
+///   * `shadowView`          – 100pt-wide empty colored column behind the date
+///                             column, used only to cast a shadow on the right
+///                             edge while paging. Middle z-order.
+///   * `tableViewContainer`  – 100pt-wide colored column that hosts the date
+///                             label `tableView`. Highest z-order so the labels
+///                             render in front of the page contents.
 class ViewController: UIViewController {
 
     //MARK: Properties
 
-    /// 100pt-wide column on the left of the screen that contains the persistent date
-    /// labels and casts the sidebar shadow over the page contents while paging.
+    /// Full-width container view that hosts the `PageViewController` as a child.
+    let pageContainer = UIView()
+
+    /// 100pt-wide empty column that lives behind the date column. Has an opaque
+    /// background so its layer can cast a shadow; no subviews.
     let shadowView = UIView()
 
-    /// Container view that hosts the `PageViewController` as a child.
+    /// 100pt-wide column that contains the persistent date label `tableView`.
+    /// Sits on top of `shadowView` and renders the dates over the page content.
     let tableViewContainer = UIView()
 
-    /// The "ghost" date-column table view rendered inside the shadow column.
-    /// Its data source / delegate are this view controller; it shows the day label
-    /// for each row (Today / Yesterday / weekday + date).
+    /// Date-column table view. Lives inside `tableViewContainer`. Its data
+    /// source / delegate are this view controller; it shows the day label
+    /// (Today / Yesterday / weekday + date) for each row in sync with whichever
+    /// page's track table is currently on screen.
     let tableView = UITableView()
 
     /// Embedded page view controller.
@@ -119,30 +128,52 @@ class ViewController: UIViewController {
     //MARK: Setup
 
     private func setUpHierarchy() {
-        // Use Auto Layout for everything; matches the storyboard frames.
-        for v in [tableViewContainer, shadowView] {
+        // Mirror the original storyboard's three-layer structure. Add order
+        // determines z-order: pageContainer is the back-most layer, shadowView
+        // sits on top of it and casts its shadow over the page content,
+        // tableViewContainer (with the date labels inside) is the front-most
+        // layer so the labels render above everything.
+        for v in [pageContainer, shadowView, tableViewContainer] {
             v.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(v)
         }
 
+        // Both columns need an opaque background:
+        //   * shadowView: so its CALayer has opaque content to cast a shadow
+        //     from (without this, shadowOpacity has nothing to work with).
+        //   * tableViewContainer: so the date labels render against a solid
+        //     surface that hides whatever page content is underneath.
+        shadowView.backgroundColor = .systemBackground
+        tableViewContainer.backgroundColor = .systemBackground
+        // Match the storyboard's userInteractionEnabled=NO on both columns so
+        // taps fall through to whatever's underneath (the page table).
+        shadowView.isUserInteractionEnabled = false
+        tableViewContainer.isUserInteractionEnabled = false
+
         let safe = view.safeAreaLayoutGuide
 
         NSLayoutConstraint.activate([
-            // tableViewContainer fills the safe area horizontally and vertically;
-            // page contents render full-width but are visually inset by the shadow.
-            tableViewContainer.topAnchor.constraint(equalTo: safe.topAnchor),
-            tableViewContainer.leadingAnchor.constraint(equalTo: safe.leadingAnchor),
-            tableViewContainer.trailingAnchor.constraint(equalTo: safe.trailingAnchor),
-            tableViewContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            // pageContainer fills the safe area horizontally and the full view
+            // vertically (so page contents extend below the home indicator).
+            pageContainer.topAnchor.constraint(equalTo: safe.topAnchor),
+            pageContainer.leadingAnchor.constraint(equalTo: safe.leadingAnchor),
+            pageContainer.trailingAnchor.constraint(equalTo: safe.trailingAnchor),
+            pageContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor),
 
-            // shadowView is the 100pt-wide left column.
+            // shadowView: 100pt-wide left column, behind the date column.
             shadowView.topAnchor.constraint(equalTo: safe.topAnchor),
             shadowView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             shadowView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             shadowView.widthAnchor.constraint(equalToConstant: 100),
+
+            // tableViewContainer: same geometry as shadowView, in front of it.
+            tableViewContainer.topAnchor.constraint(equalTo: safe.topAnchor),
+            tableViewContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableViewContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            tableViewContainer.widthAnchor.constraint(equalToConstant: 100),
         ])
 
-        // Add the date-column table view inside the shadow column.
+        // Add the date-column table view inside tableViewContainer.
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.backgroundColor = .systemBackground
         tableView.isUserInteractionEnabled = false
@@ -150,12 +181,12 @@ class ViewController: UIViewController {
         tableView.separatorStyle = .none
         tableView.showsVerticalScrollIndicator = false
         tableView.clipsToBounds = true
-        shadowView.addSubview(tableView)
+        tableViewContainer.addSubview(tableView)
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: shadowView.topAnchor),
-            tableView.leadingAnchor.constraint(equalTo: shadowView.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: shadowView.trailingAnchor),
-            tableView.bottomAnchor.constraint(equalTo: shadowView.bottomAnchor),
+            tableView.topAnchor.constraint(equalTo: tableViewContainer.topAnchor),
+            tableView.leadingAnchor.constraint(equalTo: tableViewContainer.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: tableViewContainer.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: tableViewContainer.bottomAnchor),
         ])
     }
 
@@ -177,15 +208,16 @@ class ViewController: UIViewController {
     }
 
     private func setUpPageViewController() {
-        // Embed the page view controller as a child.
+        // Embed the page view controller as a child of the full-width
+        // pageContainer (the back-most layer).
         addChild(pageViewController)
         pageViewController.view.translatesAutoresizingMaskIntoConstraints = false
-        tableViewContainer.addSubview(pageViewController.view)
+        pageContainer.addSubview(pageViewController.view)
         NSLayoutConstraint.activate([
-            pageViewController.view.topAnchor.constraint(equalTo: tableViewContainer.topAnchor),
-            pageViewController.view.leadingAnchor.constraint(equalTo: tableViewContainer.leadingAnchor),
-            pageViewController.view.trailingAnchor.constraint(equalTo: tableViewContainer.trailingAnchor),
-            pageViewController.view.bottomAnchor.constraint(equalTo: tableViewContainer.bottomAnchor),
+            pageViewController.view.topAnchor.constraint(equalTo: pageContainer.topAnchor),
+            pageViewController.view.leadingAnchor.constraint(equalTo: pageContainer.leadingAnchor),
+            pageViewController.view.trailingAnchor.constraint(equalTo: pageContainer.trailingAnchor),
+            pageViewController.view.bottomAnchor.constraint(equalTo: pageContainer.bottomAnchor),
         ])
         pageViewController.didMove(toParent: self)
     }
@@ -213,11 +245,16 @@ class ViewController: UIViewController {
     }
 
     private func applyMasks() {
-        // These two masks recreate the storyboard's layered effect:
-        //   * The sidebar is hidden behind the per-page header (top 44pt) so the
-        //     header appears to "cover" the sidebar.
-        //   * The shadow is masked similarly, but extended past the trailing edge
-        //     so the shadow falls on the page content to the right.
+        // Two masks, one per left-side column, both clipping out the top
+        // `headerHeight` so the per-page header appears to cover the sidebar:
+        //
+        //   * The date column (`tableViewContainer`) gets a narrow mask the
+        //     width of the column itself. This hides the date labels above
+        //     y = headerHeight without affecting anything else.
+        //   * The shadow column (`shadowView`) gets a wider mask (extending
+        //     well past the trailing edge of the column) so the cast shadow
+        //     can spill onto the page content to the right without being
+        //     clipped along with the column itself.
         let bounds = view.bounds
 
         let sidebarMask = CALayer()
@@ -225,13 +262,10 @@ class ViewController: UIViewController {
         sidebarMask.frame = CGRect(
             x: 0,
             y: Self.headerHeight,
-            width: shadowView.bounds.width,
+            width: tableViewContainer.bounds.width,
             height: bounds.height * 2
         )
-        // Apply to the shadowView's contents (so the labels are clipped) but not
-        // to the shadow layer itself, otherwise the shadow disappears too. We do
-        // that by giving the date-column tableView its own clipped frame.
-        tableView.layer.mask = sidebarMask
+        tableViewContainer.layer.mask = sidebarMask
 
         let shadowMask = CALayer()
         shadowMask.backgroundColor = UIColor.black.cgColor
