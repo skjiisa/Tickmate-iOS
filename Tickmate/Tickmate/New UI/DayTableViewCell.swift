@@ -12,8 +12,11 @@ class DayTableViewCell: UITableViewCell {
 
     private var tracks: [Track] = []
     private var day: Int = 0
+    private var weekSeparatorLines: Bool = true
+    private var weekSeparatorSpaces: Bool = true
     
     private var stackView = UIStackView()
+    private var separatorLine: UIView?
     private var buttons: [Track: UIButton] = [:]
     
     private var subscriptions = Set<AnyCancellable>()
@@ -46,18 +49,55 @@ class DayTableViewCell: UITableViewCell {
         updateUI()
     }
     
-    func configure(with tracks: [Track], day: Int) {
+    func configure(with tracks: [Track], day: Int, lines: Bool = true, spaces: Bool = true) {
         self.tracks = tracks
         self.day = day
+        self.weekSeparatorLines = lines
+        self.weekSeparatorSpaces = spaces
         updateUI()
     }
     
     private func updateUI() {
         let day = self.day
         
+        // Remove existing views
         stackView.arrangedSubviews.forEach { view in
             view.removeConstraints(view.constraints)
             view.removeFromSuperview()
+        }
+        separatorLine?.removeFromSuperview()
+        separatorLine = nil
+        
+        // Configure week separator spacing
+        if weekSeparatorSpaces {
+            let insets = TrackController.shared.insets(day: day)
+            if insets == .top {
+                contentView.layoutMargins.top = 8
+            } else if insets == .bottom {
+                contentView.layoutMargins.bottom = 8
+            } else {
+                contentView.layoutMargins.top = 0
+                contentView.layoutMargins.bottom = 0
+            }
+        } else {
+            contentView.layoutMargins = .zero
+        }
+        
+        // Configure week separator line
+        if weekSeparatorLines && TrackController.shared.shouldShowSeparatorBelow(day: day) {
+            let line = UIView()
+            line.backgroundColor = .gray
+            line.translatesAutoresizingMaskIntoConstraints = false
+            contentView.addSubview(line)
+            NSLayoutConstraint.activate([
+                line.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 120),
+                line.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+                line.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+                line.heightAnchor.constraint(equalToConstant: 4)
+            ])
+            line.layer.cornerRadius = 2
+            line.clipsToBounds = true
+            separatorLine = line
         }
         
         subscriptions.forEach { $0.cancel() }

@@ -18,6 +18,12 @@ class TrackTableViewController: UITableViewController {
     
     private let tracksContainer = TracksContainer()
     
+    @AppStorage(Defaults.weekSeparatorLines.rawValue)
+    private var weekSeparatorLines: Bool = true
+    
+    @AppStorage(Defaults.weekSeparatorSpaces.rawValue)
+    private var weekSeparatorSpaces: Bool = true
+    
     var group: TrackGroup? {
         didSet {
             guard let group else { return }
@@ -149,7 +155,12 @@ class TrackTableViewController: UITableViewController {
 //                .environmentObject(trackController)
 //        }
         if let dayCell = cell as? DayTableViewCell {
-            dayCell.configure(with: tracksContainer.tracks, day: 365 - indexPath.row - 1)
+            dayCell.configure(
+                with: tracksContainer.tracks,
+                day: 365 - indexPath.row - 1,
+                lines: weekSeparatorLines,
+                spaces: weekSeparatorSpaces
+            )
         }
 
         scrollToDelegate()
@@ -163,7 +174,12 @@ class TrackTableViewController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        44
+        let day = 365 - indexPath.row - 1
+        let baseHeight: CGFloat = 44
+        if weekSeparatorSpaces && TrackController.shared.shouldShowSeparatorBelow(day: day) {
+            return baseHeight + 8 // Add 8 points of spacing for week separators
+        }
+        return baseHeight
     }
     
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
