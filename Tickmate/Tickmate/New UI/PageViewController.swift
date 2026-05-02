@@ -61,7 +61,14 @@ class PageViewController: UIPageViewController {
     }
     
     // Page
-    private var page: Int = 0
+
+    /// The currently displayed page index. Persisted to UserDefaults under
+    /// `Defaults.groupPage` so the app launches back into the same group as
+    /// the user was last viewing — mirrors the SwiftUI ContentView behavior.
+    private var page: Int {
+        get { UserDefaults.standard.integer(forKey: Defaults.groupPage.rawValue) }
+        set { UserDefaults.standard.set(newValue, forKey: Defaults.groupPage.rawValue) }
+    }
     private var pages: [Page] = []
     
     // Refreshing
@@ -147,10 +154,16 @@ class PageViewController: UIPageViewController {
     //MARK: Private
     
     private func reloadPages() {
-        print("!!!!!!! Reloading pages")
         pages = allTracksPage + ungroupedTracksPage + groupsPages
-        
-        // TODO: Be smarter about what page is loaded first
+
+        // Defensive: SwiftUI ContentView does the same. If the persisted page
+        // index ever falls outside the current page list (e.g. groups were
+        // removed since launch), snap it back to 0 so we don't dead-end on
+        // a non-existent page.
+        if page < 0 || page >= pages.count {
+            page = 0
+        }
+
         if let initialVC = trackVC(for: page) {
             setViewControllers([initialVC], direction: .forward, animated: true)
         }
@@ -208,7 +221,12 @@ extension PageViewController: UIPageViewControllerDataSource {
 
 extension PageViewController: UIPageViewControllerDelegate {
     func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
-        guard let trackVC = previousViewControllers.first as? TrackTableViewController else { return }
+        // Only persist when the swipe actually went through. If the user
+        // started a swipe and then dragged it back, completed will be false
+        // and we should keep the existing index.
+        guard completed,
+              let trackVC = pageViewController.viewControllers?.first as? TrackTableViewController
+        else { return }
         page = trackVC.index
     }
 }
