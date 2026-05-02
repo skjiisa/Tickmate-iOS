@@ -32,6 +32,9 @@ class TrackTableViewController: UITableViewController {
     @AppStorage(Defaults.todayAtTop.rawValue, store: UserDefaults(suiteName: groupID))
     private var todayAtTop: Bool = false
 
+    @AppStorage(Defaults.todayLock.rawValue, store: UserDefaults(suiteName: groupID))
+    private var todayLock: Bool = false
+
     var group: TrackGroup? {
         didSet {
             guard let group else { return }
@@ -50,6 +53,7 @@ class TrackTableViewController: UITableViewController {
     private var initialized = false
     private var subscriptions: Set<AnyCancellable> = []
     private let headerView = TracksHeaderView()
+    private weak var trackController: TrackController? = .shared
 
     func load(tracks: [Track]) {
         tracksContainer.tracks = tracks
@@ -103,6 +107,15 @@ class TrackTableViewController: UITableViewController {
 
             headerView.configure(with: tracks)
         }.store(in: &subscriptions)
+
+        // Surface the SwiftUI todayLock alert as a UIAlertController so the
+        // new UI can use the existing TrackController plumbing unchanged.
+        trackController?.$todayLockAlert
+            .compactMap { $0 }
+            .sink { [weak self] alert in
+                self?.presentTodayLockAlert(alert)
+            }
+            .store(in: &subscriptions)
 
         // TODO: REMOVE THIS!!!
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
@@ -180,11 +193,17 @@ class TrackTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "DayCell", for: indexPath)
 
         if let dayCell = cell as? DayTableViewCell {
+            let day = day(forRow: indexPath.row)
+            // canEdit mirrors TicksView: today is always editable; other days
+            // are editable only when today-lock is off.
+            let canEdit = day == 0 || !todayLock
             dayCell.configure(
                 with: tracksContainer.tracks,
-                day: day(forRow: indexPath.row),
+                day: day,
                 lines: weekSeparatorLines,
-                spaces: weekSeparatorSpaces
+                spaces: weekSeparatorSpaces,
+                canEdit: canEdit,
+                delegate: self
             )
         }
 
@@ -244,6 +263,25 @@ class TrackTableViewController: UITableViewController {
         scrollController.contentOffset = scrollView.contentOffset
     }
 
+    //MARK: Today Lock
+
+    private func presentTodayLockAlert(_ alert: AlertItem) {
+        // Each TrackTableViewController in the page view will subscribe to
+        // the same publisher. Only the visible one should present.
+        guard view.window != nil, presentedViewController == nil else { return }
+
+        let controller = UIAlertController(
+            title: alert.title,
+            message: alert.message,
+            preferredStyle: .alert
+        )
+        controller.addAction(UIAlertAction(title: "OK", style: .default))
+        present(controller, animated: true) { [weak self] in
+            // Match the SwiftUI dismiss behaviour by clearing the alert item.
+            self?.trackController?.todayLockAlert = nil
+        }
+    }
+
     override func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
         // When today is at the top, let the OS scroll to top for us.
         // Otherwise, scroll to today (which is at the bottom) instead.
@@ -254,4 +292,14 @@ class TrackTableViewController: UITableViewController {
         return false
     }
 
+}
+
+//MARK: - DayTableViewCellDelegate
+
+extension TrackTableViewController: DayTableViewCellDelegate {
+    func dayCell(_ cell: DayTableViewCell, didTapLockedDayAt day: Int) {
+        // Forward to TrackController so it can run the same two-tap-then-alert
+        // logic the SwiftUI version uses.
+        trackController?.didTapLockedDay()
+    }
 }
