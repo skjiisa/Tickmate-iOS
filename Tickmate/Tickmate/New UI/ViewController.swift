@@ -138,7 +138,7 @@ class ViewController: UIViewController {
     private func setUpTableView() {
         tableView.dataSource = self
         tableView.delegate = self
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "TestCell")
+        tableView.register(DateLabelCell.self, forCellReuseIdentifier: DateLabelCell.reuseID)
         if #available(iOS 15.0, *) {
             tableView.sectionHeaderTopPadding = 0
         }
@@ -248,17 +248,75 @@ extension ViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "TestCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: DateLabelCell.reuseID, for: indexPath)
         let day = /*TickController.numDays*/ 365 - indexPath.row - 1
-        switch day {
-        case 0:
-            cell.textLabel?.text = "Today"
-        case 1:
-            cell.textLabel?.text = "Yesterday"
-        default:
-            cell.textLabel?.text = "Day \(day)"
+        if let dateCell = cell as? DateLabelCell {
+            let label = TrackController.shared.dayLabel(day: day, compact: false)
+            dateCell.configure(text: label.text, caption: label.caption)
         }
         return cell
+    }
+}
+
+//MARK: Date Label Cell
+
+/// Cell used in the persistent left-hand date column. Shows the day's
+/// weekday/relative label (e.g. "Today" / "Mon") with the short date as a
+/// caption beneath it (e.g. "5/2/26").
+final class DateLabelCell: UITableViewCell {
+
+    static let reuseID = "DateLabelCell"
+
+    private let textStack = UIStackView()
+    private let titleLabel = UILabel()
+    private let captionLabel = UILabel()
+
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+
+        backgroundColor = .clear
+        contentView.backgroundColor = .clear
+        selectionStyle = .none
+
+        titleLabel.font = .preferredFont(forTextStyle: .body)
+        titleLabel.numberOfLines = 1
+        titleLabel.lineBreakMode = .byTruncatingTail
+
+        captionLabel.font = .preferredFont(forTextStyle: .caption1)
+        captionLabel.textColor = .secondaryLabel
+        captionLabel.numberOfLines = 1
+        captionLabel.lineBreakMode = .byTruncatingTail
+
+        textStack.axis = .vertical
+        textStack.alignment = .leading
+        textStack.distribution = .fill
+        textStack.spacing = 2
+        textStack.translatesAutoresizingMaskIntoConstraints = false
+        textStack.addArrangedSubview(titleLabel)
+        textStack.addArrangedSubview(captionLabel)
+        contentView.addSubview(textStack)
+
+        NSLayoutConstraint.activate([
+            textStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            textStack.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -4),
+            textStack.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+        ])
+    }
+
+    @available(*, unavailable)
+    required init?(coder: NSCoder) {
+        fatalError()
+    }
+
+    func configure(text: String, caption: String?) {
+        titleLabel.text = text
+        if let caption, !caption.isEmpty {
+            captionLabel.text = caption
+            captionLabel.isHidden = false
+        } else {
+            captionLabel.text = nil
+            captionLabel.isHidden = true
+        }
     }
 }
 
