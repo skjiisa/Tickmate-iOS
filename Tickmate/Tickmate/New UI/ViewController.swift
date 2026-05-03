@@ -216,6 +216,10 @@ class ViewController: UIViewController {
         // pageContainer (the back-most layer).
         addChild(pageViewController)
         pageViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        // UIPageViewController.view defaults to a clear background; if any
+        // ancestor were ever transparent, the system window would show
+        // through. Lock it to systemBackground so what's behind never leaks.
+        pageViewController.view.backgroundColor = .systemBackground
         pageContainer.addSubview(pageViewController.view)
         NSLayoutConstraint.activate([
             pageViewController.view.topAnchor.constraint(equalTo: pageContainer.topAnchor),

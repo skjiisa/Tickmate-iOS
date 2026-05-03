@@ -58,6 +58,11 @@ class TracksHeaderView: UIView {
 
     private func setupViews() {
         backgroundColor = .systemBackground
+        // Marking the view as opaque tells the rendering system it fully
+        // covers its bounds; combined with the explicit background color this
+        // prevents any underlying page content from showing through if the
+        // header is ever rendered before its first `configure(with:)` call.
+        isOpaque = true
 
         addSubview(stackView)
         addSubview(divider)

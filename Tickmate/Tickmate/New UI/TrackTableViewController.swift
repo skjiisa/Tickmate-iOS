@@ -10,7 +10,19 @@ import SwiftUI
 import Combine
 import CoreData
 
-class TrackTableViewController: UITableViewController {
+/// Per-page view controller. Owns:
+///   * `headerView`  – the TracksHeaderView (per-track icon buttons + bottom
+///                      divider) pinned to the top of the page.
+///   * `tableView`   – the day rows below the header.
+///
+/// Used to be a `UITableViewController` (so its view _was_ the table and
+/// `headerView` rode along as a section header). That made the header sticky
+/// for free, but plain-style table sticky section headers pick up an iOS
+/// translucency / material effect when content scrolls underneath, which we
+/// don't want here. Promoting to a plain `UIViewController` lets the header
+/// live as a sibling of the table — always visible, always opaque, no
+/// section-header machinery involved.
+class TrackTableViewController: UIViewController {
 
     //MARK: Properties
 
@@ -20,6 +32,9 @@ class TrackTableViewController: UITableViewController {
 
     var index = 0
     var scrollController: ScrollController = .shared
+
+    /// Day rows. Owned explicitly now that we're no longer a UITableViewController.
+    let tableView = UITableView()
 
     private let tracksContainer = TracksContainer()
 
@@ -102,13 +117,37 @@ class TrackTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        tableView.canCancelContentTouches = true
+        view.backgroundColor = .systemBackground
 
-        tableView.register(DayTableViewCell.self, forCellReuseIdentifier: "DayCell")
+        // Lay out header and table as siblings. The header sits at the top
+        // of the page (full width, fixed height matching the date sidebar's
+        // section header). The table fills the rest, all the way to the
+        // bottom of the parent so cells can scroll behind the home indicator.
+        headerView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(tableView)
+        view.addSubview(headerView)
+        NSLayoutConstraint.activate([
+            headerView.topAnchor.constraint(equalTo: view.topAnchor),
+            headerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            headerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            headerView.heightAnchor.constraint(equalToConstant: ViewController.headerHeight),
+
+            tableView.topAnchor.constraint(equalTo: headerView.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
+
+        tableView.canCancelContentTouches = true
+        // Belt-and-braces: ensure the page table has an opaque background so
+        // the page VC's underlying scroll view never peeks through if any
+        // ancestor is somehow transparent.
+        tableView.backgroundColor = .systemBackground
+
+        tableView.dataSource = self
         tableView.delegate = self
-        if #available(iOS 15.0, *) {
-            tableView.sectionHeaderTopPadding = 0
-        }
+        tableView.register(DayTableViewCell.self, forCellReuseIdentifier: "DayCell")
         tableView.scrollsToTop = todayAtTop
         previousTodayAtTop = todayAtTop
         headerView.delegate = self
@@ -140,12 +179,24 @@ class TrackTableViewController: UITableViewController {
         }.store(in: &subscriptions)
 
         tracksContainer.$tracks.sink { [weak self] tracks in
-            guard let self, tableView.superview != nil else { return }
+            guard let self else { return }
+            // Always reconfigure the header. The previous version of this
+            // handler bailed out when `tableView.superview == nil`, but the
+            // publisher fires synchronously inside viewDidLoad — before the
+            // page VC has inserted our view into its scroll view — so the
+            // very first emission for a freshly loaded page used to be
+            // silently dropped. The result was that the per-track icon
+            // buttons in the header didn't appear until a tick or any other
+            // event re-published `tracksContainer.tracks`. Configuring the
+            // header is cheap and the headerView holds onto its state
+            // independently of being attached, so we can safely do it here.
+            headerView.configure(with: tracks)
+
+            // visibleCells returns an empty array on a non-attached table,
+            // so this is a no-op in the early case rather than a hazard.
             tableView.visibleCells
                 .compactMap { $0 as? DayTableViewCell }
                 .forEach { $0.reconfigure(with: tracks) }
-
-            headerView.configure(with: tracks)
         }.store(in: &subscriptions)
 
         // Surface the SwiftUI todayLock alert as a UIAlertController so the
@@ -246,17 +297,39 @@ class TrackTableViewController: UITableViewController {
         }
     }
 
-    //MARK: Table View Data Source
+    //MARK: Today Lock
 
-    override func numberOfSections(in tableView: UITableView) -> Int {
+    private func presentTodayLockAlert(_ alert: AlertItem) {
+        // Each TrackTableViewController in the page view will subscribe to
+        // the same publisher. Only the visible one should present.
+        guard view.window != nil, presentedViewController == nil else { return }
+
+        let controller = UIAlertController(
+            title: alert.title,
+            message: alert.message,
+            preferredStyle: .alert
+        )
+        controller.addAction(UIAlertAction(title: "OK", style: .default))
+        present(controller, animated: true) { [weak self] in
+            // Match the SwiftUI dismiss behaviour by clearing the alert item.
+            self?.trackController?.todayLockAlert = nil
+        }
+    }
+
+}
+
+//MARK: - UITableViewDataSource
+
+extension TrackTableViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
         1
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         Self.numDays
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "DayCell", for: indexPath)
 
         if let dayCell = cell as? DayTableViewCell {
@@ -277,14 +350,12 @@ class TrackTableViewController: UITableViewController {
         scrollToInitialPosition()
         return cell
     }
+}
 
-    //MARK: Table View Delegate
+//MARK: - UITableViewDelegate (and UIScrollViewDelegate via inheritance)
 
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        44
-    }
-
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+extension TrackTableViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let day = day(forRow: indexPath.row)
         let baseHeight: CGFloat = 44
         if weekSeparatorSpaces && TrackController.shared.shouldShowSeparatorBelow(day: day) {
@@ -293,13 +364,13 @@ class TrackTableViewController: UITableViewController {
         return baseHeight
     }
 
-    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        self.headerView
-    }
+    // No `viewForHeaderInSection` / `heightForHeaderInSection`: the per-page
+    // TracksHeaderView lives outside the table now (see viewDidLoad), so
+    // there's no section header at all.
 
     //MARK: Scroll View Delegate
 
-    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
         // This function gets called on view load with a value of zero,
         // resetting the scroll position every time a new screen loads.
         // This guard prevents that. The end functions below allow it
@@ -309,15 +380,15 @@ class TrackTableViewController: UITableViewController {
         scrollController.contentOffset = scrollView.contentOffset
     }
 
-    override func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
+    func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
         scrollController.contentOffset = scrollView.contentOffset
     }
 
-    override func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         scrollController.contentOffset = scrollView.contentOffset
     }
 
-    override func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         // Avoid unnecessary calls to setter as that seems to flash it
         if !tableView.showsVerticalScrollIndicator {
             tableView.showsVerticalScrollIndicator = true
@@ -326,30 +397,11 @@ class TrackTableViewController: UITableViewController {
         initialized = true
     }
 
-    override func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+    func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         scrollController.contentOffset = scrollView.contentOffset
     }
 
-    //MARK: Today Lock
-
-    private func presentTodayLockAlert(_ alert: AlertItem) {
-        // Each TrackTableViewController in the page view will subscribe to
-        // the same publisher. Only the visible one should present.
-        guard view.window != nil, presentedViewController == nil else { return }
-
-        let controller = UIAlertController(
-            title: alert.title,
-            message: alert.message,
-            preferredStyle: .alert
-        )
-        controller.addAction(UIAlertAction(title: "OK", style: .default))
-        present(controller, animated: true) { [weak self] in
-            // Match the SwiftUI dismiss behaviour by clearing the alert item.
-            self?.trackController?.todayLockAlert = nil
-        }
-    }
-
-    override func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
+    func scrollViewShouldScrollToTop(_ scrollView: UIScrollView) -> Bool {
         // When today is at the top, let the OS scroll to top for us.
         // Otherwise, scroll to today (which is at the bottom) instead.
         if todayAtTop {
@@ -358,7 +410,6 @@ class TrackTableViewController: UITableViewController {
         scrollToToday(animated: true)
         return false
     }
-
 }
 
 //MARK: - NSFetchedResultsControllerDelegate
