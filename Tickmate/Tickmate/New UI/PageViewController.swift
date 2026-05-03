@@ -26,8 +26,7 @@ class PageViewController: UIPageViewController {
     }
 
     //MARK: Properties
-    
-    var scrollPosition: CGPoint = .zero
+
     var scrollController: ScrollController = .shared
     var trackController: TrackController = .shared
     var groupController: GroupController = .shared

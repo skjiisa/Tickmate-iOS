@@ -56,7 +56,6 @@ class TrackTableViewController: UIViewController {
     /// new snapshots on every Core Data change.
     private var tracksFRC: NSFetchedResultsController<Track>?
 
-    private var initialized = false
     private var subscriptions: Set<AnyCancellable> = []
     private let headerView = TracksHeaderView()
     private weak var trackController: TrackController? = .shared
@@ -384,7 +383,6 @@ extension TrackTableViewController: UITableViewDelegate {
             tableView.showsVerticalScrollIndicator = true
         }
         scrollController.initialized = true
-        initialized = true
     }
 
     func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
