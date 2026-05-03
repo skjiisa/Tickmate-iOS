@@ -148,6 +148,20 @@ class ViewController: UIViewController {
         present(host, animated: true)
     }
 
+    private func presentOnboardingIfNeeded() {
+        // SwiftUI ContentView triggers OnboardingView on first launch via
+        // `if !onboardingComplete`. NewUI bypasses ContentView entirely, so
+        // a fresh install would otherwise never see the onboarding flow.
+        guard !UserDefaults.standard.bool(forKey: Defaults.onboardingComplete.rawValue) else { return }
+        // Match the SwiftUI version's small delay so the sheet doesn't fight
+        // the host VC's own appearance animation.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { [weak self] in
+            guard let self, self.presentedViewController == nil else { return }
+            let host = UIHostingController(rootView: OnboardingSheet(host: self))
+            self.present(host, animated: true)
+        }
+    }
+
     /// Called by the SwiftUI sheets when the user taps Done. We can't bind a
     /// SwiftUI Binding directly to the UIViewController's modal state, so the
     /// sheets call this after flipping their `showing` flag to `false`.
@@ -159,6 +173,11 @@ class ViewController: UIViewController {
         super.viewDidLayoutSubviews()
         // Recompute the masks now that the view has been sized.
         applyMasks()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        presentOnboardingIfNeeded()
     }
 
     //MARK: Setup
@@ -491,6 +510,22 @@ private struct SettingsSheet: View {
         .onChange(of: showing) { newValue in
             if !newValue { host?.dismissPresentedSheet() }
         }
+    }
+}
+
+/// SwiftUI wrapper for the first-launch Onboarding sheet.
+private struct OnboardingSheet: View {
+    weak var host: ViewController?
+    @State private var showing = true
+    @StateObject private var trackController = TrackController.shared
+
+    var body: some View {
+        OnboardingView(showing: $showing)
+            .environment(\.managedObjectContext, PersistenceController.shared.container.viewContext)
+            .environmentObject(trackController)
+            .onChange(of: showing) { newValue in
+                if !newValue { host?.dismissPresentedSheet() }
+            }
     }
 }
 
