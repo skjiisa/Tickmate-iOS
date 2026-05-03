@@ -198,6 +198,17 @@ class TrackTableViewController: UIViewController {
                 self?.applySettingsChange()
             }
             .store(in: &subscriptions)
+
+        // Same handler is invoked when the host VC tells us the day may have
+        // changed (app returned from background). applySettingsChange does the
+        // right thing — reloadData re-runs cellForRowAt which re-evaluates
+        // dayLabel against TrackController.date.
+        NotificationCenter.default
+            .publisher(for: .tickmateDataShouldRefresh)
+            .sink { [weak self] _ in
+                self?.applySettingsChange()
+            }
+            .store(in: &subscriptions)
     }
 
     override func viewWillAppear(_ animated: Bool) {

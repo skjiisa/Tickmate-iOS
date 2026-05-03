@@ -86,6 +86,38 @@ class ViewController: UIViewController {
         setUpTableView()
         setUpPageViewController()
         setUpScrollSync()
+        setUpAppLifecycleObservers()
+    }
+
+    private func setUpAppLifecycleObservers() {
+        // The SwiftUI ContentView wires these up via .onReceive; TickmateApp
+        // skips ContentView entirely when newUI is on, so without these
+        // subscriptions the new UI silently misses two important events:
+        //
+        //   * willResignActive: in-flight tick edits are debounced for 5s in
+        //     TrackController.scheduleSave. If the system jettisons us while
+        //     a save is pending, the user loses their tick.
+        //   * willEnterForeground: when the app comes back from background
+        //     after midnight we need to re-evaluate "today" so day labels
+        //     and tick rows shift to the new day.
+        NotificationCenter.default
+            .publisher(for: UIApplication.willResignActiveNotification)
+            .sink { _ in
+                TrackController.shared.saveIfScheduled()
+            }
+            .store(in: &subscribers)
+
+        NotificationCenter.default
+            .publisher(for: UIApplication.willEnterForegroundNotification)
+            .sink { [weak self] _ in
+                TrackController.shared.checkForNewDay()
+                // Reload our own sidebar (date labels are derived from
+                // TrackController.date) and broadcast so the page tables
+                // can do the same. Cheap if no day actually changed.
+                self?.applySettingsChange()
+                NotificationCenter.default.post(name: .tickmateDataShouldRefresh, object: nil)
+            }
+            .store(in: &subscribers)
     }
 
     private func setUpNavigationBarButtons() {
@@ -427,6 +459,15 @@ final class DateLabelCell: UITableViewCell {
             captionLabel.isHidden = true
         }
     }
+}
+
+//MARK: - Notifications
+
+extension Notification.Name {
+    /// Posted by ViewController when the app comes back from background, so
+    /// per-page TrackTableViewControllers can reload in case the day rolled
+    /// over while we were away.
+    static let tickmateDataShouldRefresh = Notification.Name("tickmateDataShouldRefresh")
 }
 
 //MARK: - SwiftUI sheet wrappers
