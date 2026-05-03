@@ -50,24 +50,11 @@ class TrackTableViewController: UIViewController {
     @AppStorage(Defaults.todayLock.rawValue, store: UserDefaults(suiteName: groupID))
     private var todayLock: Bool = false
 
-    /// FRC backing the on-screen tracks list. Set up by `load(predicate:)`
-    /// or `load(tracks:)` (which builds an in-memory snapshot for callers
-    /// that already have an array). Owning the FRC here means rename /
-    /// archive / reorder operations propagate live without us needing a
-    /// manual reload from the host page VC.
+    /// FRC backing the on-screen tracks list. Set up by `load(predicate:)`.
+    /// Owning the FRC here means rename / archive / reorder / add / remove
+    /// operations propagate live without the host page VC having to feed us
+    /// new snapshots on every Core Data change.
     private var tracksFRC: NSFetchedResultsController<Track>?
-
-    var group: TrackGroup? {
-        didSet {
-            guard let group else { return }
-            // Match SwiftUI TicksView.standardPredicate: enabled, not archived,
-            // belonging to this group.
-            load(predicate: NSPredicate(
-                format: "enabled == YES AND isArchived == NO AND %@ IN groups",
-                group
-            ))
-        }
-    }
 
     private var initialized = false
     private var subscriptions: Set<AnyCancellable> = []
@@ -78,18 +65,10 @@ class TrackTableViewController: UIViewController {
     /// re-scrolled to the appropriate "rest" edge.
     private var previousTodayAtTop: Bool = false
 
-    /// Snapshot loader: used by the page VC for the All Tracks / Ungrouped
-    /// pages where a pre-built FRC already exists upstream. The page VC
-    /// re-feeds us when its FRC changes; we don't have to manage a delegate.
-    func load(tracks: [Track]) {
-        // Tear down any previous FRC so we don't keep firing change events
-        // for tracks the page is no longer responsible for.
-        tracksFRC = nil
-        tracksContainer.tracks = tracks
-    }
-
-    /// FRC loader: used by the per-group case, where we own the lifecycle of
-    /// the underlying fetch.
+    /// Build a fresh FRC for the given track-fetching predicate and start
+    /// observing it. The host page VC always calls this exactly once, right
+    /// after init, with the predicate appropriate to the page (all tracks /
+    /// ungrouped tracks / tracks in a group).
     func load(predicate: NSPredicate) {
         let context = PersistenceController.shared.container.viewContext
         let fetchRequest: NSFetchRequest<Track> = Track.fetchRequest()

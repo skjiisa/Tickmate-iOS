@@ -73,7 +73,6 @@ class PageViewController: UIPageViewController {
     
     // Refreshing
     private var subscriptions = Set<AnyCancellable>()
-    private var shouldReloadPages = false
     
     //MARK: FetchedResultsController
     
@@ -109,21 +108,42 @@ class PageViewController: UIPageViewController {
 
         dataSource = self
         delegate = self
-        
-        // UserDefaults.standard.showAllTracks = true // for testing settings changes
+
         reloadPages()
-        
+
+        // Refresh the page list whenever any input that determines it changes.
+        // The previous version of this controller deferred refreshing to the
+        // next viewWillAppear via a `shouldReloadPages` flag, but viewWillAppear
+        // doesn't fire when a presented modal sheet (Settings / Tracks) is
+        // dismissed — so toggling "Show All Tracks" or adding a group never
+        // actually updated the pages until the user re-opened the whole tab.
+
+        // 1. Settings flips (showAllTracks / showUngroupedTracks / groupsUnlocked).
         let keyPaths: [KeyPath<UserDefaults, Bool>] = [\.showAllTracks, \.showUngroupedTracks, \.groupsUnlocked]
         keyPaths.forEach { keyPath in
             UserDefaults.standard
                 .publisher(for: keyPath)
                 .dropFirst()
                 .sink { [weak self] _ in
-                    self?.shouldReloadPages = true
+                    self?.refreshPagesIfNeeded()
                 }
                 .store(in: &subscriptions)
         }
-        
+
+        // 2. Group add / remove / rename. GroupController fires its
+        //    objectWillChange in NSFetchedResultsController.controllerWillChangeContent,
+        //    so the FRC's fetchedObjects haven't actually been updated yet at
+        //    this point — defer one runloop tick to read the current set.
+        groupController.objectWillChange
+            .sink { [weak self] _ in
+                DispatchQueue.main.async { self?.refreshPagesIfNeeded() }
+            }
+            .store(in: &subscriptions)
+
+        // 3. Ungrouped track count crossing 0 ↔ >0 is handled by the
+        //    NSFetchedResultsControllerDelegate impl below (the page VC owns
+        //    ungroupedTracksFRC for exactly this purpose).
+
         // Find the underlying horizontal UIScrollView so we can publish paging
         // state via ScrollController for the sidebar shadow animation.
         _ = view.subviews.first { (view: UIView) -> Bool in
@@ -136,15 +156,10 @@ class PageViewController: UIPageViewController {
         }
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        if shouldReloadPages {
-            reloadPages()
-        }
-    }
-    
     //MARK: Private
-    
+
+    /// Initial page setup. Always rebuilds the list and shows the persisted
+    /// page index. Use `refreshPagesIfNeeded()` for subsequent updates.
     private func reloadPages() {
         pages = allTracksPage + ungroupedTracksPage + groupsPages
 
@@ -157,29 +172,76 @@ class PageViewController: UIPageViewController {
         }
 
         if let initialVC = trackVC(for: page) {
-            setViewControllers([initialVC], direction: .forward, animated: true)
+            setViewControllers([initialVC], direction: .forward, animated: false)
         }
     }
-    
+
+    /// Recomputes the page list and rebuilds the visible page only when the
+    /// list has actually changed — same number of pages in the same order
+    /// with the same identities short-circuits early.
+    ///
+    /// Tries to preserve the user's current page across the rebuild: if the
+    /// page they were on still exists (same group, or the same special
+    /// allTracks/ungrouped slot), they stay on it even if other pages were
+    /// inserted before / removed after it.
+    private func refreshPagesIfNeeded() {
+        let newPages = allTracksPage + ungroupedTracksPage + groupsPages
+        guard !pageLists(newPages, equalTo: pages) else { return }
+
+        let currentPage = pages.indices.contains(page) ? pages[page] : nil
+        pages = newPages
+
+        if let currentPage,
+           let preservedIndex = pages.firstIndex(where: { samePage($0, currentPage) }) {
+            page = preservedIndex
+        } else if page < 0 || page >= pages.count {
+            page = 0
+        }
+
+        if let initialVC = trackVC(for: page) {
+            setViewControllers([initialVC], direction: .forward, animated: false)
+        }
+    }
+
+    private func pageLists(_ a: [Page], equalTo b: [Page]) -> Bool {
+        guard a.count == b.count else { return false }
+        return zip(a, b).allSatisfy(samePage)
+    }
+
+    private func samePage(_ a: Page, _ b: Page) -> Bool {
+        switch (a, b) {
+        case (.allTracks, .allTracks), (.ungrouped, .ungrouped):
+            return true
+        case (.group(let g1), .group(let g2)):
+            return g1.objectID == g2.objectID
+        default:
+            return false
+        }
+    }
+
+    /// Build a TrackTableViewController for the page at `index`, configured
+    /// with the right Core Data predicate so it can manage its own FRC and
+    /// react to track add / remove / rename / reorder live.
     private func trackVC(for index: Int) -> TrackTableViewController? {
         guard pages.indices.contains(index) else { return nil }
         let trackVC = TrackTableViewController()
-
-        let page = pages[index]
-        
         trackVC.index = index
-        
-        switch page {
+
+        // All three cases share the same "enabled and not archived" base
+        // predicate (matches SwiftUI TicksView.standardPredicate). The All
+        // Tracks page no longer reuses TrackController's FRC because that
+        // one only filters isArchived — `enabled == NO` tracks would have
+        // shown there but not in the SwiftUI version.
+        let predicate: NSPredicate
+        switch pages[index] {
         case .allTracks:
-            let tracks = trackController.fetchedResultsController.fetchedObjects ?? []
-            trackVC.load(tracks: tracks)
+            predicate = NSPredicate(format: "enabled == YES AND isArchived == NO")
         case .ungrouped:
-            let tracks = ungroupedTracksFRC.fetchedObjects ?? []
-            trackVC.load(tracks: tracks)
+            predicate = NSPredicate(format: "enabled == YES AND isArchived == NO AND groups.@count == 0")
         case .group(let group):
-            trackVC.group = group
+            predicate = NSPredicate(format: "enabled == YES AND isArchived == NO AND %@ IN groups", group)
         }
-        
+        trackVC.load(predicate: predicate)
         return trackVC
     }
     
@@ -245,5 +307,12 @@ extension PageViewController: UIScrollViewDelegate {
 //MARK: - Fetched Results Controller Delegate
 
 extension PageViewController: NSFetchedResultsControllerDelegate {
-    // TODO: Check if number of ungrouped tracks changes to or from 0
+    func controllerDidChangeContent(_ controller: NSFetchedResultsController<NSFetchRequestResult>) {
+        // ungroupedTracksFRC is the only FRC the page VC owns. When its
+        // fetched count crosses 0 ↔ >0 the "Ungrouped" page should appear or
+        // disappear; refreshPagesIfNeeded compares signatures so non-meaningful
+        // changes (a track moving between groups while still ungrouped, etc.)
+        // are no-ops.
+        refreshPagesIfNeeded()
+    }
 }
