@@ -26,6 +26,14 @@ class DayTableViewCell: UITableViewCell {
     private var canEdit: Bool = true
 
     private var stackView = UIStackView()
+    /// Top/bottom constraints between `stackView` and the cell's `contentView`.
+    /// We squeeze the stack view away from one edge to make room for
+    /// week-separator spacing — `heightForRowAt` makes the row 8pt taller for
+    /// the row above each separator, and the constant on `stackBottomConstraint`
+    /// pulls the stack up so the extra height becomes visible space between
+    /// weeks instead of vanishing into the cell.
+    private var stackTopConstraint: NSLayoutConstraint!
+    private var stackBottomConstraint: NSLayoutConstraint!
     private var separatorLine: UIView?
     private var buttons: [Track: UIButton] = [:]
 
@@ -50,11 +58,13 @@ class DayTableViewCell: UITableViewCell {
 
         stackView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(stackView)
+        stackTopConstraint = stackView.topAnchor.constraint(equalTo: contentView.topAnchor)
+        stackBottomConstraint = stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         NSLayoutConstraint.activate([
             stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 120),
             stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
-            stackView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            stackTopConstraint,
+            stackBottomConstraint,
         ])
     }
 
@@ -96,20 +106,16 @@ class DayTableViewCell: UITableViewCell {
         separatorLine?.removeFromSuperview()
         separatorLine = nil
 
-        // Configure week separator spacing
-        if weekSeparatorSpaces {
-            let insets = TrackController.shared.insets(day: day)
-            if insets == .top {
-                contentView.layoutMargins.top = 8
-            } else if insets == .bottom {
-                contentView.layoutMargins.bottom = 8
-            } else {
-                contentView.layoutMargins.top = 0
-                contentView.layoutMargins.bottom = 0
-            }
-        } else {
-            contentView.layoutMargins = .zero
-        }
+        // Configure week separator spacing. The row's height (set by the host
+        // `heightForRowAt`) is 8pt taller for the row directly above each
+        // separator; here we shrink the stack view by the same amount so that
+        // 8pt becomes a visible gap between weeks rather than padding that
+        // expands the buttons. Spacing is always added on the bottom edge so
+        // the gap sits in display order between this week and the next.
+        let needsSeparatorSpace = weekSeparatorSpaces
+            && TrackController.shared.shouldShowSeparatorBelow(day: day)
+        stackTopConstraint.constant = 0
+        stackBottomConstraint.constant = needsSeparatorSpace ? -8 : 0
 
         // Configure week separator line
         if weekSeparatorLines && TrackController.shared.shouldShowSeparatorBelow(day: day) {
@@ -145,8 +151,7 @@ class DayTableViewCell: UITableViewCell {
             stackView.addArrangedSubview(button)
             button.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
-                // -12 matches the old SwiftUI implementation
-                button.heightAnchor.constraint(equalTo: stackView.heightAnchor, constant: -10)
+                button.heightAnchor.constraint(equalToConstant: 34)
             ])
 
             // Make sure the long-press recognizer is hooked up. Only attach

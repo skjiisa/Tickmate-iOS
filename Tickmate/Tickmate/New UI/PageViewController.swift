@@ -143,6 +143,16 @@ class PageViewController: UIPageViewController {
         //    NSFetchedResultsControllerDelegate impl below (the page VC owns
         //    ungroupedTracksFRC for exactly this purpose).
 
+        // Sync scroll position when the page VC comes back from being hidden
+        // (e.g., after dismissing a sheet). This ensures the sidebar and tables
+        // stay in sync even if a settings change modified the layout.
+        NotificationCenter.default
+            .publisher(for: UIApplication.didBecomeActiveNotification)
+            .sink { [weak self] _ in
+                self?.syncCurrentPageScrollPosition()
+            }
+            .store(in: &subscriptions)
+
         // Find the underlying horizontal UIScrollView so we can publish paging
         // state via ScrollController for the sidebar shadow animation.
         _ = view.subviews.first { (view: UIView) -> Bool in
@@ -241,11 +251,37 @@ class PageViewController: UIPageViewController {
             predicate = NSPredicate(format: "enabled == YES AND isArchived == NO AND %@ IN groups", group)
         }
         trackVC.load(predicate: predicate)
+
+        // Pre-warm the new page's layout so its tableView has a real bounds
+        // and contentSize before UIPageViewController slides it into view.
+        // Without this, when "today" is at the bottom of the screen the
+        // destination page during the first swipe to it shows up at offset
+        // (0, 0) — top of year, a year ago — for the duration of the swipe,
+        // because scrollToRow runs in `viewDidLoad`/`viewWillAppear` while
+        // the table still has zero bounds and is a no-op. Forcing a layout
+        // pass here triggers the new VC's `viewDidLayoutSubviews`, which
+        // snaps the table to today before we hand the controller back to
+        // UIPageViewController. We can only do this once we ourselves have
+        // been laid out (so we have a real `view.bounds` to project onto);
+        // on the very first call from `reloadPages` during our own
+        // `viewDidLoad` we still have zero bounds, but in that case the
+        // initial page goes through the normal lifecycle path anyway.
+        if view.bounds.size != .zero {
+            trackVC.view.frame = view.bounds
+            trackVC.view.layoutIfNeeded()
+        }
         return trackVC
     }
     
     private func index(of viewController: UIViewController) -> Int? {
         (viewController as? TrackTableViewController)?.index
+    }
+
+    /// Sync the currently visible page's scroll position with the sidebar.
+    /// Called after page transitions or when returning from background.
+    private func syncCurrentPageScrollPosition() {
+        guard let trackVC = viewControllers?.first as? TrackTableViewController else { return }
+        trackVC.syncScrollPositionIfNeeded()
     }
     
     //MARK: Page
@@ -281,6 +317,9 @@ extension PageViewController: UIPageViewControllerDelegate {
               let trackVC = pageViewController.viewControllers?.first as? TrackTableViewController
         else { return }
         page = trackVC.index
+        // Ensure the new page's scroll position matches the sidebar after
+        // the swipe animation completes.
+        trackVC.syncScrollPositionIfNeeded()
     }
 }
 

@@ -64,6 +64,13 @@ class TrackTableViewController: UIViewController {
     /// re-scrolled to the appropriate "rest" edge.
     private var previousTodayAtTop: Bool = false
 
+    /// Set once the table has had a chance to lay out (non-zero bounds and
+    /// content size) and we've snapped it to the shared scroll position. We
+    /// only do that snap once per load — subsequent layout passes (e.g. a
+    /// reload triggered by toggling a setting) must not yank the user back
+    /// to the position another page was at.
+    private var hasAppliedInitialOffset: Bool = false
+
     /// Build a fresh FRC for the given track-fetching predicate and start
     /// observing it. The host page VC always calls this exactly once, right
     /// after init, with the predicate appropriate to the page (all tracks /
@@ -129,7 +136,25 @@ class TrackTableViewController: UIViewController {
         tableView.scrollsToTop = todayAtTop
         previousTodayAtTop = todayAtTop
         headerView.delegate = self
-        scrollToInitialPosition()
+        syncScrollPosition()
+
+        // Each page subscribes to the shared scroll offset so off-screen
+        // pages cached by `UIPageViewController` stay in sync with whatever
+        // the visible page is doing. Without this, an adjacent page sampled
+        // its offset only once at creation time and ended up showing a stale
+        // position the next time the user swiped to it.
+        scrollController.$contentOffset.sink { [weak self] target in
+            guard let self else { return }
+            // Don't fight an active gesture on this table. The visible page
+            // is the source of these publications and would otherwise just
+            // re-set its own offset.
+            guard !self.tableView.isDragging,
+                  !self.tableView.isDecelerating else { return }
+            if self.tableView.contentOffset != target {
+                self.tableView.contentOffset = target
+            }
+        }
+        .store(in: &subscriptions)
 
         scrollController.$isPaging.sink { [weak self] isPaging in
             guard let self = self else { return }
@@ -212,7 +237,34 @@ class TrackTableViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        scrollToInitialPosition()
+        syncScrollPosition()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        // Ensure the scroll position is correct after layout is complete.
+        // This is especially important after a page swipe when the new page's
+        // content might have a different size than the previous page.
+        if !tableView.isDragging && !tableView.isDecelerating {
+            syncScrollPosition()
+        }
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        // The earlier syncScrollPosition / scrollToInitialPosition calls
+        // (viewDidLoad, viewWillAppear) all happen before the table has been
+        // sized. Setting `tableView.contentOffset` on a zero-bounds table just
+        // clamps to .zero, so a page that was created while another was
+        // already scrolled would land at the top of the year. Once layout has
+        // produced a real size and content, snap to the shared offset exactly
+        // once. Subsequent layout passes (settings toggles triggering reloads,
+        // rotations, etc.) leave the user's current offset alone.
+        guard !hasAppliedInitialOffset,
+              tableView.bounds.height > 0,
+              tableView.contentSize.height > 0 else { return }
+        hasAppliedInitialOffset = true
+        syncScrollPosition()
     }
 
     //MARK: Settings
@@ -253,35 +305,52 @@ class TrackTableViewController: UIViewController {
 
     //MARK: Private
 
+    /// Sync the table's scroll position with the sidebar. Used when the page
+    /// first appears or after a page swipe completes.
+    private func syncScrollPosition() {
+        guard !tableView.isDragging, !tableView.isDecelerating else { return }
+
+        if scrollController.initialized {
+            tableView.contentOffset = scrollController.contentOffset
+        } else {
+            scrollToToday()
+        }
+    }
+
+    /// Public wrapper for scroll sync. Used by PageViewController to sync
+    /// the currently visible page's scroll position.
+    func syncScrollPositionIfNeeded() {
+        syncScrollPosition()
+    }
+
     /// Move the table to its "rest" edge. With `todayAtTop` on that's the
     /// top of the view; otherwise it's the bottom (so today is just above
     /// the safe area).
-    private func scrollToInitialPosition() {
-        guard !tableView.isDragging, !tableView.isDecelerating else { return }
-
-        guard scrollController.initialized else {
-            scrollToToday()
-            return
-        }
-
-        let scrollPosition = scrollController.contentOffset
-        self.tableView.contentOffset = scrollPosition
-    }
-
     private func scrollToToday(animated: Bool = false) {
         let indexPath = IndexPath(row: row(forDay: 0), section: 0)
         let position: UITableView.ScrollPosition = todayAtTop ? .top : .bottom
         tableView.scrollToRow(at: indexPath, at: position, animated: animated)
-        // Always publish the resulting offset back to ScrollController so the
-        // sidebar's date column scrolls to match. Previously this was gated on
+        // Publish the resulting offset back to ScrollController so the sidebar
+        // (and any cached pages) scroll to match. Previously this was gated on
         // `initialized`, which meant the very first scroll-to-today on launch
         // never reached the sidebar — leaving it stuck at offset zero showing
         // year-old dates instead of today.
+        //
         // Layout may not be complete yet when this is called from viewDidLoad,
         // so defer the read of `tableView.contentOffset` until the next runloop
         // tick to ensure scrollToRow has actually moved the table.
         DispatchQueue.main.async { [weak self] in
             guard let self else { return }
+            // Skip the publish if the table hasn't been laid out yet — its
+            // contentOffset will still be (0, 0). On a fresh launch the
+            // about-to-slide-in destination page during the first swipe runs
+            // scrollToToday in viewDidLoad before it has any bounds, and a
+            // bogus 0 publish from there would broadcast to the visible page
+            // through the `$contentOffset` sink and yank it to the top of the
+            // year for the duration of the swipe. We'll publish for real once
+            // viewDidLayoutSubviews sees valid bounds.
+            guard self.tableView.bounds.height > 0,
+                  self.tableView.contentSize.height > 0 else { return }
             self.scrollController.contentOffset = self.tableView.contentOffset
         }
     }
@@ -323,8 +392,6 @@ extension TrackTableViewController: UITableViewDataSource {
 
         if let dayCell = cell as? DayTableViewCell {
             let day = day(forRow: indexPath.row)
-            // canEdit mirrors TicksView: today is always editable; other days
-            // are editable only when today-lock is off.
             let canEdit = day == 0 || !todayLock
             dayCell.configure(
                 with: tracksContainer.tracks,
@@ -336,7 +403,6 @@ extension TrackTableViewController: UITableViewDataSource {
             )
         }
 
-        scrollToInitialPosition()
         return cell
     }
 }

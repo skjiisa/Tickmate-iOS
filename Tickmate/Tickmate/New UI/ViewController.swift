@@ -63,6 +63,9 @@ class ViewController: UIViewController {
     @AppStorage(Defaults.todayAtTop.rawValue, store: UserDefaults(suiteName: groupID))
     private var todayAtTop: Bool = false
 
+    @AppStorage(Defaults.weekSeparatorSpaces.rawValue)
+    private var weekSeparatorSpaces: Bool = true
+
     /// Cached value used to detect when `todayAtTop` flips so the sidebar can
     /// be re-scrolled to match the page table's new "rest" edge.
     private var previousTodayAtTop: Bool = false
@@ -459,7 +462,15 @@ final class DateLabelCell: UITableViewCell {
         NSLayoutConstraint.activate([
             textStack.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
             textStack.trailingAnchor.constraint(lessThanOrEqualTo: contentView.trailingAnchor, constant: -4),
-            textStack.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            // Anchor the label to the top half of the row instead of dead
+            // center, so it lines up with the page-table buttons. Day cells
+            // pin their button stack to the top 44pt of the row (with any
+            // week-separator spacing pushed below the buttons), which puts
+            // the button center at y=22 from the cell top regardless of
+            // row height. Centering on `contentView.centerYAnchor` instead
+            // would drift 4pt down on separator rows (52pt cells) — visible
+            // as a "slightly off" sidebar while scrolling.
+            textStack.centerYAnchor.constraint(equalTo: contentView.topAnchor, constant: 22),
         ])
     }
 
@@ -562,7 +573,11 @@ extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let day = todayAtTop ? indexPath.row : TrackTableViewController.numDays - indexPath.row - 1
         let baseHeight: CGFloat = 44
-        if TrackController.shared.shouldShowSeparatorBelow(day: day) {
+        // Has to gate on `weekSeparatorSpaces` for the same reason
+        // `TrackTableViewController.heightForRowAt` does — otherwise disabling
+        // separator spaces shrinks page rows back to 44pt while the sidebar
+        // keeps its 52pt rows, drifting the two scroll views apart.
+        if weekSeparatorSpaces && TrackController.shared.shouldShowSeparatorBelow(day: day) {
             return baseHeight + 8 // Add 8 points of spacing for week separators
         }
         return baseHeight
