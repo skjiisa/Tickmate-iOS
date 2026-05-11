@@ -125,6 +125,7 @@ class TrackTableViewController: UIViewController {
         ])
 
         tableView.canCancelContentTouches = true
+        tableView.estimatedRowHeight = 0
         // Belt-and-braces: ensure the page table has an opaque background so
         // the page VC's underlying scroll view never peeks through if any
         // ancestor is somehow transparent.
@@ -218,6 +219,7 @@ class TrackTableViewController: UIViewController {
         // (todayAtTop / todayLock) post their own didChange notifications.
         NotificationCenter.default
             .publisher(for: UserDefaults.didChangeNotification)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.applySettingsChange()
             }
@@ -260,9 +262,15 @@ class TrackTableViewController: UIViewController {
         // produced a real size and content, snap to the shared offset exactly
         // once. Subsequent layout passes (settings toggles triggering reloads,
         // rotations, etc.) leave the user's current offset alone.
+        //
+        // The window check ensures we don't scroll until safe area insets are
+        // available. Without it, scrollToRow(.bottom) computes an offset that's
+        // short by the bottom safe area (home indicator) — producing a visible
+        // jump when viewDidAppear later corrects it.
         guard !hasAppliedInitialOffset,
               tableView.bounds.height > 0,
-              tableView.contentSize.height > 0 else { return }
+              tableView.contentSize.height > 0,
+              view.window != nil else { return }
         hasAppliedInitialOffset = true
         syncScrollPosition()
     }

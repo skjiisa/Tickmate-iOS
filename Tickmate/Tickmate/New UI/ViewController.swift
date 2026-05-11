@@ -260,6 +260,8 @@ class ViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(DateLabelCell.self, forCellReuseIdentifier: DateLabelCell.reuseID)
+        tableView.estimatedRowHeight = 0
+        tableView.estimatedSectionHeaderHeight = 0
         if #available(iOS 15.0, *) {
             tableView.sectionHeaderTopPadding = 0
         }
@@ -298,6 +300,7 @@ class ViewController: UIViewController {
         // don't, so we listen for the global UserDefaults.didChangeNotification.
         NotificationCenter.default
             .publisher(for: UserDefaults.didChangeNotification)
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] _ in
                 self?.applySettingsChange()
             }
