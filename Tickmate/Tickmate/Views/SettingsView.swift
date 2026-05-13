@@ -165,7 +165,8 @@ struct SettingsView: View {
                 NavigationLink("Acknowledgements", destination: AcknowledgementsView())
             }
             
-            Section(header: Text("Data Export")) {
+            Section(header: Text("Backup & Export")) {
+                NavigationLink("Backup & Restore", destination: BackupView())
                 NavigationLink("Export as CSV", destination: ExportTracksSelectionView())
             }
             

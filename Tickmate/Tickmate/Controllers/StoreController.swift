@@ -27,15 +27,33 @@ class StoreController: NSObject, ObservableObject {
     @Published var restored: AlertItem?
     
     private var isRestoringPurchases = false
-    
+    private var groupsObserver: NSObjectProtocol?
+
     var isAuthorizedForPayments: Bool {
         SKPaymentQueue.canMakePayments()
     }
-    
+
     override init() {
         groupsUnlocked = UserDefaults.standard.bool(forKey: Products.groups.rawValue)
         super.init()
         SKPaymentQueue.default().add(self)
+
+        groupsObserver = NotificationCenter.default.addObserver(
+            forName: UserDefaults.didChangeNotification,
+            object: UserDefaults.standard,
+            queue: .main
+        ) { [weak self] _ in
+            let current = UserDefaults.standard.bool(forKey: Products.groups.rawValue)
+            if self?.groupsUnlocked != current {
+                self?.groupsUnlocked = current
+            }
+        }
+    }
+
+    deinit {
+        if let observer = groupsObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
     }
     
     var priceFormatter: NumberFormatter = {

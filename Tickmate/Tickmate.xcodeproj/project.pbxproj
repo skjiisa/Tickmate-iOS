@@ -93,7 +93,10 @@
 		59FBCF2825E07BD8007B114F /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 59FBCF2725E07BD8007B114F /* Preview Assets.xcassets */; };
 		59FBCF2A25E07BD8007B114F /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59FBCF2925E07BD8007B114F /* Persistence.swift */; };
 		59FBCF2D25E07BD8007B114F /* Tickmate.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 59FBCF2B25E07BD8007B114F /* Tickmate.xcdatamodeld */; };
+		284CA9E37503DCEDF441EBD2 /* BackupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2FF544BC9C1A5CC2273208EF /* BackupView.swift */; };
+		5198C3D8759F57D0366A0472 /* BackupController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 850B118309D524F90AAD4272 /* BackupController.swift */; };
 		B90C7F252DA0D92100C8F12B /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B90C7F242DA0D92000C8F12B /* ShareSheet.swift */; };
+		E3F9C9FCC7F19CC6C32231FE /* BackupArchive.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8E61840640BB655EA8C4430 /* BackupArchive.swift */; };
 		B91ED2862B5B89640049EDB7 /* SwiftUIIntrospect in Frameworks */ = {isa = PBXBuildFile; productRef = B91ED2852B5B89640049EDB7 /* SwiftUIIntrospect */; };
 		B93BBF092B9CCAFC007E810A /* ArchivedTracksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93BBF082B9CCAFC007E810A /* ArchivedTracksView.swift */; };
 		B95E5FA52DAB479E002FD0AB /* TrackTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95E5FA42DAB479E002FD0AB /* TrackTableViewController.swift */; };
@@ -199,7 +202,10 @@
 		59FBCF2925E07BD8007B114F /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		59FBCF2C25E07BD8007B114F /* Tickmate.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Tickmate.xcdatamodel; sourceTree = "<group>"; };
 		59FBCF2E25E07BD8007B114F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2FF544BC9C1A5CC2273208EF /* BackupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupView.swift; sourceTree = "<group>"; };
+		850B118309D524F90AAD4272 /* BackupController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupController.swift; sourceTree = "<group>"; };
 		B90C7F242DA0D92000C8F12B /* ShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
+		D8E61840640BB655EA8C4430 /* BackupArchive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupArchive.swift; sourceTree = "<group>"; };
 		B93BBF082B9CCAFC007E810A /* ArchivedTracksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchivedTracksView.swift; sourceTree = "<group>"; };
 		B95E5FA22DAB479E002FD0AB /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		B95E5FA32DAB479E002FD0AB /* PageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageViewController.swift; sourceTree = "<group>"; };
@@ -365,6 +371,7 @@
 				59E6E15025F8837E008A74A9 /* Defaults.swift */,
 				5904EAAE2657111300B2D0A0 /* Binding+onChange.swift */,
 				59303A502665D00900EB900E /* TrackGroups.swift */,
+				D8E61840640BB655EA8C4430 /* BackupArchive.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -387,6 +394,7 @@
 				59342E1B2603F3DF007E9F64 /* OnboardingView.swift */,
 				5996360E264F128A00AAF6CA /* GroupsView.swift */,
 				592CE889264F1CA800668684 /* GroupView.swift */,
+				2FF544BC9C1A5CC2273208EF /* BackupView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -400,6 +408,7 @@
 				592850F1265EF54B00E682F5 /* GroupController.swift */,
 				59F3EDC125FC4F270009CDEC /* ViewControllerContainer.swift */,
 				59603D442666C85A001482C6 /* StoreController.swift */,
+				850B118309D524F90AAD4272 /* BackupController.swift */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -660,6 +669,9 @@
 				597A7FDD25F6E1C900256268 /* StateEditButton.swift in Sources */,
 				59E6E14E25F88177008A74A9 /* SettingsView.swift in Sources */,
 				5931643F26855EB8005DDA1A /* TickView.swift in Sources */,
+				E3F9C9FCC7F19CC6C32231FE /* BackupArchive.swift in Sources */,
+				5198C3D8759F57D0366A0472 /* BackupController.swift in Sources */,
+				284CA9E37503DCEDF441EBD2 /* BackupView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
