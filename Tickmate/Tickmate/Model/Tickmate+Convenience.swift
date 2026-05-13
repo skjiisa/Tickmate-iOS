@@ -49,6 +49,23 @@ extension Track {
         return luma < 2/3
     }
     
+    func textColor() -> UIColor {
+        lightText ? .white : .black
+    }
+    
+    func textColor() -> Color {
+        lightText ? .white : .black
+    }
+    
+    func buttonColor(ticks: Int? = nil) -> UIColor {
+        guard let ticks = ticks else { return UIColor(rgb: Int(color)) }
+        return (ticks > 0) != reversed ? UIColor(rgb: Int(color)) : .systemFill
+    }
+    
+    func buttonText(ticks: Int) -> String? {
+        multiple && ticks > 1 ? "\(ticks)" : nil
+    }
+    
     /// Archives the Track and removes it from all groups.
     func archive() {
         isArchived = true

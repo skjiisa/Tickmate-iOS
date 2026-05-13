@@ -10,6 +10,8 @@ import SwiftUI
 
 class GroupController: NSObject, ObservableObject {
     
+    static var shared = GroupController()
+    
     static let sortDescriptors = [
         NSSortDescriptor(keyPath: \TrackGroup.index, ascending: true),
         // For consistency when there are index collisions with iCloud sync
