@@ -169,22 +169,23 @@ struct SettingsView: View {
                 NavigationLink("Export as CSV", destination: ExportTracksSelectionView())
             }
             
-            Section(header: Text("Experimental"), footer: Text(useNewUI ? "You're using the new UIKit-based interface." : "Try an experimental UIKit-based interface. You can switch back here at any time.")) {
+            Section(header: Text("Experimental"), footer: Text(useNewUI ? "You're using the new experimental interface." : "Try an experimental new interface. You can switch back here at any time.")) {
                 if useNewUI {
-                    Button("Switch back to SwiftUI UI") {
+                    Button("Switch back to original UI") {
                         useNewUI = false
                     }
                 } else {
-                    Button("Try the new UIKit UI") {
+                    Button("Try the new UI") {
                         showingNewUIConfirmation = true
                     }
                 }
             }
             .alert(isPresented: $showingNewUIConfirmation) {
                 Alert(
-                    title: Text("Try the new UIKit UI?"),
-                    message: Text("This switches to an experimental UIKit-based interface. You can switch back at any time in Settings."),
+                    title: Text("Try the new UI?"),
+                    message: Text("This switches to an experimental new interface. You can switch back at any time in Settings."),
                     primaryButton: .default(Text("Try it")) {
+                        UserDefaults.standard.set(true, forKey: Defaults.newUILaunchedCleanly.rawValue)
                         useNewUI = true
                     },
                     secondaryButton: .cancel()

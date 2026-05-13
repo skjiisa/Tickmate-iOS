@@ -26,4 +26,5 @@ enum Defaults: String {
     case todayAtTop                 // Bool     App Group
     case todayLock                  // Bool     App Group
     case useNewUI                   // Bool
+    case newUILaunchedCleanly       // Bool
 }
