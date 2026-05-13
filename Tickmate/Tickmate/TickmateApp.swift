@@ -12,17 +12,17 @@ struct TickmateApp: App {
     let persistenceController = PersistenceController.shared
         .loadDemo() // Uncomment this to load demo data into a fresh install
     
-    let newUI = true
+    @AppStorage(Defaults.useNewUI.rawValue) var useNewUI = false
 
     var body: some Scene {
         WindowGroup {
-            if newUI {
+            if useNewUI {
                 NewUI()
                     .edgesIgnoringSafeArea(.bottom)
                     .environment(\.managedObjectContext, persistenceController.container.viewContext)
             } else {
-            ContentView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
+                ContentView()
+                    .environment(\.managedObjectContext, persistenceController.container.viewContext)
             }
         }
     }

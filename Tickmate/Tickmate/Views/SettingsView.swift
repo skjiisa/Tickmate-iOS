@@ -26,6 +26,7 @@ struct SettingsView: View {
     @AppStorage(Defaults.weekSeparatorSpaces.rawValue) private var weekSeparatorSpaces: Bool = true
     @AppStorage(Defaults.weekSeparatorLines.rawValue) private var weekSeparatorLines: Bool = true
     @AppStorage(Defaults.relativeDates.rawValue) private var relativeDates = true
+    @AppStorage(Defaults.useNewUI.rawValue) private var useNewUI = false
     
     let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
     let appBuild = Bundle.main.infoDictionary?["CFBundleVersion"] as? String
@@ -37,6 +38,7 @@ struct SettingsView: View {
     
     @State private var timeOffset: Date = Date()
     @State private var showingRestrictedPaymentsAlert = false
+    @State private var showingNewUIConfirmation = false
     
     var body: some View {
         Form {
@@ -167,6 +169,28 @@ struct SettingsView: View {
                 NavigationLink("Export as CSV", destination: ExportTracksSelectionView())
             }
             
+            Section(header: Text("Experimental"), footer: Text(useNewUI ? "You're using the new UIKit-based interface." : "Try an experimental UIKit-based interface. You can switch back here at any time.")) {
+                if useNewUI {
+                    Button("Switch back to SwiftUI UI") {
+                        useNewUI = false
+                    }
+                } else {
+                    Button("Try the new UIKit UI") {
+                        showingNewUIConfirmation = true
+                    }
+                }
+            }
+            .alert(isPresented: $showingNewUIConfirmation) {
+                Alert(
+                    title: Text("Try the new UIKit UI?"),
+                    message: Text("This switches to an experimental UIKit-based interface. You can switch back at any time in Settings."),
+                    primaryButton: .default(Text("Try it")) {
+                        useNewUI = true
+                    },
+                    secondaryButton: .cancel()
+                )
+            }
+
             Section {
                 Link("Support Website", destination: URL(string: "https://github.com/skjiisa/Tickmate-iOS/issues")!)
                 Link("Email Me", destination: URL(string: "mailto:tickmate@lyons.app")!)
