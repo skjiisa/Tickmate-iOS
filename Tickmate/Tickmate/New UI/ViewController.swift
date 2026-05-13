@@ -114,6 +114,7 @@ class ViewController: UIViewController {
             .publisher(for: UIApplication.willEnterForegroundNotification)
             .sink { [weak self] _ in
                 TrackController.shared.checkForNewDay()
+                NotificationController.rescheduleAll(context: PersistenceController.shared.container.viewContext)
                 // Reload our own sidebar (date labels are derived from
                 // TrackController.date) and broadcast so the page tables
                 // can do the same. Cheap if no day actually changed.

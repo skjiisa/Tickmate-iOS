@@ -296,6 +296,7 @@ class TrackController: NSObject, ObservableObject {
             loadTicks(for: track)
         }
         PersistenceController.save(context: moc)
+        NotificationController.reschedule(track: track, context: moc)
         scheduleTimelineRefresh()
     }
     

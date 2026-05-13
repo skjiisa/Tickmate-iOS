@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UserNotifications
 
 //MARK: TrackView
 
@@ -31,11 +32,13 @@ struct TrackView: View {
     @State private var showingSymbolPicker = false
     @State private var actionSheet: Action?
     @State private var fixTextField = false
+    @State private var reminderTime = Date()
+    @State private var notificationDeniedAlert: AlertItem?
     
     private var groupsEnabled: Bool {
         groupsUnlocked && !track.isArchived
     }
-    
+
     @ViewBuilder
     private var groupsFooter: some View {
         if !groupsUnlocked {
@@ -43,6 +46,21 @@ struct TrackView: View {
         } else if track.isArchived {
             Text("Unarchive to add to groups.")
         }
+    }
+
+    private var notificationToggleBinding: Binding<Bool> {
+        Binding(
+            get: { draftTrack.notificationMinute != nil },
+            set: { isOn in
+                if isOn {
+                    checkNotificationPermission()
+                    draftTrack.notificationMinute = 540
+                } else {
+                    draftTrack.notificationMinute = nil
+                }
+                setEditMode()
+            }
+        )
     }
     
     //MARK: Body
@@ -63,75 +81,12 @@ struct TrackView: View {
                 .disabled(!groupsEnabled)
             }
             
-            Section(header: Text("Name")) {
-                TextField("Name", text: $draftTrack.name)
-                    .introspect(.textField, on: .iOS(.v14, .v15, .v16, .v17)) { textField in
-                        vcContainer.textField = textField
-                        vcContainer.shouldReturn = {
-                            // There is a bug with SwiftUI TextFields that causes them
-                            // to revert autocorrect changes on return. Dismissing the
-                            // keyboad before returning fixes the issue visually. Setting
-                            // the name to the UITextField's text fixes it mechanically.
-                            correctedKeyboardDismiss()
-                            setEditMode()
-                            return false
-                        }
-                        vcContainer.textFieldShouldEnableEditMode = true
-                        textField.delegate = vcContainer
-                    }
-                    .id(fixTextField)
-                    .onAppear {
-                        // iOS 15 doesn't seem to like actually loading the text field's text on appear
-                        guard #available(iOS 15, *) else { return }
-                        guard #unavailable(iOS 17) else { return }
-                        guard !fixTextField else { return }
-                        fixTextField = true
-                    }
-            }
+            nameSection
             
-            Section(header: Text("Settings")) {
-                Toggle(isOn: $draftTrack.multiple.onChange(setEditMode)) {
-                    TextWithCaption(
-                        text: "Allow multiple",
-                        caption: "Multiple ticks on a day will be counted."
-                            + " Long press to decrease counter.")
-                }
-                
-                Toggle(isOn: $draftTrack.reversed.animation().onChange(setEditMode)) {
-                    TextWithCaption(
-                        text: "Reversed",
-                        caption: "Days will be ticked by default."
-                            + " Tapping a day will untick it."
-                            + " Good for tracking abstaining from bad habits.")
-                }
-                
-                if draftTrack.reversed {
-                    DatePicker(selection: $draftTrack.startDate.onChange(setEditMode), in: Date.distantPast...trackController.date, displayedComponents: [.date]) {
-                        TextWithCaption(
-                            text: "Start date",
-                            caption: "Days after this will automatically be ticked unless you untick them.")
-                    }
-                }
-                
-                ColorPicker("Color", selection: $draftTrack.color.onChange(setEditMode), supportsOpacity: false)
-                
-                NavigationLink(
-                    destination: SymbolPicker(selection: $draftTrack.systemImage.onChange({ _ in
-                        showingSymbolPicker = false
-                        setEditMode()
-                    })),
-                    isActive: $showingSymbolPicker) {
-                    HStack {
-                        Text("Symbol")
-                        Spacer()
-                        if let symbol = draftTrack.systemImage {
-                            Image(systemName: symbol)
-                                .imageScale(.large)
-                        }
-                    }
-                }
-            }
-            
+            settingsSection
+
+            reminderSection
+
             if !vcContainer.editMode.isEditing {
                 footerSection
             }
@@ -164,9 +119,37 @@ struct TrackView: View {
                 enabled = track.enabled
                 groups.load(track)
                 draftTrack.load(track: track)
+                if let notificationMinute = draftTrack.notificationMinute {
+                    let minutes = Int(notificationMinute)
+                    let hours = minutes / 60
+                    let mins = minutes % 60
+                    var components = DateComponents()
+                    components.hour = hours
+                    components.minute = mins
+                    if let date = Calendar.current.date(from: components) {
+                        reminderTime = date
+                    }
+                }
                 initialized = true
             }
             setEditMode()
+        }
+        .alert(item: $notificationDeniedAlert) { _ in
+            Alert(
+                title: Text("Notifications Disabled"),
+                message: Text("To enable notifications, please allow notifications in Settings."),
+                primaryButton: .default(Text("Open Settings")) {
+                    if let settingsURL = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(settingsURL)
+                    }
+                    draftTrack.notificationMinute = nil
+                    setEditMode()
+                },
+                secondaryButton: .cancel {
+                    draftTrack.notificationMinute = nil
+                    setEditMode()
+                }
+            )
         }
         .onDisappear {
             if enabled != track.enabled {
@@ -177,8 +160,105 @@ struct TrackView: View {
         }
     }
     
+    // MARK: Name section
+
+    private var nameSection: some View {
+        Section(header: Text("Name")) {
+            TextField("Name", text: $draftTrack.name)
+                .introspect(.textField, on: .iOS(.v14, .v15, .v16, .v17)) { textField in
+                    vcContainer.textField = textField
+                    vcContainer.shouldReturn = {
+                        correctedKeyboardDismiss()
+                        setEditMode()
+                        return false
+                    }
+                    vcContainer.textFieldShouldEnableEditMode = true
+                    textField.delegate = vcContainer
+                }
+                .id(fixTextField)
+                .onAppear {
+                    guard #available(iOS 15, *) else { return }
+                    guard #unavailable(iOS 17) else { return }
+                    guard !fixTextField else { return }
+                    fixTextField = true
+                }
+        }
+    }
+
+    // MARK: Settings section
+
+    private var settingsSection: some View {
+        Section(header: Text("Settings")) {
+            Toggle(isOn: $draftTrack.multiple.onChange(setEditMode)) {
+                TextWithCaption(
+                    text: "Allow multiple",
+                    caption: "Multiple ticks on a day will be counted."
+                        + " Long press to decrease counter.")
+            }
+
+            Toggle(isOn: $draftTrack.reversed.animation().onChange(setEditMode)) {
+                TextWithCaption(
+                    text: "Reversed",
+                    caption: "Days will be ticked by default."
+                        + " Tapping a day will untick it."
+                        + " Good for tracking abstaining from bad habits.")
+            }
+
+            if draftTrack.reversed {
+                DatePicker(selection: $draftTrack.startDate.onChange(setEditMode), in: Date.distantPast...trackController.date, displayedComponents: [.date]) {
+                    TextWithCaption(
+                        text: "Start date",
+                        caption: "Days after this will automatically be ticked unless you untick them.")
+                }
+            }
+
+            ColorPicker("Color", selection: $draftTrack.color.onChange(setEditMode), supportsOpacity: false)
+
+            NavigationLink(
+                destination: SymbolPicker(selection: $draftTrack.systemImage.onChange({ _ in
+                    showingSymbolPicker = false
+                    setEditMode()
+                })),
+                isActive: $showingSymbolPicker) {
+                HStack {
+                    Text("Symbol")
+                    Spacer()
+                    if let symbol = draftTrack.systemImage {
+                        Image(systemName: symbol)
+                            .imageScale(.large)
+                    }
+                }
+            }
+        }
+    }
+
+    // MARK: Reminder section
+
+    @ViewBuilder
+    private var reminderSection: some View {
+        if !draftTrack.reversed {
+            Section(header: Text("Reminder")) {
+                Toggle(isOn: notificationToggleBinding) {
+                    TextWithCaption(
+                        text: "Daily reminder",
+                        caption: "Get notified if this track hasn't been completed by a set time.")
+                }
+
+                if draftTrack.notificationMinute != nil {
+                    DatePicker("Time", selection: $reminderTime, displayedComponents: [.hourAndMinute])
+                        .onChange(of: reminderTime) { _ in
+                            let components = Calendar.current.dateComponents([.hour, .minute], from: reminderTime)
+                            let minutes = (components.hour ?? 0) * 60 + (components.minute ?? 0)
+                            draftTrack.notificationMinute = Int16(minutes)
+                            setEditMode()
+                        }
+                }
+            }
+        }
+    }
+
     // MARK: Footer section
-    
+
     private var footerSection: some View {
         Section {
             if #available(iOS 15, *) {
@@ -271,7 +351,8 @@ struct TrackView: View {
     
     private func delete() {
         selection = nil
-        
+        NotificationController.cancel(for: track)
+
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
             withAnimation {
                 trackController.objectWillChange.send()
@@ -280,16 +361,39 @@ struct TrackView: View {
             }
         }
     }
-    
+
     private func archive() {
+        NotificationController.cancel(for: track)
         track.archive()
         PersistenceController.save(context: moc)
         selection = nil
     }
-    
+
     private func unarchive() {
         track.isArchived = false
         PersistenceController.save(context: moc)
+        NotificationController.reschedule(track: track, context: moc)
+    }
+
+    private func checkNotificationPermission() {
+        UNUserNotificationCenter.current().getNotificationSettings { settings in
+            DispatchQueue.main.async {
+                switch settings.authorizationStatus {
+                case .notDetermined:
+                    NotificationController.requestPermission { granted in
+                        if !granted {
+                            notificationDeniedAlert = AlertItem(title: "Notifications Disabled")
+                        }
+                    }
+                case .denied:
+                    notificationDeniedAlert = AlertItem(title: "Notifications Disabled")
+                case .authorized, .provisional, .ephemeral:
+                    break
+                @unknown default:
+                    break
+                }
+            }
+        }
     }
     
     // MARK: Strings
