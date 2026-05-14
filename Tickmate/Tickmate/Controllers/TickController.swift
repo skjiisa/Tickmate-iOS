@@ -203,13 +203,17 @@ class TickController: NSObject, ObservableObject {
                 save()
             } else {
                 untick(day: day)
+                return
             }
         } else if let todayOffset = todayOffset {
             Tick(track: track, dayOffset: Int16(todayOffset - day))
             save()
         }
+        if day == 0, let context = track.managedObjectContext {
+            NotificationController.reschedule(track: track, context: context)
+        }
     }
-    
+
     @discardableResult
     func untick(day: Int) -> Bool {
         guard let tick = getTick(for: day) else { return false }
@@ -220,11 +224,14 @@ class TickController: NSObject, ObservableObject {
             tick.modified = Date()
         }
         save()
+        if day == 0, let context = track.managedObjectContext {
+            NotificationController.reschedule(track: track, context: context)
+        }
         return true
     }
-    
+
     //MARK: Private
-    
+
     private func save() {
         trackController?.scheduleSave()
     }

@@ -15,23 +15,26 @@ struct TrackRepresentation: Equatable, Hashable {
     var reversed: Bool
     var systemImage: String?
     var startDate: Date
+    var notificationMinute: Int16?
     
-    init(name: String = "", color: Color = .black, multiple: Bool = false, reversed: Bool = false, systemImage: String? = nil, startDate: Date = Date()) {
+    init(name: String = "", color: Color = .black, multiple: Bool = false, reversed: Bool = false, systemImage: String? = nil, startDate: Date = Date(), notificationMinute: Int16? = nil) {
         self.name = name
         self.color = color
         self.multiple = multiple
         self.reversed = reversed
         self.systemImage = systemImage
         self.startDate = startDate
+        self.notificationMinute = notificationMinute
     }
     
-    init(name: String = "", red: Int, green: Int, blue: Int, multiple: Bool = false, reversed: Bool = false, systemImage: String? = nil) {
+    init(name: String = "", red: Int, green: Int, blue: Int, multiple: Bool = false, reversed: Bool = false, systemImage: String? = nil, notificationMinute: Int16? = nil) {
         self.name = name
         self.color = .init(red: Double(red)/255, green: Double(green)/255, blue: Double(blue)/255)
         self.multiple = multiple
         self.reversed = reversed
         self.systemImage = systemImage
         self.startDate = Date()
+        self.notificationMinute = notificationMinute
     }
     
     var lightText: Bool {
@@ -53,14 +56,15 @@ struct TrackRepresentation: Equatable, Hashable {
            let startDate = TrackController.iso8601.date(from: startDateString) {
             self.startDate = startDate
         }
-        
+
         if let trackImage = track.systemImage {
             systemImage = trackImage
         } else {
             systemImage = SymbolsList.randomElement()
         }
-        
+
         color = Color(rgb: Int(track.color))
+        notificationMinute = track.notificationMinute as? Int16
     }
     
     func save(to track: Track) {
@@ -74,6 +78,7 @@ struct TrackRepresentation: Equatable, Hashable {
         track.systemImage = systemImage
         track.color = Int32(color.rgb)
         track.startDate = TrackController.iso8601.string(from: startDate)
+        track.notificationMinute = notificationMinute as NSNumber?
     }
     
     static func == (rep: TrackRepresentation, track: Track) -> Bool {
@@ -83,7 +88,8 @@ struct TrackRepresentation: Equatable, Hashable {
             rep.reversed == track.reversed &&
             rep.systemImage == track.systemImage &&
             Int32(rep.color.rgb) == track.color &&
-            TrackController.iso8601.string(from: rep.startDate) == track.startDate
+            TrackController.iso8601.string(from: rep.startDate) == track.startDate &&
+            rep.notificationMinute == (track.notificationMinute as? Int16)
     }
     
     static func == (track: Track, rep: TrackRepresentation) -> Bool {

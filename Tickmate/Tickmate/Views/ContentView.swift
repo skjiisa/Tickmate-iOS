@@ -110,6 +110,7 @@ struct ContentView: View {
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
             print("willEnterForeground")
             trackController.checkForNewDay()
+            NotificationController.rescheduleAll(context: moc)
         }
         .onAppear {
             groupController.trackController = trackController
