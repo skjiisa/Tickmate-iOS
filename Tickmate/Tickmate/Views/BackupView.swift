@@ -57,7 +57,7 @@ struct BackupView: View {
         }
         .fileImporter(
             isPresented: $isImporting,
-            allowedContentTypes: [.tickmateBackup, .json],
+            allowedContentTypes: [.tickmateBackup, .json, .sqliteDatabase],
             onCompletion: didPickImportFile
         )
         .alert(item: $activeAlert) { item in
@@ -159,7 +159,7 @@ struct BackupView: View {
         } header: {
             Text("Import")
         } footer: {
-            Text("Import a .tickmatebackup or .json file previously exported from Tickmate.")
+            Text("Import a .tickmatebackup or .json file previously exported from Tickmate, or a .db database exported from Tickmate for Android.")
         }
     }
 

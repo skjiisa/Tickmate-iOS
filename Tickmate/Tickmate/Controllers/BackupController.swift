@@ -17,6 +17,7 @@ enum BackupError: LocalizedError {
     case newerVersion(Int)
     case invalidFormat
     case readFailed
+    case androidImportFailed(String)
 
     var errorDescription: String? {
         switch self {
@@ -26,6 +27,8 @@ enum BackupError: LocalizedError {
             return "The file is not a valid Tickmate backup."
         case .readFailed:
             return "Could not read the backup file."
+        case .androidImportFailed(let message):
+            return message
         }
     }
 }
@@ -168,9 +171,29 @@ struct BackupController {
         do {
             archive = try decoder.decode(BackupArchive.self, from: data)
         } catch {
-            throw BackupError.invalidFormat
+            do {
+                archive = try AndroidDatabaseImporter.backupArchive(from: url)
+            } catch AndroidDatabaseImportError.invalidFormat {
+                throw BackupError.invalidFormat
+            } catch {
+                throw BackupError.androidImportFailed(error.localizedDescription)
+            }
         }
 
+        try importArchive(
+            archive,
+            mode: mode,
+            restoreSettings: restoreSettings,
+            context: context
+        )
+    }
+
+    private static func importArchive(
+        _ archive: BackupArchive,
+        mode: ImportMode,
+        restoreSettings: Bool,
+        context: NSManagedObjectContext
+    ) throws {
         guard archive.format == "tickmate-backup" else {
             throw BackupError.invalidFormat
         }
