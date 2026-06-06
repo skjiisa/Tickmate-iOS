@@ -91,7 +91,7 @@ struct AndroidDatabaseImporter {
                 multiple: track.multiple,
                 reversed: false,
                 startDate: startDateString,
-                systemImage: systemImage(forAndroidIcon: track.icon, trackName: track.name),
+                systemImage: AndroidIconMapping.systemImage(forAndroidIcon: track.icon, trackName: track.name),
                 groupIDs: (groupIDsByTrackID[track.id] ?? []).map(String.init),
                 ticks: backupTicks
             )
@@ -191,32 +191,6 @@ struct AndroidDatabaseImporter {
         return calendar.dateComponents([.day], from: start, to: end).day ?? 0
     }
 
-    private static func systemImage(forAndroidIcon icon: String?, trackName: String) -> String {
-        let haystack = ((icon ?? "") + " " + trackName).lowercased()
-        let mappings: [(String, String)] = [
-            ("drink", "drop.fill"),
-            ("water", "drop.fill"),
-            ("coffee", "cup.and.saucer.fill"),
-            ("cake", "birthday.cake.fill"),
-            ("food", "fork.knife"),
-            ("smok", "smoke.fill"),
-            ("hospital", "cross.case.fill"),
-            ("med", "pills.fill"),
-            ("dumbbell", "dumbbell.fill"),
-            ("sport", "figure.run"),
-            ("bicycle", "bicycle"),
-            ("car", "car.fill"),
-            ("train", "tram.fill"),
-            ("dog", "dog.fill"),
-            ("flower", "camera.macro"),
-            ("leaf", "leaf.fill"),
-            ("piano", "music.note"),
-            ("clean", "sparkles"),
-            ("facebook", "person.2.fill"),
-            ("email", "envelope.fill")
-        ]
-        return mappings.first { haystack.contains($0.0) }?.1 ?? "checkmark"
-    }
 }
 
 private final class Database {

@@ -99,6 +99,7 @@
 		B91ED2862B5B89640049EDB7 /* SwiftUIIntrospect in Frameworks */ = {isa = PBXBuildFile; productRef = B91ED2852B5B89640049EDB7 /* SwiftUIIntrospect */; };
 		B93BBF092B9CCAFC007E810A /* ArchivedTracksView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93BBF082B9CCAFC007E810A /* ArchivedTracksView.swift */; };
 		B93E9AAA2FD4B2B20014F3BB /* AndroidDatabaseImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93E9AA92FD4B2B20014F3BB /* AndroidDatabaseImporter.swift */; };
+		B93E9B072FD4B7540014F3BB /* AndroidIconMapping.swift in Sources */ = {isa = PBXBuildFile; fileRef = B93E9B062FD4B7540014F3BB /* AndroidIconMapping.swift */; };
 		B95E5FA52DAB479E002FD0AB /* TrackTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95E5FA42DAB479E002FD0AB /* TrackTableViewController.swift */; };
 		B95E5FA62DAB479E002FD0AB /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95E5FA22DAB479E002FD0AB /* ViewController.swift */; };
 		B95E5FA72DAB479E002FD0AB /* PageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B95E5FA32DAB479E002FD0AB /* PageViewController.swift */; };
@@ -211,6 +212,7 @@
 		B90C7F242DA0D92000C8F12B /* ShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
 		B93BBF082B9CCAFC007E810A /* ArchivedTracksView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArchivedTracksView.swift; sourceTree = "<group>"; };
 		B93E9AA92FD4B2B20014F3BB /* AndroidDatabaseImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AndroidDatabaseImporter.swift; sourceTree = "<group>"; };
+		B93E9B062FD4B7540014F3BB /* AndroidIconMapping.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AndroidIconMapping.swift; sourceTree = "<group>"; };
 		B95E5FA22DAB479E002FD0AB /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		B95E5FA32DAB479E002FD0AB /* PageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageViewController.swift; sourceTree = "<group>"; };
 		B95E5FA42DAB479E002FD0AB /* TrackTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackTableViewController.swift; sourceTree = "<group>"; };
@@ -416,6 +418,7 @@
 				59603D442666C85A001482C6 /* StoreController.swift */,
 				850B118309D524F90AAD4272 /* BackupController.swift */,
 				B93E9AA92FD4B2B20014F3BB /* AndroidDatabaseImporter.swift */,
+				B93E9B062FD4B7540014F3BB /* AndroidIconMapping.swift */,
 				B9641F9F2FB4FC0500F32DCC /* NotificationController.swift */,
 			);
 			path = Controllers;
@@ -646,6 +649,7 @@
 				59E9397225F98ACD002FD8CD /* AcknowledgementsView.swift in Sources */,
 				B95E5FAB2DAB47EF002FD0AB /* Defaults+Convenience.swift in Sources */,
 				59EF632D25E5CF24003E7259 /* TrackRepresentation.swift in Sources */,
+				B93E9B072FD4B7540014F3BB /* AndroidIconMapping.swift in Sources */,
 				592850F2265EF54B00E682F5 /* GroupController.swift in Sources */,
 				59EF632925E5CD4B003E7259 /* TrackView.swift in Sources */,
 				B95E5FB32DAB4A2B002FD0AB /* DayTableViewCell.swift in Sources */,
