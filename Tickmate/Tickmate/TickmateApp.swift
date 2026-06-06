@@ -28,7 +28,7 @@ struct TickmateApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
 
     let persistenceController = PersistenceController.shared
-        .loadDemo() // Uncomment this to load demo data into a fresh install
+//        .loadDemo() // Uncomment this to load demo data into a fresh install
 
     @AppStorage(Defaults.useNewUI.rawValue) var useNewUI = false
     @Environment(\.scenePhase) private var scenePhase
