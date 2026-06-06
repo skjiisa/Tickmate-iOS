@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 enum AndroidIconMapping {
     static func systemImage(forAndroidIcon icon: String?, trackName: String) -> String {
@@ -14,49 +15,132 @@ enum AndroidIconMapping {
         // "glyphicons_273_drink_white". Reduce it to its descriptive token
         // ("drink") and look that up in the explicit SF Symbol mapping.
         if let token = iconToken(from: icon), let symbol = glyphiconSymbols[token] {
-            return symbol
+            return availableSystemImageName(symbol)
         }
 
         // Fall back to fuzzy keyword matching against the (free-text) track name
         // for databases that lack an icon, or icons with no direct counterpart.
         let haystack = ((icon ?? "") + " " + trackName).lowercased()
-        let keywordMappings: [(String, String)] = [
-            ("water", "drop.fill"),
-            ("drink", "wineglass.fill"),
-            ("coffee", "cup.and.saucer.fill"),
-            ("cake", "birthday.cake.fill"),
-            ("food", "fork.knife"),
-            ("smok", "smoke.fill"),
-            ("hospital", "cross.case.fill"),
-            ("med", "pills.fill"),
-            ("pill", "pills.fill"),
-            ("gym", "dumbbell.fill"),
-            ("dumbbell", "dumbbell.fill"),
-            ("run", "figure.run"),
-            ("sport", "figure.run"),
-            ("bike", "bicycle"),
-            ("bicycle", "bicycle"),
-            ("car", "car.fill"),
-            ("train", "tram.fill"),
-            ("dog", "dog.fill"),
-            ("cat", "cat.fill"),
-            ("flower", "camera.macro"),
-            ("leaf", "leaf.fill"),
-            ("plant", "leaf.fill"),
-            ("piano", "pianokeys"),
-            ("music", "music.note"),
-            ("clean", "sparkles"),
-            ("read", "book.fill"),
-            ("book", "book.fill"),
-            ("sleep", "bed.double.fill"),
-            ("work", "briefcase.fill"),
-            ("money", "dollarsign.circle.fill"),
-            ("facebook", "person.2.fill"),
-            ("email", "envelope.fill"),
-            ("mail", "envelope.fill")
-        ]
-        return keywordMappings.first { haystack.contains($0.0) }?.1 ?? "checkmark"
+        if let match = keywordMappings.first(where: { haystack.contains($0.0) })?.1 {
+            return availableSystemImageName(match)
+        }
+        return "checkmark"
     }
+
+    /// Fuzzy keyword matches against a track's (free-text) name, used when the
+    /// Android database has no icon or the icon has no direct counterpart.
+    private static let keywordMappings: [(String, String)] = [
+        ("water", "drop.fill"),
+        ("drink", "wineglass.fill"),
+        ("coffee", "cup.and.saucer.fill"),
+        ("cake", "birthday.cake.fill"),
+        ("food", "fork.knife"),
+        ("smok", "smoke.fill"),
+        ("hospital", "cross.case.fill"),
+        ("med", "pills.fill"),
+        ("pill", "pills.fill"),
+        ("gym", "dumbbell.fill"),
+        ("dumbbell", "dumbbell.fill"),
+        ("run", "figure.run"),
+        ("sport", "figure.run"),
+        ("bike", "bicycle"),
+        ("bicycle", "bicycle"),
+        ("car", "car.fill"),
+        ("train", "tram.fill"),
+        ("dog", "dog.fill"),
+        ("cat", "cat.fill"),
+        ("flower", "camera.macro"),
+        ("leaf", "leaf.fill"),
+        ("plant", "leaf.fill"),
+        ("piano", "pianokeys"),
+        ("music", "music.note"),
+        ("clean", "sparkles"),
+        ("read", "book.fill"),
+        ("book", "book.fill"),
+        ("sleep", "bed.double.fill"),
+        ("work", "briefcase.fill"),
+        ("money", "dollarsign.circle.fill"),
+        ("facebook", "person.2.fill"),
+        ("email", "envelope.fill"),
+        ("mail", "envelope.fill")
+    ]
+
+    /// Resolves the first SF Symbol that is actually available on the current OS,
+    /// trying the preferred name first, then any OS-safe fallbacks, then
+    /// "checkmark" (available since iOS 13). Several mapped symbols require newer
+    /// OS versions (iOS 14.2–18) than the app's iOS 14.0 minimum, so a name that
+    /// renders on a modern device may be missing on an older one.
+    private static func availableSystemImageName(_ preferredName: String) -> String {
+        let candidates = [preferredName] + symbolFallbacks[preferredName, default: []] + ["checkmark"]
+        return candidates.first { UIImage(systemName: $0) != nil } ?? "checkmark"
+    }
+
+    #if DEBUG
+    /// Every SF Symbol name this mapper can emit — preferred names, keyword
+    /// matches, fallback candidates, and the universal "checkmark". Exposed for
+    /// tests to validate spelling against the SF Symbols catalog.
+    static var allEmittableSymbolNames: Set<String> {
+        var names = Set(glyphiconSymbols.values)
+        names.formUnion(keywordMappings.map(\.1))
+        for fallbacks in symbolFallbacks.values {
+            names.formUnion(fallbacks)
+        }
+        names.insert("checkmark")
+        return names
+    }
+    #endif
+
+    /// OS-safe fallback candidates for SF Symbols that are unavailable on older
+    /// supported OS versions. Each fallback is itself a public SF Symbol
+    /// available no later than the app's iOS 14.0 deployment target.
+    private static let symbolFallbacks: [String: [String]] = [
+        "asterisk": ["star.fill"],
+        "baseball.fill": ["sportscourt.fill"],
+        "beach.umbrella.fill": ["umbrella.fill"],
+        "birthday.cake.fill": ["gift.fill"],
+        "camera.macro": ["camera.fill"],
+        "cat.fill": ["hare.fill"],
+        "chart.line.uptrend.xyaxis": ["chart.bar.fill"],
+        "chevron.left.forwardslash.chevron.right": ["chevron.left", "chevron.right"],
+        "circle.lefthalf.filled": ["circle"],
+        "cup.and.saucer.fill": ["drop.fill"],
+        "dice.fill": ["gamecontroller.fill"],
+        "dog.fill": ["hare.fill"],
+        "dot.radiowaves.up.forward": ["antenna.radiowaves.left.and.right"],
+        "dumbbell.fill": ["heart.fill"],
+        "earbuds": ["headphones"],
+        "ferry.fill": ["paperplane.fill"],
+        "figure.bowling": ["sportscourt.fill"],
+        "figure.open.water.swim": ["drop.fill"],
+        "figure.pool.swim": ["drop.fill"],
+        "figure.run": ["figure.walk"],
+        "figure.table.tennis": ["sportscourt.fill"],
+        "fish.fill": ["hare.fill"],
+        "fork.knife": ["cart.fill"],
+        "gauge.medium": ["speedometer"],
+        "keyboard.fill": ["keyboard"],
+        "line.3.horizontal.decrease.circle": ["slider.horizontal.3"],
+        "mug.fill": ["drop.fill"],
+        "party.popper.fill": ["sparkles"],
+        "person.text.rectangle.fill": ["person.crop.rectangle.fill"],
+        "powerplug.fill": ["bolt.fill"],
+        "rectangle.portrait.and.arrow.right.fill": ["rectangle.stack.fill"],
+        "road.lanes": ["map.fill"],
+        "rugbyball.fill": ["sportscourt.fill"],
+        "sailboat.fill": ["paperplane.fill"],
+        "snowflake": ["thermometer.snowflake", "cloud.fill"],
+        "soccerball": ["sportscourt.fill"],
+        "suitcase.fill": ["briefcase.fill"],
+        "takeoutbag.and.cup.and.straw.fill": ["bag.fill"],
+        "textformat.size.larger": ["textformat.size"],
+        "textformat.size.smaller": ["textformat.size"],
+        "thermometer.high": ["thermometer"],
+        "tree.fill": ["leaf.fill"],
+        "truck.box.fill": ["shippingbox.fill"],
+        "tshirt.fill": ["person.fill"],
+        "videoprojector.fill": ["play.rectangle.fill"],
+        "wineglass.fill": ["drop.fill"]
+    ]
 
     /// Extracts the descriptive token from an Android Glyphicons drawable name,
     /// e.g. "glyphicons_273_drink_white" -> "drink", "myicons_smiley_white" -> "smiley".
