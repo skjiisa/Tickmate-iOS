@@ -10,6 +10,7 @@ import UniformTypeIdentifiers
 
 extension UTType {
     static let tickmateBackup = UTType(exportedAs: "app.lyons.Tickmate.backup")
+    static let sqliteDatabase = UTType(filenameExtension: "db") ?? .data
 }
 
 struct BackupArchive: Codable {
