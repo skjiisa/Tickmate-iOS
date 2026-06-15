@@ -198,6 +198,20 @@ class DayTableViewCell: UITableViewCell {
             let button = self.button(for: track, tickController: tickController)
             self.configure(button: button, for: track, ticks: ticks)
             button.tag = index
+
+            // Mirror SwiftUI TickView.validDate: a reversed track has no
+            // meaningful state before its start date, and because an un-ticked
+            // reversed day renders as a *filled* (colored) button, those
+            // pre-start days would otherwise show as a solid block of color
+            // stretching back a year — and would be tappable, creating ticks
+            // with negative day offsets. Hide and disable them instead.
+            // `alpha`/`isUserInteractionEnabled` (rather than `isHidden`) keep
+            // the button occupying its slot so the fill-equally stack layout of
+            // the remaining buttons is unaffected.
+            let validDate = !track.reversed || day <= (tickController.todayOffset ?? 0)
+            button.alpha = validDate ? 1 : 0
+            button.isUserInteractionEnabled = validDate
+
             stackView.addArrangedSubview(button)
             button.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
