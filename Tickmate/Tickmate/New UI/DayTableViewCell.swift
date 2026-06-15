@@ -25,13 +25,33 @@ class DayTableViewCell: UITableViewCell {
     /// engaged on a non-today day) interactions just notify the delegate.
     private var canEdit: Bool = true
 
+    /// Base whitespace opened up between weeks (below the buttons of the row
+    /// above each separator) when separator spaces are enabled. Tuned to match
+    /// the gap the SwiftUI `TicksView` produces via its invisible spacer +
+    /// default `VStack` spacing.
+    static let weekSeparatorBaseSpacing: CGFloat = 18
+    /// Thickness of the week-separator line.
+    static let weekSeparatorLineHeight: CGFloat = 4
+
+    /// Extra height the host adds (via `heightForRowAt`) to the row above each
+    /// week separator, which we pull the stack up by here so it becomes visible
+    /// space below the buttons. When the line is drawn it adds its own height
+    /// to the gap and is centered within it — mirroring `TicksView`, whose
+    /// spacer is `lines ? lineHeight : 0`, so weeks sit the same distance apart
+    /// whether or not the line is shown. Both `heightForRowAt` implementations
+    /// must use this so the date column and page tables stay scroll-synced.
+    static func weekSeparatorExtraHeight(lines: Bool) -> CGFloat {
+        weekSeparatorBaseSpacing + (lines ? weekSeparatorLineHeight : 0)
+    }
+
     private var stackView = UIStackView()
     /// Top/bottom constraints between `stackView` and the cell's `contentView`.
     /// We squeeze the stack view away from one edge to make room for
-    /// week-separator spacing — `heightForRowAt` makes the row 8pt taller for
-    /// the row above each separator, and the constant on `stackBottomConstraint`
-    /// pulls the stack up so the extra height becomes visible space between
-    /// weeks instead of vanishing into the cell.
+    /// week-separator spacing — `heightForRowAt` makes the row
+    /// `weekSeparatorExtraHeight` taller for the row above each separator, and
+    /// the constant on `stackBottomConstraint` pulls the stack up so the extra
+    /// height becomes visible space between weeks instead of vanishing into the
+    /// cell.
     private var stackTopConstraint: NSLayoutConstraint!
     private var stackBottomConstraint: NSLayoutConstraint!
     private var separatorLine: UIView?
@@ -107,29 +127,41 @@ class DayTableViewCell: UITableViewCell {
         separatorLine = nil
 
         // Configure week separator spacing. The row's height (set by the host
-        // `heightForRowAt`) is 8pt taller for the row directly above each
-        // separator; here we shrink the stack view by the same amount so that
-        // 8pt becomes a visible gap between weeks rather than padding that
-        // expands the buttons. Spacing is always added on the bottom edge so
-        // the gap sits in display order between this week and the next.
+        // `heightForRowAt`) is `weekSeparatorExtraHeight` taller for the row
+        // directly above each separator; here we shrink the stack view by the
+        // same amount so that height becomes a visible gap between weeks rather
+        // than padding that expands the buttons. Spacing is always added on the
+        // bottom edge so the gap sits in display order between this week and
+        // the next.
         let needsSeparatorSpace = weekSeparatorSpaces
             && TrackController.shared.shouldShowSeparatorBelow(day: day)
         stackTopConstraint.constant = 0
-        stackBottomConstraint.constant = needsSeparatorSpace ? -8 : 0
+        stackBottomConstraint.constant = needsSeparatorSpace
+            ? -Self.weekSeparatorExtraHeight(lines: weekSeparatorLines)
+            : 0
 
-        // Configure week separator line
+        // Configure week separator line. When separator spacing is present we
+        // center the line vertically within the gap (matching SwiftUI, where
+        // the line sits midway between the two weeks); otherwise it pins to the
+        // row's bottom edge.
         if weekSeparatorLines && TrackController.shared.shouldShowSeparatorBelow(day: day) {
             let line = UIView()
             line.backgroundColor = .gray
             line.translatesAutoresizingMaskIntoConstraints = false
             contentView.addSubview(line)
+            // We're inside `weekSeparatorLines`, so the gap includes the line's
+            // height; center the line within it. With spaces off there's no
+            // gap, so the line pins to the bottom edge.
+            let lineBottomInset = needsSeparatorSpace
+                ? (Self.weekSeparatorExtraHeight(lines: true) - Self.weekSeparatorLineHeight) / 2
+                : 0
             NSLayoutConstraint.activate([
                 line.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 120),
                 line.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
-                line.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-                line.heightAnchor.constraint(equalToConstant: 4)
+                line.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -lineBottomInset),
+                line.heightAnchor.constraint(equalToConstant: Self.weekSeparatorLineHeight)
             ])
-            line.layer.cornerRadius = 2
+            line.layer.cornerRadius = Self.weekSeparatorLineHeight / 2
             line.clipsToBounds = true
             separatorLine = line
         }

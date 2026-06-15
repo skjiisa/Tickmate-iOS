@@ -422,7 +422,8 @@ extension TrackTableViewController: UITableViewDelegate {
         let day = day(forRow: indexPath.row)
         let baseHeight: CGFloat = 44
         if weekSeparatorSpaces && TrackController.shared.shouldShowSeparatorBelow(day: day) {
-            return baseHeight + 8 // Add 8 points of spacing for week separators
+            // Extra height that opens the gap between weeks (see DayTableViewCell).
+            return baseHeight + DayTableViewCell.weekSeparatorExtraHeight(lines: weekSeparatorLines)
         }
         return baseHeight
     }
