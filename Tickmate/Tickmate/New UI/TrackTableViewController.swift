@@ -428,6 +428,22 @@ extension TrackTableViewController: UITableViewDelegate {
         return baseHeight
     }
 
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        // Hide the system cell separator on the row above each week separator.
+        // We draw our own line centered in the gap there; the system hairline
+        // sits at the cell's bottom edge and would otherwise show as a faint
+        // second line just above the next week's first row. Only hide it when
+        // both the line and the spacing are on — otherwise our line sits at the
+        // bottom edge (coinciding with the system one) or there's no gap at all.
+        // Always reset on other rows so reused cells don't keep the hidden inset.
+        let day = day(forRow: indexPath.row)
+        let hideSystemSeparator = weekSeparatorLines && weekSeparatorSpaces
+            && TrackController.shared.shouldShowSeparatorBelow(day: day)
+        cell.separatorInset = hideSystemSeparator
+            ? UIEdgeInsets(top: 0, left: tableView.bounds.width, bottom: 0, right: 0)
+            : tableView.separatorInset
+    }
+
     // No `viewForHeaderInSection` / `heightForHeaderInSection`: the per-page
     // TracksHeaderView lives outside the table now (see viewDidLoad), so
     // there's no section header at all.
