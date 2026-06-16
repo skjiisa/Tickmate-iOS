@@ -137,6 +137,7 @@ class TrackTableViewController: UIViewController {
         tableView.scrollsToTop = todayAtTop
         previousTodayAtTop = todayAtTop
         headerView.delegate = self
+        updateGoToBottomHeader()
         syncScrollPosition()
 
         // Each page subscribes to the shared scroll offset so off-screen
@@ -288,6 +289,7 @@ class TrackTableViewController: UIViewController {
         let directionFlipped = todayAtTop != previousTodayAtTop
         previousTodayAtTop = todayAtTop
 
+        updateGoToBottomHeader()
         tableView.reloadData()
 
         if directionFlipped {
@@ -295,6 +297,53 @@ class TrackTableViewController: UIViewController {
             // new edge so the user isn't left staring at a year ago.
             scrollToToday(animated: false)
         }
+    }
+
+    //MARK: Go to Bottom
+
+    /// Mirror the SwiftUI `TicksView` "Go to bottom" button: when today rests
+    /// at the bottom (`todayAtTop` off), show a control above the oldest day
+    /// that jumps back to today. With today at the top there's nothing above
+    /// it to jump from, so no header is shown (and the date column drops its
+    /// matching spacer in step — see `ViewController.updateDateColumnSpacer`).
+    private func updateGoToBottomHeader() {
+        if todayAtTop {
+            tableView.tableHeaderView = nil
+            return
+        }
+        guard tableView.tableHeaderView == nil else { return }
+
+        let container = UIView(frame: CGRect(
+            x: 0, y: 0,
+            width: tableView.bounds.width,
+            height: ViewController.goToBottomHeaderHeight
+        ))
+        container.autoresizingMask = .flexibleWidth
+
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setTitle("Go to bottom", for: .normal)
+        button.contentHorizontalAlignment = .leading
+        button.addTarget(self, action: #selector(goToBottomTapped), for: .touchUpInside)
+        container.addSubview(button)
+        NSLayoutConstraint.activate([
+            // The opaque date column (`ViewController.tableViewContainer`) is
+            // 100pt wide and overlaid on top of this page table, so anything
+            // left of x=100 is hidden behind it. Start the button at 120 —
+            // matching the tick-button stack leading in `DayTableViewCell` /
+            // `TracksHeaderView` — so it clears the date column and lines up
+            // with the columns of ticks below it.
+            button.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 120),
+            button.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -20),
+            button.topAnchor.constraint(equalTo: container.topAnchor),
+            button.bottomAnchor.constraint(equalTo: container.bottomAnchor),
+        ])
+
+        tableView.tableHeaderView = container
+    }
+
+    @objc private func goToBottomTapped() {
+        scrollToToday(animated: true)
     }
 
     //MARK: Day <-> Row Mapping

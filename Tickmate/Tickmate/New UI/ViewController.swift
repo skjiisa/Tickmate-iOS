@@ -80,6 +80,12 @@ class ViewController: UIViewController {
     /// the sidebar/shadow off so the per-page header always covers them.
     static let headerHeight: CGFloat = 44
 
+    /// Height of the "Go to bottom" jump-to-today control the page tables show
+    /// above the oldest day when today rests at the bottom (`todayAtTop` off).
+    /// The date column reserves an equal-height empty spacer at the same edge
+    /// so the two synced scroll views stay aligned.
+    static let goToBottomHeaderHeight: CGFloat = 44
+
     //MARK: Lifecycle
 
     override func viewDidLoad() {
@@ -253,6 +259,27 @@ class ViewController: UIViewController {
             tableView.trailingAnchor.constraint(equalTo: tableViewContainer.trailingAnchor),
             tableView.bottomAnchor.constraint(equalTo: tableViewContainer.bottomAnchor),
         ])
+
+        updateDateColumnSpacer()
+    }
+
+    /// Keep an empty top spacer in the date column that matches the page
+    /// tables' "Go to bottom" header, so each date label stays aligned with
+    /// its tick row. Present only when today rests at the bottom; cleared when
+    /// today is at the top (where the page tables show no header).
+    private func updateDateColumnSpacer() {
+        if todayAtTop {
+            tableView.tableHeaderView = nil
+        } else if tableView.tableHeaderView == nil {
+            let spacer = UIView(frame: CGRect(
+                x: 0, y: 0,
+                width: tableView.bounds.width,
+                height: Self.goToBottomHeaderHeight
+            ))
+            spacer.autoresizingMask = .flexibleWidth
+            spacer.backgroundColor = .clear
+            tableView.tableHeaderView = spacer
+        }
     }
 
     private func setUpShadow() {
@@ -371,6 +398,7 @@ class ViewController: UIViewController {
         let directionFlipped = todayAtTop != previousTodayAtTop
         previousTodayAtTop = todayAtTop
 
+        updateDateColumnSpacer()
         tableView.reloadData()
 
         if directionFlipped {
