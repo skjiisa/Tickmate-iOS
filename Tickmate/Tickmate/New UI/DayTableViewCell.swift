@@ -13,6 +13,16 @@ import Combine
 /// shows an alert after two consecutive taps.
 protocol DayTableViewCellDelegate: AnyObject {
     func dayCell(_ cell: DayTableViewCell, didTapLockedDayAt day: Int)
+
+    /// Asks the host to present the count stepper for a multiple-mode track
+    /// that already has a count of 1 or more. Anchored to `sourceView` (the
+    /// tapped tick button).
+    func dayCell(
+        _ cell: DayTableViewCell,
+        didRequestStepperFor track: Track,
+        day: Int,
+        from sourceView: UIView
+    )
 }
 
 class DayTableViewCell: UITableViewCell {
@@ -69,13 +79,6 @@ class DayTableViewCell: UITableViewCell {
     private var stackBottomConstraint: NSLayoutConstraint!
     private var separatorLine: UIView?
     private var buttons: [Track: UIButton] = [:]
-
-    /// Maps each tick button to its long-press recognizer (so we can rebuild
-    /// recognizer state cleanly when the cell is reconfigured).
-    private var longPressRecognizers: [UIButton: UILongPressGestureRecognizer] = [:]
-    /// Set of buttons that are currently scaled up because the user is
-    /// holding them down. Used to revert the scale on cancel/end.
-    private var pressedButtons: Set<UIButton> = []
 
     weak var delegate: DayTableViewCellDelegate?
 
@@ -188,10 +191,6 @@ class DayTableViewCell: UITableViewCell {
         subscriptions.forEach { $0.cancel() }
         subscriptions.removeAll()
 
-        // Reset any leftover scaling from the previous configuration.
-        pressedButtons.forEach { $0.transform = .identity }
-        pressedButtons.removeAll()
-
         tracks.enumerated().forEach { index, track in
             let tickController = TrackController.shared.tickController(for: track)
             let ticks = tickController.ticks(on: day)
@@ -204,10 +203,6 @@ class DayTableViewCell: UITableViewCell {
             NSLayoutConstraint.activate([
                 button.heightAnchor.constraint(equalToConstant: 34)
             ])
-
-            // Make sure the long-press recognizer is hooked up. Only attach
-            // one for tracks that allow multiple ticks per day.
-            configureLongPress(for: button, track: track, tickController: tickController)
 
             // Set up publisher to respond to changes
             tickController.$ticks.sink { [weak self] allTicks in
@@ -226,13 +221,23 @@ class DayTableViewCell: UITableViewCell {
             return button
         }
 
-        let button = UIButton(primaryAction: UIAction { [weak tickController, weak self] _ in
-            guard let self, let tickController else { return }
+        let button = UIButton(primaryAction: UIAction { [weak tickController, weak track, weak self] action in
+            guard let self, let tickController, let track,
+                  let button = action.sender as? UIButton else { return }
             // If today-lock is engaged on a previous day, route the tap to the
             // delegate (which will surface the alert via TrackController) and
             // bail out without mutating any ticks.
             guard self.canEdit else {
                 self.delegate?.dayCell(self, didTapLockedDayAt: self.day)
+                return
+            }
+            // For a multiple-mode track that already has a count, a tap opens
+            // the stepper so the user can adjust up or down. The first tick
+            // (0 -> 1) still happens on a plain tap, so adding a single count
+            // stays fast and the stepper only appears once there's a count to
+            // adjust.
+            if track.multiple, tickController.ticks(on: self.day) >= 1 {
+                self.delegate?.dayCell(self, didRequestStepperFor: track, day: self.day, from: button)
                 return
             }
             UISelectionFeedbackGenerator().selectionChanged()
@@ -241,73 +246,6 @@ class DayTableViewCell: UITableViewCell {
 
         buttons[track] = button
         return button
-    }
-
-    private func configureLongPress(for button: UIButton, track: Track, tickController: TickController) {
-        // Tear down any old recognizer so we never have stale state when a
-        // cell is reused with a different track / canEdit value.
-        if let existing = longPressRecognizers.removeValue(forKey: button) {
-            button.removeGestureRecognizer(existing)
-        }
-
-        // Only attach a recognizer to "multiple"-mode tracks; single-tick
-        // tracks already untick on a normal tap, so a long press would be
-        // redundant (and would cause a double mutation).
-        guard track.multiple else { return }
-
-        let recognizer = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress(_:)))
-        recognizer.minimumPressDuration = 0.5
-        // Don't cancel the underlying touch — we still want the button to
-        // appear pressed while the user holds it.
-        recognizer.cancelsTouchesInView = false
-        button.addGestureRecognizer(recognizer)
-        longPressRecognizers[button] = recognizer
-    }
-
-    @objc private func handleLongPress(_ recognizer: UILongPressGestureRecognizer) {
-        guard let button = recognizer.view as? UIButton,
-              let track = buttons.first(where: { $0.value === button })?.key else { return }
-        let tickController = TrackController.shared.tickController(for: track)
-
-        switch recognizer.state {
-        case .began:
-            // Mirror the SwiftUI scale-up animation while the user is holding.
-            UIView.animate(withDuration: 0.6,
-                           delay: 0,
-                           options: [.beginFromCurrentState, .curveEaseInOut]) {
-                button.transform = CGAffineTransform(scaleX: 1.1, y: 1.1)
-            }
-            pressedButtons.insert(button)
-        case .ended:
-            // Animate the scale back down regardless of whether we end up
-            // unticking. (If we don't untick — e.g. canEdit is false — the
-            // animation is the only feedback the user gets.)
-            UIView.animate(withDuration: 0.2,
-                           delay: 0,
-                           options: [.beginFromCurrentState, .curveEaseInOut]) {
-                button.transform = .identity
-            }
-            pressedButtons.remove(button)
-
-            guard canEdit else {
-                delegate?.dayCell(self, didTapLockedDayAt: day)
-                return
-            }
-            // `untick(day:)` returns false if there's no tick to remove,
-            // in which case skip the haptic.
-            if tickController.untick(day: day) {
-                UIImpactFeedbackGenerator(style: .soft).impactOccurred()
-            }
-        case .cancelled, .failed:
-            UIView.animate(withDuration: 0.2,
-                           delay: 0,
-                           options: [.beginFromCurrentState, .curveEaseInOut]) {
-                button.transform = .identity
-            }
-            pressedButtons.remove(button)
-        default:
-            break
-        }
     }
 
     func configure(button: UIButton, for track: Track, ticks: Int) {
