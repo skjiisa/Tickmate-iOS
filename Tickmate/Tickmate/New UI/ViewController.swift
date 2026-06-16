@@ -66,6 +66,12 @@ class ViewController: UIViewController {
     @AppStorage(Defaults.weekSeparatorSpaces.rawValue)
     private var weekSeparatorSpaces: Bool = true
 
+    // Needed alongside `weekSeparatorSpaces` so the date-column row heights
+    // match the page tables exactly (the separator gap depends on whether the
+    // line is drawn — see `DayTableViewCell.weekSeparatorExtraHeight`).
+    @AppStorage(Defaults.weekSeparatorLines.rawValue)
+    private var weekSeparatorLines: Bool = true
+
     /// Cached value used to detect when `todayAtTop` flips so the sidebar can
     /// be re-scrolled to match the page table's new "rest" edge.
     private var previousTodayAtTop: Bool = false
@@ -580,9 +586,10 @@ extension ViewController: UITableViewDelegate {
         // Has to gate on `weekSeparatorSpaces` for the same reason
         // `TrackTableViewController.heightForRowAt` does — otherwise disabling
         // separator spaces shrinks page rows back to 44pt while the sidebar
-        // keeps its 52pt rows, drifting the two scroll views apart.
+        // keeps its taller separator rows, drifting the two scroll views apart.
+        // The bump must match the page table's exactly to keep them in sync.
         if weekSeparatorSpaces && TrackController.shared.shouldShowSeparatorBelow(day: day) {
-            return baseHeight + 8 // Add 8 points of spacing for week separators
+            return baseHeight + DayTableViewCell.weekSeparatorExtraHeight(lines: weekSeparatorLines)
         }
         return baseHeight
     }

@@ -422,9 +422,32 @@ extension TrackTableViewController: UITableViewDelegate {
         let day = day(forRow: indexPath.row)
         let baseHeight: CGFloat = 44
         if weekSeparatorSpaces && TrackController.shared.shouldShowSeparatorBelow(day: day) {
-            return baseHeight + 8 // Add 8 points of spacing for week separators
+            // Extra height that opens the gap between weeks (see DayTableViewCell).
+            return baseHeight + DayTableViewCell.weekSeparatorExtraHeight(lines: weekSeparatorLines)
         }
         return baseHeight
+    }
+
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        // Inset the system cell separators to start just past the date column's
+        // trailing edge rather than running the full (under-the-date-column)
+        // cell width — otherwise horizontal paging slides the page table out
+        // and reveals the separators poking out from under the date grid. They
+        // sit slightly further in than the week-separator line (see
+        // `normalSeparatorLeadingInset`).
+        //
+        // On the row above each week separator, hide the system hairline
+        // entirely: we draw our own line centered in the gap there, and the
+        // system one would show as a faint second line just above the next
+        // week's first row. Only hide when both the line and the spacing are on
+        // — otherwise our line sits at the bottom edge (coinciding with the
+        // system one) or there's no gap at all.
+        let day = day(forRow: indexPath.row)
+        let hideSystemSeparator = weekSeparatorLines && weekSeparatorSpaces
+            && TrackController.shared.shouldShowSeparatorBelow(day: day)
+        cell.separatorInset = hideSystemSeparator
+            ? UIEdgeInsets(top: 0, left: tableView.bounds.width, bottom: 0, right: 0)
+            : UIEdgeInsets(top: 0, left: DayTableViewCell.normalSeparatorLeadingInset, bottom: 0, right: 0)
     }
 
     // No `viewForHeaderInSection` / `heightForHeaderInSection`: the per-page
