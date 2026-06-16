@@ -200,6 +200,11 @@ class TickController: NSObject, ObservableObject {
             if track.multiple {
                 tick.count += 1
                 tick.modified = Date()
+                // Re-assign the array element so `$ticks` republishes. The FRC
+                // delegate only fires for inserts/deletes, so an in-place count
+                // change on an existing tick would otherwise leave subscribers
+                // (e.g. the UIKit DayTableViewCell button) showing a stale value.
+                ticks[day] = tick
                 save()
             } else {
                 untick(day: day)
@@ -222,6 +227,9 @@ class TickController: NSObject, ObservableObject {
         } else {
             tick.count -= 1
             tick.modified = Date()
+            // See tick(day:): re-publish so an in-place decrement refreshes
+            // subscribers immediately rather than waiting on a save/FRC event.
+            ticks[day] = tick
         }
         save()
         if day == 0, let context = track.managedObjectContext {

@@ -518,6 +518,39 @@ extension TrackTableViewController: DayTableViewCellDelegate {
         // logic the SwiftUI version uses.
         trackController?.didTapLockedDay()
     }
+
+    func dayCell(
+        _ cell: DayTableViewCell,
+        didRequestStepperFor track: Track,
+        day: Int,
+        from sourceView: UIView
+    ) {
+        // Don't stack a second stepper (or fight a presented alert/sheet).
+        guard presentedViewController == nil else { return }
+
+        let tickController = TrackController.shared.tickController(for: track)
+        let stepper = CountStepperViewController(tickController: tickController, day: day)
+        if let popover = stepper.popoverPresentationController {
+            popover.sourceView = sourceView
+            popover.sourceRect = sourceView.bounds
+            popover.permittedArrowDirections = [.up, .down]
+            popover.delegate = self
+        }
+        present(stepper, animated: true)
+    }
+}
+
+//MARK: - UIPopoverPresentationControllerDelegate
+
+extension TrackTableViewController: UIPopoverPresentationControllerDelegate {
+    func adaptivePresentationStyle(
+        for controller: UIPresentationController,
+        traitCollection: UITraitCollection
+    ) -> UIModalPresentationStyle {
+        // Force a true anchored popover on iPhone (compact width) instead of
+        // letting it adapt into a full-screen sheet.
+        .none
+    }
 }
 
 //MARK: - TracksHeaderViewDelegate
