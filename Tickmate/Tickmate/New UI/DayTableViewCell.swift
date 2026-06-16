@@ -25,6 +25,19 @@ class DayTableViewCell: UITableViewCell {
     /// engaged on a non-today day) interactions just notify the delegate.
     private var canEdit: Bool = true
 
+    /// Leading inset for the week-separator line: flush with the trailing edge
+    /// of the date column (`ViewController.tableViewContainer`, 100pt wide and
+    /// opaque, overlaid on the left of the full-width page table). Keeping it
+    /// here avoids the line poking out from under the date grid as the page
+    /// slides during horizontal paging.
+    static let separatorLeadingInset: CGFloat = 100
+
+    /// Leading inset for the normal cell separators: a touch further in than the
+    /// week-separator line, so the (thicker) week line reads as slightly wider /
+    /// more prominent. Still clears the date column so it doesn't poke out under
+    /// the date grid while paging.
+    static let normalSeparatorLeadingInset: CGFloat = separatorLeadingInset + 8
+
     /// Base whitespace opened up between weeks (below the buttons of the row
     /// above each separator) when separator spaces are enabled. Tuned to match
     /// the gap the SwiftUI `TicksView` produces via its invisible spacer +
@@ -70,6 +83,8 @@ class DayTableViewCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+
+        selectionStyle = .none
 
         stackView.alignment = .center
         stackView.distribution = .fillEqually
@@ -156,12 +171,16 @@ class DayTableViewCell: UITableViewCell {
                 ? (Self.weekSeparatorExtraHeight(lines: true) - Self.weekSeparatorLineHeight) / 2
                 : 0
             NSLayoutConstraint.activate([
-                line.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 120),
-                line.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+                // Span the same width as the normal cell separators — flush with
+                // the date column's trailing edge through to the trailing edge —
+                // rather than the narrower button column.
+                line.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Self.separatorLeadingInset),
+                line.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
                 line.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -lineBottomInset),
                 line.heightAnchor.constraint(equalToConstant: Self.weekSeparatorLineHeight)
             ])
             line.layer.cornerRadius = Self.weekSeparatorLineHeight / 2
+            line.layer.maskedCorners = [.layerMinXMinYCorner, .layerMinXMaxYCorner]
             line.clipsToBounds = true
             separatorLine = line
         }
