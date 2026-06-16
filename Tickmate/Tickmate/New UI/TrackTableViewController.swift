@@ -327,8 +327,13 @@ class TrackTableViewController: UIViewController {
         button.addTarget(self, action: #selector(goToBottomTapped), for: .touchUpInside)
         container.addSubview(button)
         NSLayoutConstraint.activate([
-            // Inset to roughly line up with the date column's leading margin.
-            button.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 20),
+            // The opaque date column (`ViewController.tableViewContainer`) is
+            // 100pt wide and overlaid on top of this page table, so anything
+            // left of x=100 is hidden behind it. Start the button at 120 —
+            // matching the tick-button stack leading in `DayTableViewCell` /
+            // `TracksHeaderView` — so it clears the date column and lines up
+            // with the columns of ticks below it.
+            button.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: 120),
             button.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -20),
             button.topAnchor.constraint(equalTo: container.topAnchor),
             button.bottomAnchor.constraint(equalTo: container.bottomAnchor),
